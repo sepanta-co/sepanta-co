@@ -1,0 +1,127 @@
+@import "tailwindcss";
+
+:root {
+  --bg-canvas: #FFFFFF;
+  --bg-subtle: #F4F4F5;
+  --bg-obsidian: #0B0E11;
+  --bg-obsidian-card: #14181F;
+  --bg-obsidian-border: rgba(255, 255, 255, 0.08);
+  --ink-primary: #09090B;
+  --ink-secondary: #52525B;
+  --ink-light: #FAFAFA;
+  --ink-light-muted: #A1A1AA;
+  --brass-accent: #C27803;
+  --brass-hover: #A16207;
+  --border-light: #E4E4E7;
+  --border-dark: rgba(255, 255, 255, 0.1);
+  --eco-teal: #0D9488;
+}
+
+@theme inline {
+  --font-sans: var(--font-estedad), system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --color-canvas: #FFFFFF;
+  --color-subtle: #F4F4F5;
+  --color-obsidian: #0B0E11;
+  --color-obsidian-card: #14181F;
+  --color-obsidian-border: rgba(255, 255, 255, 0.08);
+  --color-ink: #09090B;
+  --color-ink-muted: #52525B;
+  --color-ink-light: #FAFAFA;
+  --color-ink-light-muted: #A1A1AA;
+  --color-brass: #C27803;
+  --color-brass-hover: #A16207;
+  --color-border-light: #E4E4E7;
+  --color-border-dark: rgba(255, 255, 255, 0.1);
+  --color-eco-teal: #0D9488;
+}
+
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+}
+
+/* Base resets & architectural geometry */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--bg-canvas);
+  color: var(--ink-primary);
+  font-family: var(--font-sans);
+  line-height: 1.8;
+  overflow-x: clip;
+  min-height: 100vh;
+}
+
+/* Persian tabular numbers */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.persian-display {
+  font-variant-numeric: normal;
+  letter-spacing: 0;
+}
+
+/* Architectural selection highlight */
+::selection {
+  background-color: #C27803;
+  color: #FFFFFF;
+}
+
+/* Clean Media Print for Official Quote Invoices */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 14mm;
+  }
+
+  * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  header,
+  footer,
+  nav,
+  .mobile-bottom-bar,
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .print-avoid-break {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  th, td {
+    border: 1px solid #d4d4d8 !important;
+    padding: 8px 12px !important;
+    color: #000 !important;
+  }
+}

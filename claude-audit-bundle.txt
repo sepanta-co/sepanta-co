@@ -1,0 +1,4063 @@
+﻿=== 1. EXACT FILES IN PUBLIC/ (CHECK EXTENSIONS & CASING) ===
+public\.nojekyll  |  Ext: .nojekyll  |  Size: 0 bytes
+public\favicon.ico  |  Ext: .ico  |  Size: 15086 bytes
+public\file.svg  |  Ext: .svg  |  Size: 391 bytes
+public\globe.svg  |  Ext: .svg  |  Size: 1035 bytes
+public\next.svg  |  Ext: .svg  |  Size: 1375 bytes
+public\vercel.svg  |  Ext: .svg  |  Size: 128 bytes
+public\window.svg  |  Ext: .svg  |  Size: 385 bytes
+public\images\after-window.jpg  |  Ext: .jpg  |  Size: 29838 bytes
+public\images\before-window.jpg  |  Ext: .jpg  |  Size: 15772 bytes
+public\images\factory-line.jpg  |  Ext: .jpg  |  Size: 65661 bytes
+public\images\hero-architecture.jpg  |  Ext: .jpg  |  Size: 56766 bytes
+public\images\product-balcony.jpg  |  Ext: .jpg  |  Size: 40833 bytes
+public\images\product-metal-frame.jpg  |  Ext: .jpg  |  Size: 18355 bytes
+public\images\product-screen.jpg  |  Ext: .jpg  |  Size: 54944 bytes
+public\images\product-security-door.jpg  |  Ext: .jpg  |  Size: 21611 bytes
+public\images\product-thermal.jpg  |  Ext: .jpg  |  Size: 34568 bytes
+public\images\product-upvc.jpg  |  Ext: .jpg  |  Size: 42801 bytes
+public\images\product-wood-door.jpg  |  Ext: .jpg  |  Size: 12630 bytes
+public\images\projects\project-karaj-commercial.webp  |  Ext: .webp  |  Size: 65661 bytes
+public\images\projects\project-qazvin-mass-housing.webp  |  Ext: .webp  |  Size: 42801 bytes
+public\images\projects\project-tabriz-villa.webp  |  Ext: .webp  |  Size: 40833 bytes
+public\images\projects\project-tehran-residence.webp  |  Ext: .webp  |  Size: 34568 bytes
+public\images\projects\project-villa-gavazang.webp  |  Ext: .webp  |  Size: 56766 bytes
+public\images\projects\project-zanjan-renovation.webp  |  Ext: .webp  |  Size: 29838 bytes
+
+=== 2. SRC FILE LIST ===
+src\app\favicon.ico
+src\app\globals.css
+src\app\layout.tsx
+src\app\page.tsx
+src\app\about\page.tsx
+src\app\configurator\page.tsx
+src\app\fonts\Estedad-FD.woff2
+src\app\products\page.tsx
+src\app\projects\page.tsx
+src\components\configurator\WindowStudioSVG.tsx
+src\components\home\BeforeAfterSlider.tsx
+src\components\home\ComparisonMatrix.tsx
+src\components\home\ProductShowcase.tsx
+src\components\layout\Footer.tsx
+src\components\layout\Header.tsx
+src\components\layout\MobileBottomBar.tsx
+src\data\company.ts
+src\data\index.ts
+src\data\products.ts
+src\data\projects.ts
+src\lib\assets.ts
+src\lib\format.ts
+src\lib\utils.ts
+
+==================== FILE: package.json ====================
+{
+  "name": "sepanta-co",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "framer-motion": "^14.14.0",
+    "lucide-react": "^1.78.0",
+    "next": "16.4.6",
+    "next-persian-fonts": "^1.5.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "tailwind-merge": "^3.7.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/turbopack": "4.3.3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.6",
+    "sharp": "^0.35.5",
+    "tailwindcss": "4.3.3",
+    "typescript": "^5"
+  }
+}
+
+
+==================== FILE: next.config.ts ====================
+import type { NextConfig } from "next";
+
+const isProd = process.env.NODE_ENV === "production";
+const repoName = "sepanta-co";
+
+const nextConfig: NextConfig = {
+  output: "export",
+  trailingSlash: true,
+  basePath: isProd ? `/${repoName}` : "",
+  images: {
+    unoptimized: true,
+  },
+};
+
+export default nextConfig;
+
+
+==================== FILE: postcss.config.mjs ====================
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;
+
+
+==================== FILE: src\app\about\page.tsx ====================
+import React from "react";
+import { COMPANY_DATA } from "@/data/company";
+
+export const metadata = {
+  title: "کارخانه و تماس مستقیم",
+  description: "شناسنامه گروه صنعتی سپنتا تأسیس ۱۳۸۰، خطوط تولید مکانیزه، گواهینامه‌های کیفی، آدرس کارخانه زنجان و راه‌های ارتباط مستقیم.",
+};
+
+export default function AboutPage() {
+  return (
+    <div className="w-full bg-white pt-24 pb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+        {/* Page Header */}
+        <div className="max-w-3xl space-y-4">
+          <span className="text-xs font-bold text-brass uppercase tracking-wider block">
+            هویت و شناسنامه کارخانه
+          </span>
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-zinc-950 tracking-tight leading-tight">
+            ۲۴ سال مهندسی بازشو و نما — گروه صنعتی سپنتا
+          </h1>
+          <p className="text-zinc-600 text-base sm:text-lg leading-relaxed">
+            تولید صنعتی با ماشین‌آلات مکانیزه CNC، استاندارد ملی ایران، گواهی کیفیت RAL آلمان و تعهد به کیفیت پایدار از سال ۱۳۸۰ در زنجان و سراسر ایران.
+          </p>
+        </div>
+
+        {/* Factory Story & Official Stats */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          <div className="lg:col-span-7 space-y-6">
+            <h2 className="text-2xl font-bold text-zinc-950">
+              پیشینه و خط‌مشی صنعتی کارخانه
+            </h2>
+            <p className="text-zinc-700 leading-relaxed">
+              {COMPANY_DATA.fullBio}
+            </p>
+
+            {/* Standards & Certifications */}
+            <div className="pt-4 space-y-4">
+              <h3 className="text-sm font-bold text-brass uppercase tracking-wider">
+                گواهینامه‌های رسمی و استانداردهای کیفی
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {COMPANY_DATA.standardsAndCertificates.map((cert, idx) => (
+                  <div key={idx} className="border border-zinc-200 p-4 bg-zinc-50 space-y-1">
+                    <span className="font-bold text-xs text-zinc-950 block">{cert.title}</span>
+                    <span className="text-[11px] font-bold text-brass block">{cert.issuer}</span>
+                    <p className="text-xs text-zinc-600 leading-relaxed">{cert.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Stats Box */}
+          <div className="lg:col-span-5 border border-zinc-200 bg-zinc-50 p-6 sm:p-8 space-y-6">
+            <h3 className="text-lg font-bold text-zinc-950 border-b border-zinc-200 pb-3">
+              شاخص‌های رسمی عملکرد کارخانه
+            </h3>
+            <div className="space-y-4 text-sm divide-y divide-zinc-200">
+              <div className="flex items-center justify-between pt-2">
+                <span className="text-zinc-500">سال پایه‌گذاری:</span>
+                <span className="font-bold text-zinc-950 tabular-nums">{COMPANY_DATA.stats.foundedYearFa} خورشیدی</span>
+              </div>
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-zinc-500">ظرفیت فعال ماهانه:</span>
+                <span className="font-bold text-zinc-950 tabular-nums">{COMPANY_DATA.stats.monthlyCapacityFa}</span>
+              </div>
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-zinc-500">خدمات پس از فروش:</span>
+                <span className="font-bold text-emerald-700 tabular-nums">{COMPANY_DATA.stats.warrantyPeriodFa}</span>
+              </div>
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-zinc-500">پوشش پروژه‌ها:</span>
+                <span className="font-bold text-zinc-950">{COMPANY_DATA.stats.provincesCoveredFa}</span>
+              </div>
+            </div>
+            <p className="text-xs text-zinc-500 leading-relaxed pt-2">
+              خطوط ماشین‌آلات پیشرفته شامل دستگاه‌های جوش چهارسر هم‌زمان، فرز تخلیه آب اتوماتیک و دستگاه‌های استاندارد تزریق گاز آرگون شیشه دوجداره با کالیبراسیون دائمی است.
+            </p>
+          </div>
+        </div>
+
+        {/* Contact & Map Anchor Section */}
+        <section id="contact" className="scroll-mt-28 space-y-8 border-t border-zinc-200 pt-16">
+          <div className="max-w-2xl space-y-2">
+            <span className="text-xs font-bold text-brass uppercase tracking-wider block">
+              ارتباط مستقیم و ارسال نقشه
+            </span>
+            <h2 className="text-3xl font-extrabold text-zinc-950">
+              اطلاعات تماس کارخانه و هماهنگی مهندسی
+            </h2>
+            <p className="text-zinc-600 text-sm">
+              جهت بازدید کارگاهی، اندازه‌گیری در محل یا ارسال فایل نقشه معماری با کارشناسان سپنتا در ارتباط باشید.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Direct Contact Card */}
+            <div className="border border-zinc-200 p-6 sm:p-8 space-y-6 bg-white">
+              <h3 className="text-lg font-bold text-zinc-950">راه‌های ارتباطی کارخانه</h3>
+              <div className="space-y-4 text-sm divide-y divide-zinc-100">
+                <div className="pt-2">
+                  <span className="text-zinc-500 block text-xs">تلفن مستقیم دفتر مرکزی زنجان:</span>
+                  <a
+                    href={`tel:${COMPANY_DATA.contact.phone}`}
+                    className="text-lg font-extrabold text-zinc-950 hover:text-brass transition-colors tabular-nums"
+                  >
+                    {COMPANY_DATA.contact.phoneDisplay}
+                  </a>
+                </div>
+
+                <div className="pt-3">
+                  <span className="text-zinc-500 block text-xs">مشاوره فنی و ارسال نقشه (ایتا / روبیکا / تماس):</span>
+                  <a
+                    href={`tel:${COMPANY_DATA.contact.mobileSales}`}
+                    className="text-lg font-extrabold text-brass hover:underline tabular-nums"
+                  >
+                    {COMPANY_DATA.contact.mobileSalesDisplay}
+                  </a>
+                </div>
+
+                <div className="pt-3">
+                  <span className="text-zinc-500 block text-xs">نشانی کارخانه:</span>
+                  <p className="text-zinc-800 pt-0.5">{COMPANY_DATA.contact.factoryAddress}</p>
+                  <span className="text-xs text-zinc-400 block pt-0.5">کد پستی: {COMPANY_DATA.contact.postalCode}</span>
+                </div>
+
+                <div className="pt-3">
+                  <span className="text-zinc-500 block text-xs">ساعات کاری:</span>
+                  <p className="text-zinc-700 pt-0.5">{COMPANY_DATA.contact.workingHours.weekdays}</p>
+                  <p className="text-zinc-700">{COMPANY_DATA.contact.workingHours.thursday}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Action / Map Helper */}
+            <div className="border border-zinc-200 p-6 sm:p-8 space-y-6 bg-zinc-50 flex flex-col justify-between">
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-zinc-950">موقعیت صنعتی زنجان</h3>
+                <p className="text-sm text-zinc-600 leading-relaxed">
+                  کارخانه سپنتا در شهرک صنعتی اشراق زنجان با دسترسی مستقیم به شریان‌های ترانزیتی قزوین، تبریز و تهران مستقر است و امکان بسته‌بندی ایمن پالتایز و ارسال فوری به تمام استان‌ها را فراهم می‌سازد.
+                </p>
+
+                <div className="bg-white p-4 border border-zinc-200 space-y-1 text-xs text-zinc-600">
+                  <span className="font-bold text-zinc-900 block">پوشش خدمات اندازه‌گیری و نصب:</span>
+                  <p>• شهر زنجان، ابهر، خرمدره، خدابنده و سراسر استان</p>
+                  <p>• تهران، کرج، قزوین، تبریز و کلیه استان‌های کشور</p>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-zinc-200">
+                <a
+                  href={`tel:${COMPANY_DATA.contact.mobileSales}`}
+                  className="w-full inline-flex items-center justify-center py-3.5 text-sm font-bold text-white bg-brass hover:bg-brass-hover rounded-[2px] transition-colors"
+                >
+                  <span>تماس و مشاوره فوری ({COMPANY_DATA.contact.mobileSalesDisplay})</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+
+==================== FILE: src\app\configurator\page.tsx ====================
+"use client";
+
+import React, { useState } from "react";
+import {
+  WindowStudioSVG,
+  type SystemType,
+  type OpeningType,
+  type FrameColor,
+} from "@/components/configurator/WindowStudioSVG";
+import {
+  toPersianDigits,
+  toEnglishDigits,
+  formatTomanRange,
+} from "@/lib/format";
+
+interface CartItem {
+  id: string;
+  name: string;
+  system: SystemType;
+  systemTitle: string;
+  widthCm: number;
+  heightCm: number;
+  panes: number;
+  hasTransom: boolean;
+  openingType: OpeningType;
+  frameColor: FrameColor;
+  glassType: string;
+  installation: string;
+  minPrice: number;
+  maxPrice: number;
+}
+
+export default function ConfiguratorPage() {
+  // Input dimensions & specs
+  const [system, setSystem] = useState<SystemType>("upvc");
+  const [widthInput, setWidthInput] = useState<string>("180");
+  const [heightInput, setHeightInput] = useState<string>("160");
+  const [panes, setPanes] = useState<number>(2);
+  const [hasTransom, setHasTransom] = useState<boolean>(false);
+  const [transomHeightInput, setTransomHeightInput] = useState<string>("45");
+  const [openingType, setOpeningType] = useState<OpeningType>("tilt-turn");
+  const [frameColor, setFrameColor] = useState<FrameColor>("white");
+  const [glassType, setGlassType] = useState<string>("double-lowe");
+  const [installation, setInstallation] = useState<string>("renovation");
+
+  // Cart & Project metadata
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const saved = localStorage.getItem("sepanta_quote_cart");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [planFileName, setPlanFileName] = useState<string>("elevation-facade.pdf");
+  const [clientName, setClientName] = useState<string>("");
+  const [clientPhone, setClientPhone] = useState<string>("");
+  const [isAddedToCartFeedback, setIsAddedToCartFeedback] = useState<boolean>(false);
+  const quoteMeta = {
+    id: "۴۸۲۹۰۱",
+    date: "۱۴۰۳/۰۹/۰۳",
+  };
+
+  // Save cart to localStorage
+  const saveCart = (items: CartItem[]) => {
+    setCart(items);
+    try {
+      localStorage.setItem("sepanta_quote_cart", JSON.stringify(items));
+    } catch {
+      // Ignore storage errors
+    }
+  };
+
+  // Numeric sanitization
+  const widthCm = Math.max(40, Math.min(600, parseInt(toEnglishDigits(widthInput) || "180", 10)));
+  const heightCm = Math.max(40, Math.min(400, parseInt(toEnglishDigits(heightInput) || "160", 10)));
+  const transomHeightCm = Math.max(25, Math.min(90, parseInt(toEnglishDigits(transomHeightInput) || "45", 10)));
+
+  // Engineering calculation logic
+  const areaSqm = (widthCm * heightCm) / 10000;
+  const sashWidth = widthCm / panes;
+
+  // System base rate per sqm
+  const SYSTEM_RATES: Record<SystemType, number> = {
+    upvc: 3900000,
+    "thermal-break": 8500000,
+    "balcony-glass": 4500000,
+    "pleated-mesh": 1450000,
+  };
+
+  const COLOR_MULTIPLIERS: Record<FrameColor, number> = {
+    white: 1.0,
+    anthracite: 1.12,
+    champagne: 1.18,
+    wood: 1.22,
+  };
+
+  const GLASS_ADDONS: Record<string, number> = {
+    "double-clear": 0,
+    "double-lowe": 450000,
+    "double-laminated": 950000,
+    triple: 1400000,
+  };
+
+  const HARDWARE_ADDONS: Record<OpeningType, number> = {
+    fixed: 0,
+    turn: 480000,
+    "tilt-turn": 880000,
+    sliding: 750000,
+    folding: 600000,
+  };
+
+  const baseSystemCost = areaSqm * SYSTEM_RATES[system];
+  const colorFactor = COLOR_MULTIPLIERS[frameColor];
+  const glassCost = system === "pleated-mesh" ? 0 : areaSqm * (GLASS_ADDONS[glassType] || 0);
+  const hardwareCost = HARDWARE_ADDONS[openingType] * (panes > 1 ? Math.floor(panes / 2) : 1);
+  const transomCost = hasTransom ? 450000 : 0;
+  const installMultiplier = installation === "renovation" ? 1.12 : installation === "new" ? 1.08 : 1.0;
+
+  const medianPrice =
+    (baseSystemCost * colorFactor + glassCost + hardwareCost + transomCost) * installMultiplier;
+
+  const minPrice = Math.round((medianPrice * 0.92) / 10000) * 10000;
+  const maxPrice = Math.round((medianPrice * 1.08) / 10000) * 10000;
+
+  // Engineering Validation Warnings
+  const warnings: string[] = [];
+  if (sashWidth > 100 && (openingType === "turn" || openingType === "tilt-turn")) {
+    warnings.push(
+      `عرض هر لنگه (${toPersianDigits(Math.round(sashWidth))} سانتی‌متر) بیش از ۱۰۰ سانتی‌متر است. جهت جلوگیری از افتادگی لولا، پیشنهاد می‌شود تعداد لنگه را افزایش داده یا از سیستم کشویی/ترمال بریک استفاده کنید.`
+    );
+  }
+  if (heightCm > 220 && !hasTransom) {
+    warnings.push(
+      `ارتفاع دهانه (${toPersianDigits(heightCm)} سانتی‌متر) بیش از ۲۲۰ سانتی‌متر است. پیشنهاد مهندسی سپنتا، افزودن کتیبه بالا (Transom) یا استفاده از مقاطع مقاوم آلومینیوم ترمال بریک است.`
+    );
+  }
+  if (areaSqm > 3.2) {
+    warnings.push(
+      `مساحت کل دهانه (${toPersianDigits(areaSqm.toFixed(2))} مترمربع) از ۳.۲ مترمربع بیشتر است. طبق مبحث ۴ مقررات ملی، استفاده از شیشه سکوریت یا لمینت ایمنی پیشنهاد اکید می‌شود.`
+    );
+  }
+
+  const systemTitles: Record<SystemType, string> = {
+    upvc: "پنجره دوجداره uPVC",
+    "thermal-break": "آلومینیوم ترمال بریک",
+    "balcony-glass": "شیشه بالکنی تاشو",
+    "pleated-mesh": "توری کشویی پلیسه",
+  };
+
+  const handleAddToCart = () => {
+    const newItem: CartItem = {
+      id: "item-" + Date.now(),
+      name: `دهانه ${toPersianDigits(widthCm)}×${toPersianDigits(heightCm)} (${systemTitles[system]})`,
+      system,
+      systemTitle: systemTitles[system],
+      widthCm,
+      heightCm,
+      panes,
+      hasTransom,
+      openingType,
+      frameColor,
+      glassType,
+      installation,
+      minPrice,
+      maxPrice,
+    };
+    saveCart([...cart, newItem]);
+    setIsAddedToCartFeedback(true);
+    setTimeout(() => setIsAddedToCartFeedback(false), 2500);
+  };
+
+  const handleRemoveItem = (id: string) => {
+    saveCart(cart.filter((c) => c.id !== id));
+  };
+
+  const handleClearCart = () => {
+    saveCart([]);
+  };
+
+  const totalMin = cart.reduce((acc, item) => acc + item.minPrice, 0);
+  const totalMax = cart.reduce((acc, item) => acc + item.maxPrice, 0);
+
+  return (
+    <div className="w-full bg-white">
+      {/* Printable Proforma View (only appears on @media print) */}
+      <div className="hidden print:block p-8 space-y-6 text-black bg-white">
+        <div className="border-b-2 border-black pb-4 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold">پیش‌فاکتور برآورد مهندسی — گروه صنعتی سپنتا</h1>
+            <p className="text-sm">تأسیس ۱۳۸۰ • ظرفیت ماهانه ۱٬۰۰۰ واحد • شماره استعلام: {quoteMeta.id}</p>
+          </div>
+          <div className="text-left text-xs font-mono">
+            <p>تاریخ صدور: {quoteMeta.date}</p>
+            <p>زنجان، شهرک صنعتی اشراق</p>
+          </div>
+        </div>
+
+        {clientName && (
+          <div className="text-sm bg-zinc-100 p-3 border border-black/20">
+            <span>نام کارفرما / پروژه: <strong>{clientName}</strong></span>
+            {clientPhone && <span className="ms-6">تلفن: <strong className="tabular-nums">{clientPhone}</strong></span>}
+            {planFileName && <span className="ms-6">فایل نقشه ضمیمه: <strong>{planFileName}</strong></span>}
+          </div>
+        )}
+
+        <table className="w-full text-xs text-start border-collapse border border-black">
+          <thead>
+            <tr className="bg-zinc-200">
+              <th className="border border-black p-2 text-start">ردیف</th>
+              <th className="border border-black p-2 text-start">شرح سیستم و ابعاد</th>
+              <th className="border border-black p-2 text-start">تعداد لنگه و کتیبه</th>
+              <th className="border border-black p-2 text-start">رنگ و یراق‌آلات</th>
+              <th className="border border-black p-2 text-start">مساحت (m²)</th>
+              <th className="border border-black p-2 text-start">بازه برآورد مهندسی (تومان)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {(cart.length > 0
+              ? cart
+              : [
+                  {
+                    id: "curr",
+                    name: `دهانه ${toPersianDigits(widthCm)}×${toPersianDigits(heightCm)}`,
+                    systemTitle: systemTitles[system],
+                    widthCm,
+                    heightCm,
+                    panes,
+                    hasTransom,
+                    openingType,
+                    frameColor,
+                    glassType,
+                    installation,
+                    minPrice,
+                    maxPrice,
+                  },
+                ]
+            ).map((item, idx) => (
+              <tr key={idx}>
+                <td className="border border-black p-2 text-center tabular-nums">{toPersianDigits(idx + 1)}</td>
+                <td className="border border-black p-2 font-bold">{item.systemTitle} ({toPersianDigits(item.widthCm)}×{toPersianDigits(item.heightCm)} cm)</td>
+                <td className="border border-black p-2">{toPersianDigits(item.panes)} لنگه {item.hasTransom ? "+ کتیبه بالا" : ""}</td>
+                <td className="border border-black p-2">{item.frameColor} / {item.openingType}</td>
+                <td className="border border-black p-2 tabular-nums">{toPersianDigits(((item.widthCm * item.heightCm) / 10000).toFixed(2))}</td>
+                <td className="border border-black p-2 tabular-nums font-bold">{formatTomanRange(item.minPrice, item.maxPrice)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="border-t-2 border-black pt-4 flex items-center justify-between text-sm">
+          <div>
+            <p className="font-bold">مجموع برآورد پروژه: {formatTomanRange(cart.length > 0 ? totalMin : minPrice, cart.length > 0 ? totalMax : maxPrice)}</p>
+            <p className="text-xs text-zinc-600 pt-1">این برگه برآورد اولیه کارخانه‌ای است؛ تأیید نهایی منوط به تطبیق با ابعاد کارگاهی و نقشه است.</p>
+          </div>
+          <div className="text-center font-mono text-xs">
+            <p>مهر و امضای واحد مهندسی فروش</p>
+            <div className="w-32 h-16 border-b border-black mt-2" />
+          </div>
+        </div>
+      </div>
+
+      {/* Screen Interactive Studio */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-12 print:hidden">
+        {/* Studio Top Header */}
+        <div className="max-w-3xl space-y-3">
+          <span className="text-xs font-bold text-brass uppercase tracking-wider block">
+            استودیوی مهندسی زنده
+          </span>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-zinc-950 tracking-tight">
+            پیکربندی هوشمند و استعلام برآورد قیمت
+          </h1>
+          <p className="text-zinc-600 text-sm sm:text-base leading-relaxed">
+            ابعاد، تعداد لنگه‌ها و مشخصات سیستم را تغییر دهید؛ تغییرات بلافاصله روی بوم دو‌بعدی SVG شبیه‌سازی شده و بازه برآورد هزینه کارخانه به تومان نمایش می‌یابد.
+          </p>
+        </div>
+
+        {/* Split Screen Studio (Sticky Preview + Controls) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          {/* Left / Live SVG Studio Preview (7 cols) */}
+          <div className="lg:col-span-7 lg:sticky lg:top-24 space-y-6">
+            <div className="bg-zinc-50 border border-zinc-200 p-6 sm:p-8 flex flex-col items-center justify-center min-h-[460px]">
+              <div className="w-full flex items-center justify-between text-xs text-zinc-500 pb-4 border-b border-zinc-200">
+                <span className="font-bold text-zinc-900">{systemTitles[system]}</span>
+                <span className="font-mono tabular-nums">
+                  مساحت: {toPersianDigits(areaSqm.toFixed(2))} مترمربع
+                </span>
+              </div>
+
+              {/* Realistic Architectural SVG Canvas */}
+              <div className="w-full py-4">
+                <WindowStudioSVG
+                  widthCm={widthCm}
+                  heightCm={heightCm}
+                  panes={panes}
+                  hasTransom={hasTransom}
+                  transomHeightCm={transomHeightCm}
+                  system={system}
+                  openingType={openingType}
+                  frameColor={frameColor}
+                />
+              </div>
+
+              {/* Instant Live Price Bar */}
+              <div className="w-full mt-2 pt-4 border-t border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 border">
+                <div>
+                  <span className="text-xs text-zinc-500 block">بازه برآورد مهندسی (±۸٪):</span>
+                  <span className="text-lg sm:text-xl font-bold text-zinc-950 tabular-nums">
+                    {formatTomanRange(minPrice, maxPrice)}
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleAddToCart}
+                  className="inline-flex items-center justify-center px-4 py-2.5 text-xs font-bold text-white bg-brass hover:bg-brass-hover rounded-[2px] transition-colors"
+                >
+                  {isAddedToCartFeedback ? "✓ به سبد افزوده شد" : "+ افزودن به سبد پروژه"}
+                </button>
+              </div>
+            </div>
+
+            {/* Smart Engineering Warnings Alert Box */}
+            {warnings.length > 0 && (
+              <div className="bg-amber-50 border-s-4 border-s-brass p-4 space-y-2">
+                <span className="text-xs font-bold text-amber-900 block">
+                  نکات فنی و الزامات مهندسی سپنتا:
+                </span>
+                <ul className="text-xs text-amber-800 space-y-1">
+                  {warnings.map((w, wIdx) => (
+                    <li key={wIdx} className="flex items-start gap-1.5">
+                      <span className="text-brass font-bold">▪</span>
+                      <span>{w}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* Right / Studio Controls Column (5 cols) */}
+          <div className="lg:col-span-5 space-y-6">
+            <div className="bg-white border border-zinc-200 p-6 space-y-6">
+              <h2 className="text-lg font-bold text-zinc-950 border-b border-zinc-200 pb-3">
+                پارامترهای فنی دهانه
+              </h2>
+
+              {/* 1. System Selection */}
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-zinc-700 block">
+                  نوع سیستم و متریال
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {(
+                    [
+                      { id: "upvc", label: "پنجره دوجداره uPVC" },
+                      { id: "thermal-break", label: "آلومینیوم ترمال بریک" },
+                      { id: "balcony-glass", label: "شیشه بالکنی تاشو" },
+                      { id: "pleated-mesh", label: "توری کشویی پلیسه" },
+                    ] as const
+                  ).map((s) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      onClick={() => setSystem(s.id)}
+                      className={`text-xs p-3 text-start border rounded-[2px] transition-colors ${
+                        system === s.id
+                          ? "border-brass bg-amber-50/50 text-zinc-950 font-bold"
+                          : "border-zinc-200 text-zinc-600 hover:bg-zinc-50"
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 2. Width & Height Inputs */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label htmlFor="input-width" className="text-xs font-bold text-zinc-700 block">
+                    عرض دهانه (cm)
+                  </label>
+                  <input
+                    id="input-width"
+                    type="text"
+                    inputMode="numeric"
+                    value={widthInput}
+                    onChange={(e) => setWidthInput(e.target.value)}
+                    className="w-full text-sm font-bold p-2.5 border border-zinc-300 focus:border-brass focus:ring-1 focus:ring-brass text-start tabular-nums"
+                    placeholder="۱۸۰"
+                  />
+                  <span className="text-[11px] text-zinc-400 block">مجاز: ۴۰ تا ۶۰۰</span>
+                </div>
+
+                <div className="space-y-1">
+                  <label htmlFor="input-height" className="text-xs font-bold text-zinc-700 block">
+                    ارتفاع دهانه (cm)
+                  </label>
+                  <input
+                    id="input-height"
+                    type="text"
+                    inputMode="numeric"
+                    value={heightInput}
+                    onChange={(e) => setHeightInput(e.target.value)}
+                    className="w-full text-sm font-bold p-2.5 border border-zinc-300 focus:border-brass focus:ring-1 focus:ring-brass text-start tabular-nums"
+                    placeholder="۱۶۰"
+                  />
+                  <span className="text-[11px] text-zinc-400 block">مجاز: ۴۰ تا ۴۰۰</span>
+                </div>
+              </div>
+
+              {/* 3. Pane Count */}
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-zinc-700 block">
+                  تعداد لنگه‌ها (تقسیم عمودی)
+                </label>
+                <div className="grid grid-cols-4 gap-2">
+                  {[1, 2, 3, 4].map((p) => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => setPanes(p)}
+                      className={`text-xs py-2 text-center border rounded-[2px] font-bold tabular-nums transition-colors ${
+                        panes === p
+                          ? "border-zinc-950 bg-zinc-950 text-white"
+                          : "border-zinc-200 text-zinc-700 hover:bg-zinc-100"
+                      }`}
+                    >
+                      {toPersianDigits(p)} لنگه
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 4. Transom (کتیبه) Toggle */}
+              <div className="space-y-3 border-t border-zinc-100 pt-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-bold text-zinc-800 block">کتیبه بالای پنجره (Transom)</span>
+                    <span className="text-[11px] text-zinc-500">تقسیم افقی برای ارتفاع‌های بلند</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={hasTransom}
+                    onChange={(e) => setHasTransom(e.target.checked)}
+                    className="w-4 h-4 accent-brass"
+                  />
+                </div>
+
+                {hasTransom && (
+                  <div className="space-y-1">
+                    <label htmlFor="input-transom" className="text-xs font-medium text-zinc-600 block">
+                      ارتفاع کتیبه (سانتی‌متر)
+                    </label>
+                    <input
+                      id="input-transom"
+                      type="text"
+                      inputMode="numeric"
+                      value={transomHeightInput}
+                      onChange={(e) => setTransomHeightInput(e.target.value)}
+                      className="w-full text-xs p-2 border border-zinc-300 tabular-nums"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* 5. Opening Type */}
+              <div className="space-y-2 border-t border-zinc-100 pt-3">
+                <label className="text-xs font-bold text-zinc-700 block">
+                  مکانیزم بازشو
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {(
+                    [
+                      { id: "turn", label: "تک‌حالته لولایی" },
+                      { id: "tilt-turn", label: "دوحالته آلمانی" },
+                      { id: "sliding", label: "کشویی ریلی" },
+                      { id: "folding", label: "تاشو جمع‌شونده" },
+                      { id: "fixed", label: "کاملاً ثابت" },
+                    ] as const
+                  ).map((o) => (
+                    <button
+                      key={o.id}
+                      type="button"
+                      onClick={() => setOpeningType(o.id)}
+                      className={`text-xs py-2 px-2 text-center border rounded-[2px] transition-colors ${
+                        openingType === o.id
+                          ? "border-brass bg-amber-50/50 text-zinc-950 font-bold"
+                          : "border-zinc-200 text-zinc-600 hover:bg-zinc-50"
+                      }`}
+                    >
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 6. Frame Finish Color */}
+              <div className="space-y-2 border-t border-zinc-100 pt-3">
+                <label className="text-xs font-bold text-zinc-700 block">
+                  رنگ و پوشش پروفیل
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {(
+                    [
+                      { id: "white", label: "سفید استاندارد", color: "#F8FAFC" },
+                      { id: "anthracite", label: "آنتراسیت مات", color: "#1E242B" },
+                      { id: "champagne", label: "شامپاینی متالیک", color: "#B8A58D" },
+                      { id: "wood", label: "طرح چوب بلوطی", color: "#6A3F1F" },
+                    ] as const
+                  ).map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => setFrameColor(c.id)}
+                      className={`text-xs p-2.5 text-start border rounded-[2px] flex items-center gap-2 transition-colors ${
+                        frameColor === c.id
+                          ? "border-zinc-950 bg-zinc-50 font-bold text-zinc-950"
+                          : "border-zinc-200 text-zinc-600 hover:bg-zinc-50"
+                      }`}
+                    >
+                      <span
+                        className="w-4 h-4 border border-zinc-300 rounded-full shrink-0"
+                        style={{ backgroundColor: c.color }}
+                      />
+                      <span>{c.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 7. Glass Type */}
+              {system !== "pleated-mesh" && (
+                <div className="space-y-2 border-t border-zinc-100 pt-3">
+                  <label htmlFor="select-glass" className="text-xs font-bold text-zinc-700 block">
+                    نوع شیشه و عایق
+                  </label>
+                  <select
+                    id="select-glass"
+                    value={glassType}
+                    onChange={(e) => setGlassType(e.target.value)}
+                    aria-label="نوع شیشه و عایق"
+                    className="w-full text-xs p-2.5 border border-zinc-300 bg-white text-zinc-900 focus:border-brass"
+                  >
+                    <option value="double-clear">دوجداره فلوت ساده + گاز آرگون</option>
+                    <option value="double-lowe">دوجداره کنترل حرارتی Low-E + گاز آرگون</option>
+                    <option value="double-laminated">دوجداره لمینت ضدسرقت و آکوستیک PVB</option>
+                    <option value="triple">سه‌جداره فوق‌عایق مناطق سردسیر</option>
+                  </select>
+                </div>
+              )}
+
+              {/* 8. Installation Type */}
+              <div className="space-y-2 border-t border-zinc-100 pt-3">
+                <label className="text-xs font-bold text-zinc-700 block">
+                  موقعیت و نوع پروژه
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {(
+                    [
+                      { id: "renovation", label: "بازسازی بدون تخریب" },
+                      { id: "new", label: "پروژه نوساز" },
+                      { id: "factory-only", label: "تحویل درب کارخانه" },
+                    ] as const
+                  ).map((inst) => (
+                    <button
+                      key={inst.id}
+                      type="button"
+                      onClick={() => setInstallation(inst.id)}
+                      className={`text-xs py-2 px-1 text-center border rounded-[2px] transition-colors ${
+                        installation === inst.id
+                          ? "border-zinc-950 bg-zinc-950 text-white font-bold"
+                          : "border-zinc-200 text-zinc-600 hover:bg-zinc-50"
+                      }`}
+                    >
+                      {inst.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Project Quote Cart & Invoice Section */}
+        <section className="bg-zinc-50 border border-zinc-200 p-6 sm:p-10 space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 pb-4">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold text-zinc-950">
+                سبد استعلام اقلام پروژه ({toPersianDigits(cart.length)} مورد)
+              </h2>
+              <p className="text-xs text-zinc-500 pt-1">
+                می‌توانید چند دهانه مختلف را به سبد اضافه کرده و خروجی چاپی پیش‌فاکتور رسمی را تهیه کنید.
+              </p>
+            </div>
+
+            {cart.length > 0 && (
+              <button
+                type="button"
+                onClick={handleClearCart}
+                className="text-xs text-red-700 hover:underline self-start sm:self-auto"
+              >
+                پاک کردن تمام اقلام
+              </button>
+            )}
+          </div>
+
+          {cart.length === 0 ? (
+            <div className="text-center py-8 text-zinc-500 text-sm">
+              <p>هنوز آیتمی به سبد پروژه اضافه نشده است.</p>
+              <p className="text-xs text-zinc-400 pt-1">با زدن دکمه «+ افزودن به سبد پروژه» دهانه فعلی در این بخش ذخیره می‌شود.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="divide-y divide-zinc-200 bg-white border border-zinc-200">
+                {cart.map((item) => (
+                  <div key={item.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-zinc-950 text-sm">{item.name}</span>
+                        <span className="bg-zinc-100 text-zinc-600 px-2 py-0.5 rounded-[2px]">{item.systemTitle}</span>
+                      </div>
+                      <p className="text-zinc-500">
+                        {toPersianDigits(item.panes)} لنگه • رنگ: {item.frameColor} • مساحت: {toPersianDigits(((item.widthCm * item.heightCm) / 10000).toFixed(2))} m²
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-4 self-end sm:self-auto">
+                      <span className="font-bold text-zinc-900 tabular-nums">
+                        {formatTomanRange(item.minPrice, item.maxPrice)}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveItem(item.id)}
+                        className="text-red-600 hover:text-red-800 text-xs px-2 py-1"
+                        aria-label="حذف آیتم"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Total & Proforma Action Bar */}
+              <div className="p-6 bg-white border border-zinc-200 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                  <span className="text-xs text-zinc-500 block">مجموع برآورد تقریبی پروژه ({toPersianDigits(cart.length)} دهانه):</span>
+                  <span className="text-xl sm:text-2xl font-extrabold text-brass tabular-nums">
+                    {formatTomanRange(totalMin, totalMax)}
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => window.print()}
+                    className="inline-flex items-center justify-center px-5 py-3 text-xs sm:text-sm font-bold text-white bg-zinc-950 hover:bg-zinc-800 rounded-[2px] transition-colors"
+                  >
+                    <span>چاپ یا ذخیره PDF پیش‌فاکتور</span>
+                    <span className="ms-2 font-mono">🖨</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Direct Consultation / Plan Upload Helper */}
+          <div className="border-t border-zinc-200 pt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <label htmlFor="client-name" className="text-xs font-bold text-zinc-700 block">نام کارفرما / پروژه</label>
+              <input
+                id="client-name"
+                type="text"
+                value={clientName}
+                onChange={(e) => setClientName(e.target.value)}
+                placeholder="مثلاً: پروژه مهندس سهرابی"
+                className="w-full text-xs p-2.5 border border-zinc-300"
+              />
+            </div>
+            <div className="space-y-1">
+              <label htmlFor="client-phone" className="text-xs font-bold text-zinc-700 block">شماره تماس</label>
+              <input
+                id="client-phone"
+                type="text"
+                value={clientPhone}
+                onChange={(e) => setClientPhone(e.target.value)}
+                placeholder="۰۹۱۲..."
+                className="w-full text-xs p-2.5 border border-zinc-300 tabular-nums"
+              />
+            </div>
+            <div className="space-y-1">
+              <label htmlFor="plan-name" className="text-xs font-bold text-zinc-700 block">نام فایل نقشه معماری (اختیاری)</label>
+              <input
+                id="plan-name"
+                type="text"
+                value={planFileName}
+                onChange={(e) => setPlanFileName(e.target.value)}
+                placeholder="elevation-facade.pdf"
+                className="w-full text-xs p-2.5 border border-zinc-300 font-mono"
+              />
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+
+==================== FILE: src\app\products\page.tsx ====================
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { PRODUCTS, PRODUCT_CLUSTERS } from "@/data/products";
+import { formatTomanRange } from "@/lib/format";
+import { assetPath } from "@/lib/assets";
+
+export const metadata = {
+  title: "محصولات و مشخصات فنی کارخانه",
+  description: "کاتالوگ جامع ۷ خط تولید سپنتا: درب و پنجره uPVC، آلومینیوم ترمال بریک، شیشه بالکنی، توری کشویی، درب ضد سرقت، درب چوبی و چهارچوب فلزی.",
+};
+
+const PRODUCT_IMAGE_MAP: Record<string, string> = {
+  "upvc-window": "/images/product-upvc.jpg",
+  "thermal-break-window": "/images/product-thermal.jpg",
+  "balcony-glass": "/images/product-balcony.jpg",
+  "pleated-mesh": "/images/product-screen.jpg",
+  "security-door": "/images/product-security-door.jpg",
+  "interior-wooden-door": "/images/product-wood-door.jpg",
+  "steel-frame": "/images/product-metal-frame.jpg",
+};
+
+export default function ProductsPage() {
+  return (
+    <div className="w-full bg-white pt-24 pb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+        {/* Page Top Header */}
+        <div className="max-w-3xl space-y-4">
+          <span className="text-xs font-bold text-brass uppercase tracking-wider block">
+            کاتالوگ فنی کارخانه
+          </span>
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-zinc-950 tracking-tight leading-tight">
+            سبد جامع ۷ خط تولید مهندسی سپنتا
+          </h1>
+          <p className="text-zinc-600 text-base sm:text-lg leading-relaxed">
+            سیستم‌های بازشو و نما با دقیق‌ترین کنترل کیفیت، استاندارد ملی ایران و انطباق با رده‌های بین‌المللی RAL آلمان.
+          </p>
+        </div>
+
+        {/* Clusters */}
+        {PRODUCT_CLUSTERS.map((cluster) => {
+          const clusterProducts = PRODUCTS.filter((p) => p.cluster === cluster.id);
+          return (
+            <section key={cluster.id} className="space-y-10">
+              <div className="border-b border-zinc-200 pb-4">
+                <span className="text-xs font-bold text-brass uppercase tracking-wider block">
+                  خوشه صنعتی • {clusterProducts.length} خط تولید
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-950 pt-1">
+                  {cluster.title}
+                </h2>
+                <p className="text-sm text-zinc-500 pt-1 max-w-2xl">
+                  {cluster.description}
+                </p>
+              </div>
+
+              {/* Products 2-column large editorial layout */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {clusterProducts.map((product) => {
+                  const imgSrc = PRODUCT_IMAGE_MAP[product.id] || "/images/product-upvc.jpg";
+                  return (
+                    <article
+                      key={product.id}
+                      id={product.slug}
+                      className="border border-zinc-200 bg-white hover:border-zinc-400 transition-colors flex flex-col justify-between scroll-mt-28"
+                    >
+                      <div>
+                        {/* High-res Image Header */}
+                        <div className="relative aspect-[16/10] w-full overflow-hidden bg-zinc-900 border-b border-zinc-200">
+                          <Image
+                            src={assetPath(imgSrc)}
+                            alt={product.persianTitle}
+                            fill
+                            sizes="(max-width: 1024px) 100vw, 50vw"
+                            className="object-cover"
+                          />
+                          <div className="absolute top-3 start-3 flex items-center gap-2">
+                            <span className="bg-zinc-950/85 text-white text-xs font-semibold px-2.5 py-1">
+                              رده {product.budgetTier}
+                            </span>
+                            <span className="bg-brass text-white text-xs font-semibold px-2.5 py-1">
+                              ضمانت {product.warrantyYears} ساله
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-6 sm:p-8 space-y-5">
+                          <div>
+                            <span className="text-xs font-bold text-brass block mb-1">
+                              {product.tag}
+                            </span>
+                            <h3 className="text-2xl font-bold text-zinc-950">
+                              {product.persianTitle}
+                            </h3>
+                            <p className="font-mono text-xs text-zinc-400 pt-0.5">
+                              {product.name}
+                            </p>
+                          </div>
+
+                          <p className="text-sm text-zinc-600 leading-relaxed">
+                            {product.fullDescription}
+                          </p>
+
+                          {/* Technical Specs Key-Value Table */}
+                          <div className="bg-zinc-50 border border-zinc-200 divide-y divide-zinc-200 text-xs">
+                            {product.acousticRating && (
+                              <div className="flex items-center justify-between p-2.5">
+                                <span className="text-zinc-500">شاخص افت آکوستیک:</span>
+                                <span className="font-bold text-zinc-900">{product.acousticRating}</span>
+                              </div>
+                            )}
+                            {product.thermalRating && (
+                              <div className="flex items-center justify-between p-2.5">
+                                <span className="text-zinc-500">ضریب انتقال حرارت (Uw):</span>
+                                <span className="font-bold text-zinc-900">{product.thermalRating}</span>
+                              </div>
+                            )}
+                            {product.profileSpecs.slice(0, 3).map((spec, sIdx) => (
+                              <div key={sIdx} className="flex items-center justify-between p-2.5">
+                                <span className="text-zinc-500">{spec.label}:</span>
+                                <span className="font-medium text-zinc-900 text-end">{spec.value}</span>
+                              </div>
+                            ))}
+                            {product.basePricePerSqmEstimated && (
+                              <div className="flex items-center justify-between p-2.5 bg-amber-50/50">
+                                <span className="text-zinc-700 font-bold">بازه برآورد هر مترمربع:</span>
+                                <span className="font-bold text-brass tabular-nums">
+                                  {formatTomanRange(
+                                    product.basePricePerSqmEstimated.min,
+                                    product.basePricePerSqmEstimated.max
+                                  )}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Ideal Use Cases */}
+                          <div className="space-y-1.5 pt-1">
+                            <span className="text-xs font-bold text-zinc-700 block">
+                              کاربردهای پیشنهادی در پروژه:
+                            </span>
+                            <ul className="text-xs text-zinc-600 space-y-1">
+                              {product.idealUseCases.map((useCase, idx) => (
+                                <li key={idx} className="flex items-start gap-1.5">
+                                  <span className="text-brass">▪</span>
+                                  <span>{useCase}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card Bottom CTA */}
+                      <div className="p-6 pt-0 border-t border-zinc-100 flex items-center justify-between">
+                        {product.configuratorAvailable ? (
+                          <Link
+                            href={`/configurator/?product=${product.id}`}
+                            className="w-full inline-flex items-center justify-center py-2.5 text-xs font-bold text-white bg-brass hover:bg-brass-hover rounded-[2px] transition-colors"
+                          >
+                            <span>پیکربندی آنلاین این سیستم در استودیو</span>
+                            <span className="ms-1.5 font-bold">←</span>
+                          </Link>
+                        ) : (
+                          <Link
+                            href="/about/#contact"
+                            className="w-full inline-flex items-center justify-center py-2.5 text-xs font-bold text-zinc-900 bg-zinc-100 hover:bg-zinc-200 border border-zinc-300 rounded-[2px] transition-colors"
+                          >
+                            <span>استعلام تلفنی ابعاد سفارشی</span>
+                            <span className="ms-1.5 font-bold">←</span>
+                          </Link>
+                        )}
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+
+==================== FILE: src\app\projects\page.tsx ====================
+import React from "react";
+import Link from "next/link";
+import { PROJECTS } from "@/data/projects";
+
+export const metadata = {
+  title: "پروژه‌ها و کارنامه اجرایی",
+  description: "سوابق اجرایی گروه صنعتی سپنتا در زنجان، تهران، تبریز، قزوین و کرج — پروژه‌های مسکونی، ویلایی و تعویض پنجره بدون تخریب.",
+};
+
+export default function ProjectsPage() {
+  return (
+    <div className="w-full bg-white pt-24 pb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+        {/* Page Header */}
+        <div className="max-w-3xl space-y-4">
+          <span className="text-xs font-bold text-brass uppercase tracking-wider block">
+            سوابق اجرایی کارخانه
+          </span>
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-zinc-950 tracking-tight leading-tight">
+            کارنامه پروژه‌های مهندسی و معماری سپنتا
+          </h1>
+          <p className="text-zinc-600 text-base sm:text-lg leading-relaxed">
+            بیش از دو دهه اجرای پروژه‌های مسکونی مدرن، ویلاهای لوکس کوهستانی، انبوه‌سازی و تعویض پنجره بدون تخریب در زنجان و سراسر کشور.
+          </p>
+        </div>
+
+        {/* Projects Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {PROJECTS.map((project) => (
+            <article
+              key={project.id}
+              className="border border-zinc-200 bg-white hover:border-zinc-400 transition-colors flex flex-col justify-between"
+            >
+              <div className="p-6 sm:p-7 space-y-4">
+                <div className="flex items-center justify-between text-xs text-zinc-500">
+                  <span className="font-bold text-brass">{project.city} • {project.locationArea}</span>
+                  <span className="tabular-nums font-semibold">{project.yearFa}</span>
+                </div>
+
+                <div>
+                  <span className="text-xs font-medium text-zinc-500 block mb-1">
+                    {project.categoryLabel}
+                  </span>
+                  <h3 className="text-xl font-bold text-zinc-950 leading-snug">
+                    {project.title}
+                  </h3>
+                </div>
+
+                <div className="bg-zinc-50 p-3 border border-zinc-200 text-xs space-y-1">
+                  <span className="text-zinc-500 block">سیستم اجراشده:</span>
+                  <p className="font-bold text-zinc-900">{project.systemUsed}</p>
+                  <p className="text-brass font-semibold pt-1">حجم کار: {project.estimatedUnitsFa}</p>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <div>
+                    <span className="font-bold text-zinc-900">چالش معماری: </span>
+                    <span className="text-zinc-600 leading-relaxed">{project.architecturalChallenge}</span>
+                  </div>
+                  <div>
+                    <span className="font-bold text-emerald-700">راهکار مهندسی سپنتا: </span>
+                    <span className="text-zinc-600 leading-relaxed">{project.technicalSolution}</span>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-zinc-100">
+                  <ul className="text-xs text-zinc-600 space-y-1">
+                    {project.specHighlights.map((hl, i) => (
+                      <li key={i} className="flex items-center gap-1.5">
+                        <span className="text-brass">✓</span>
+                        <span>{hl}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-zinc-100 bg-zinc-50/50 flex items-center justify-between text-xs">
+                <span className="text-zinc-500">پوشش سراسری:</span>
+                <span className="font-bold text-zinc-900">تأمین و نصب توسط سپنتا</span>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        {/* Consultation Callout */}
+        <div className="bg-obsidian text-white p-8 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-2 max-w-2xl">
+            <h3 className="text-2xl font-bold">پروژه ساختمانی یا بازسازی در دست اقدام دارید؟</h3>
+            <p className="text-sm text-zinc-300">
+              مهندسان فنی سپنتا برای محاسبه دقیق متراژ، انتخاب مقاطع و بازدید کارگاهی در خدمت شما هستند.
+            </p>
+          </div>
+          <Link
+            href="/about/#contact"
+            className="inline-flex items-center justify-center px-6 py-3.5 text-sm font-bold text-white bg-brass hover:bg-brass-hover rounded-[2px] transition-colors shrink-0"
+          >
+            <span>ارسال اطلاعات پروژه و تماس</span>
+            <span className="ms-2 font-bold">←</span>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+==================== FILE: src\app\globals.css ====================
+@import "tailwindcss";
+
+:root {
+  --bg-canvas: #FFFFFF;
+  --bg-subtle: #F4F4F5;
+  --bg-obsidian: #0B0E11;
+  --bg-obsidian-card: #14181F;
+  --bg-obsidian-border: rgba(255, 255, 255, 0.08);
+  --ink-primary: #09090B;
+  --ink-secondary: #52525B;
+  --ink-light: #FAFAFA;
+  --ink-light-muted: #A1A1AA;
+  --brass-accent: #C27803;
+  --brass-hover: #A16207;
+  --border-light: #E4E4E7;
+  --border-dark: rgba(255, 255, 255, 0.1);
+  --eco-teal: #0D9488;
+}
+
+@theme inline {
+  --font-sans: var(--font-estedad), system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --color-canvas: var(--bg-canvas);
+  --color-subtle: var(--bg-subtle);
+  --color-obsidian: var(--bg-obsidian);
+  --color-obsidian-card: var(--bg-obsidian-card);
+  --color-obsidian-border: var(--bg-obsidian-border);
+  --color-ink: var(--ink-primary);
+  --color-ink-muted: var(--ink-secondary);
+  --color-ink-light: var(--ink-light);
+  --color-ink-light-muted: var(--ink-light-muted);
+  --color-brass: var(--brass-accent);
+  --color-brass-hover: var(--brass-hover);
+  --color-border-light: var(--border-light);
+  --color-border-dark: var(--border-dark);
+  --color-eco-teal: var(--eco-teal);
+}
+
+/* Base resets & architectural geometry */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--bg-canvas);
+  color: var(--ink-primary);
+  font-family: var(--font-sans);
+  line-height: 1.8;
+  overflow-x: clip;
+  min-height: 100vh;
+}
+
+/* Persian tabular numbers */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Architectural selection highlight */
+::selection {
+  background-color: #C27803;
+  color: #FFFFFF;
+}
+
+/* Clean Media Print for Official Quote Invoices */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  header,
+  footer,
+  nav,
+  .mobile-bottom-bar,
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .print-avoid-break {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  th, td {
+    border: 1px solid #d4d4d8 !important;
+    padding: 8px 12px !important;
+    color: #000 !important;
+  }
+}
+
+
+==================== FILE: src\app\layout.tsx ====================
+import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
+import "./globals.css";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { MobileBottomBar } from "@/components/layout/MobileBottomBar";
+
+const estedad = localFont({
+  src: "./fonts/Estedad-FD.woff2",
+  weight: "100 900",
+  variable: "--font-estedad",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s | گروه صنعتی سپنتا",
+    default: "گروه صنعتی سپنتا | تولید در و پنجره دوجداره، آلومینیوم ترمال بریک و سیستم‌های ساختمانی",
+  },
+  description:
+    "تولیدکننده تخصصی انواع در و پنجره دوجداره uPVC، آلومینیوم ترمال بریک، شیشه بالکنی تاشو و درب ضد سرقت با ۲۴ سال سابقه از ۱۳۸۰، ظرفیت ماهانه ۱٬۰۰۰ واحد و پوشش در زنجان و سراسر ایران.",
+  keywords: [
+    "گروه صنعتی سپنتا",
+    "پنجره دوجداره زنجان",
+    "پنجره upvc",
+    "آلومینیوم ترمال بریک",
+    "شیشه بالکنی تاشو",
+    "جام بالکنی",
+    "درب ضد سرقت",
+    "تعویض پنجره بدون تخریب",
+  ],
+  authors: [{ name: "گروه صنعتی سپنتا" }],
+  creator: "گروه صنعتی سپنتا",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#0B0E11",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="fa"
+      dir="rtl"
+      className={`${estedad.variable} antialiased`}
+    >
+      <body className="min-h-screen flex flex-col bg-canvas text-ink font-sans">
+        <Header />
+        <main className="flex-1 pb-16 md:pb-0">{children}</main>
+        <Footer />
+        <MobileBottomBar />
+      </body>
+    </html>
+  );
+}
+
+
+==================== FILE: src\app\page.tsx ====================
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { COMPANY_DATA } from "@/data/company";
+import { PROJECTS } from "@/data/projects";
+import { assetPath } from "@/lib/assets";
+import { ProductShowcase } from "@/components/home/ProductShowcase";
+import { BeforeAfterSlider } from "@/components/home/BeforeAfterSlider";
+import { ComparisonMatrix } from "@/components/home/ComparisonMatrix";
+
+export default function HomePage() {
+  const featuredProjects = PROJECTS.slice(0, 4);
+
+  return (
+    <div className="flex flex-col w-full bg-white">
+      {/* 1. Full-Bleed 100svh Architectural Hero */}
+      <section className="relative w-full h-[100svh] min-h-[640px] flex items-center justify-start overflow-hidden bg-zinc-950">
+        {/* Full-bleed photography */}
+        <div className="absolute inset-0">
+          <Image
+            src={assetPath("/images/hero-architecture.jpg")}
+            alt="معماری معاصر و پنجره‌های عریض دوجداره و ترمال بریک سپنتا"
+            fill
+            sizes="100vw"
+            priority
+            className="object-cover"
+          />
+          {/* Directional scrim: darker on the right in RTL for pristine contrast */}
+          <div className="absolute inset-0 bg-gradient-to-l from-zinc-950/95 via-zinc-950/70 to-zinc-950/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-zinc-950/40" />
+        </div>
+
+        {/* Hero Content Box */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-16 sm:pt-20">
+          <div className="max-w-2xl text-start space-y-6">
+            {/* Tagline Pill-free */}
+            <div className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-brass uppercase">
+              <span>تولید مستقیم کارخانه</span>
+              <span className="opacity-40">•</span>
+              <span>تأسیس {COMPANY_DATA.stats.foundedYearFa}</span>
+            </div>
+
+            {/* Editorial Persian H1 */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.18]">
+              قابِ نور، سکوت و امنیت ساختمان
+            </h1>
+
+            {/* Clean Subtitle */}
+            <p className="text-zinc-300 text-base sm:text-lg leading-relaxed max-w-xl">
+              تولید تخصصی در و پنجره‌های دوجداره uPVC، آلومینیوم ترمال بریک و سیستم‌های ساختمانی سپنتا؛ تحویل مستقیم از کارخانه و نصب استاندارد در زنجان و سراسر ایران.
+            </p>
+
+            {/* Action CTAs */}
+            <div className="pt-2 flex flex-wrap items-center gap-4">
+              <Link
+                href="/configurator/"
+                className="inline-flex items-center justify-center px-6 py-3.5 text-sm font-semibold text-white bg-brass hover:bg-brass-hover rounded-[2px] transition-colors focus:ring-2 focus:ring-brass focus:ring-offset-2"
+              >
+                <span>محاسبه آنلاین قیمت</span>
+                <span className="ms-2 font-bold">←</span>
+              </Link>
+
+              <Link
+                href="/products/"
+                className="inline-flex items-center justify-center px-6 py-3.5 text-sm font-medium text-white border border-white/30 hover:bg-white/10 rounded-[2px] transition-colors"
+              >
+                <span>مشاهده محصولات</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Strip: Two Personas */}
+        <div className="absolute bottom-0 inset-x-0 z-10 border-t border-white/10 bg-zinc-950/60 backdrop-blur-md">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x sm:divide-x-reverse divide-white/10 text-xs py-3.5">
+              <a
+                href="#renovation"
+                className="flex items-center justify-between sm:justify-start gap-3 text-zinc-300 hover:text-white transition-colors py-1 sm:py-0 px-2"
+              >
+                <span className="text-brass font-bold">برای خریداران خانگی:</span>
+                <span>تعویض پنجره قدیمی بدون تخریب گچ و نما در ۱ روز</span>
+                <span className="text-brass">↓</span>
+              </a>
+
+              <Link
+                href="/about/#contact"
+                className="flex items-center justify-between sm:justify-start gap-3 text-zinc-300 hover:text-white transition-colors py-1 sm:py-0 px-2 sm:ps-6"
+              >
+                <span className="text-brass font-bold">برای انبوه‌سازان و معماران:</span>
+                <span>ظرفیت ماهانه ۱٬۰۰۰ واحد + استعلام نقشه ساختمانی</span>
+                <span className="text-brass">←</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. Interactive 7-Product Architectural Showcase */}
+      <ProductShowcase />
+
+      {/* 3. Obsidian Factory Authority Band (#0B0E11) */}
+      <section className="relative py-20 lg:py-28 bg-obsidian text-white overflow-hidden border-b border-white/10">
+        {/* Subtle background texture overlay */}
+        <div className="absolute inset-0 opacity-20 pointer-events-none mix-blend-luminosity">
+          <Image
+            src={assetPath("/images/factory-line.jpg")}
+            alt="خط تولید ماشین‌آلات CNC کارخانه سپنتا"
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="max-w-2xl space-y-2">
+            <span className="text-xs font-bold text-brass uppercase tracking-wider block">
+              شناسنامه صنعتی
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+              اعتبار صنعتی، ظرفیت مقیاس‌پذیر و خدمات بی‌وقفه
+            </h2>
+          </div>
+
+          {/* Giant Clean Typographic Numbers */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 pt-4 border-t border-white/10">
+            <div className="space-y-1">
+              <span className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight tabular-nums block">
+                ۱۳۸۰
+              </span>
+              <span className="text-sm font-bold text-brass block">سال تأسیس کارخانه</span>
+              <p className="text-xs text-zinc-400">بیش از دو دهه تولید و اجرای مستمر</p>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight tabular-nums block">
+                ۱٬۰۰۰+
+              </span>
+              <span className="text-sm font-bold text-brass block">ظرفیت ماهانه کارخانه</span>
+              <p className="text-xs text-zinc-400">تولید مکانیزه انواع بازشو با خطوط CNC</p>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight tabular-nums block">
+                ۱۰ تا ۲۵ سال
+              </span>
+              <span className="text-sm font-bold text-emerald-400 block">گارانتی و خدمات</span>
+              <p className="text-xs text-zinc-400">تضمین کتبی عایق، مقاومت و عدم تغییر رنگ</p>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight block">
+                سراسر ایران
+              </span>
+              <span className="text-sm font-bold text-brass block">گستره تأمین و نصب</span>
+              <p className="text-xs text-zinc-400">از زنجان تا کلیه استان‌ها با اکیپ مجرب</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Interactive Before/After Window Replacement Section */}
+      <div id="renovation">
+        <BeforeAfterSlider />
+      </div>
+
+      {/* 5. Clean Comparison Matrix (uPVC vs Thermal Break) */}
+      <ComparisonMatrix />
+
+      {/* 6. Embedded Gateway to Live Configurator Studio */}
+      <section className="py-20 bg-white border-b border-zinc-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-zinc-950 text-white p-8 sm:p-12 lg:p-16 relative overflow-hidden">
+            <div className="relative z-10 max-w-2xl space-y-6">
+              <span className="text-xs font-bold text-brass uppercase tracking-wider block">
+                استودیوی اختصاصی سپنتا
+              </span>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+                پیکربندی زنده ابعاد و برآورد هوشمند قیمت
+              </h2>
+              <p className="text-zinc-300 text-sm sm:text-base leading-relaxed">
+                عرض و ارتفاع دهانه پنجره خود را وارد کنید، نوع بازشو و کد رنگی را مشخص نمایید و برآورد مهندسی قیمت را به همراه پیش‌نمایش دو‌بعدی SVG و خروجی پیش‌فاکتور چاپی در لحظه دریافت کنید.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-4 pt-2">
+                <Link
+                  href="/configurator/"
+                  className="inline-flex items-center justify-center px-6 py-3.5 text-sm font-semibold text-white bg-brass hover:bg-brass-hover rounded-[2px] transition-colors"
+                >
+                  <span>ورود به استودیوی محاسبات</span>
+                  <span className="ms-2 font-bold">←</span>
+                </Link>
+
+                <span className="text-xs text-zinc-400">
+                  محاسبه آنی بر اساس متراژ و یراق‌آلات • صدور برگه استعلام
+                </span>
+              </div>
+            </div>
+
+            {/* Decorative Architectural Grid Graphic */}
+            <div className="hidden lg:block absolute end-10 top-1/2 -translate-y-1/2 w-80 h-80 border border-white/10 p-6 pointer-events-none">
+              <div className="w-full h-full border border-brass/40 flex items-center justify-center">
+                <div className="text-center space-y-1 font-mono text-xs text-zinc-400">
+                  <span className="text-brass block font-bold">STUDIO SVG</span>
+                  <span>40 - 600 cm</span>
+                  <span>LIVE ESTIMATE</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Nationwide Projects Gallery Showcase */}
+      <section className="py-20 lg:py-28 bg-white border-b border-zinc-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="max-w-2xl space-y-2">
+              <span className="text-xs font-bold text-brass uppercase tracking-wider block">
+                کارنامه اجرایی
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-950 tracking-tight">
+                پروژه‌های مهندسی در زنجان و سراسر کشور
+              </h2>
+              <p className="text-zinc-600 text-sm sm:text-base">
+                گزیده‌ای از پروژه‌های مسکونی مدرن، ویلاها، انبوه‌سازی و تعویض پنجره بدون تخریب.
+              </p>
+            </div>
+
+            <Link
+              href="/projects/"
+              className="text-xs sm:text-sm font-bold text-brass hover:underline inline-flex items-center gap-1 shrink-0"
+            >
+              <span>مشاهده تمامی پروژه‌ها ({PROJECTS.length} مورد)</span>
+              <span>←</span>
+            </Link>
+          </div>
+
+          {/* 2-Column Image-First Showcase */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {featuredProjects.map((project) => (
+              <article
+                key={project.id}
+                className="group border border-zinc-200 bg-white hover:border-zinc-400 transition-colors flex flex-col justify-between"
+              >
+                <div className="space-y-4 p-6 sm:p-7">
+                  <div className="flex items-center justify-between text-xs text-zinc-500">
+                    <span className="font-bold text-brass">{project.city}</span>
+                    <span className="tabular-nums">{project.yearFa}</span>
+                  </div>
+
+                  <div>
+                    <span className="text-xs font-medium text-zinc-500 block mb-1">
+                      {project.categoryLabel}
+                    </span>
+                    <h3 className="text-xl font-bold text-zinc-950 group-hover:text-brass transition-colors">
+                      {project.title}
+                    </h3>
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">
+                    {project.architecturalChallenge}
+                  </p>
+
+                  <div className="pt-2 text-xs text-zinc-700 bg-zinc-50 p-3 border border-zinc-200/80">
+                    <span className="font-bold block text-zinc-900">راهکار مهندسی سپنتا:</span>
+                    <span className="pt-0.5 block leading-relaxed">{project.technicalSolution}</span>
+                  </div>
+                </div>
+
+                <div className="px-6 pb-6 pt-2 border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-500">
+                  <span>سیستم: {project.systemUsed.split("+")[0]}</span>
+                  <span className="font-bold text-zinc-900">{project.estimatedUnitsFa}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 8. Obsidian Plan Upload & Direct Engineering Consultation Band */}
+      <section className="py-20 bg-obsidian text-white border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-8 space-y-4">
+              <span className="text-xs font-bold text-brass uppercase tracking-wider block">
+                مشاوره فنی رایگان
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                نقشه یا ابعاد دهانه‌های پروژه خود را برای ما ارسال کنید
+              </h2>
+              <p className="text-zinc-300 text-sm sm:text-base leading-relaxed max-w-2xl">
+                کارشناسان ارشد فنی سپنتا در سریع‌ترین زمان نقشه شما را بررسی کرده، پیشنهادات بهینه‌سازی مقاطع و شیشه‌ها را ارائه داده و پیش‌فاکتور دقیق صادر می‌نمایند.
+              </p>
+            </div>
+
+            <div className="lg:col-span-4 flex flex-col sm:flex-row lg:flex-col gap-3">
+              <a
+                href={`tel:${COMPANY_DATA.contact.mobileSales}`}
+                className="inline-flex items-center justify-center px-6 py-3.5 text-sm font-semibold text-white bg-brass hover:bg-brass-hover rounded-[2px] transition-colors"
+              >
+                <span>تماس مستقیم با واحد فنی ({COMPANY_DATA.contact.mobileSalesDisplay})</span>
+              </a>
+
+              <Link
+                href="/about/#contact"
+                className="inline-flex items-center justify-center px-6 py-3.5 text-sm font-medium text-white border border-white/20 hover:bg-white/10 rounded-[2px] transition-colors"
+              >
+                <span>ارسال نقشه و اطلاعات کارخانه</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+
+==================== FILE: src\components\configurator\WindowStudioSVG.tsx ====================
+import React from "react";
+import { toPersianDigits } from "@/lib/format";
+
+export type SystemType = "upvc" | "thermal-break" | "balcony-glass" | "pleated-mesh";
+export type OpeningType = "fixed" | "turn" | "tilt-turn" | "sliding" | "folding";
+export type FrameColor = "white" | "anthracite" | "champagne" | "wood";
+
+export interface WindowStudioProps {
+  widthCm: number;
+  heightCm: number;
+  panes: number; // 1 to 4
+  hasTransom: boolean;
+  transomHeightCm: number;
+  system: SystemType;
+  openingType: OpeningType;
+  frameColor: FrameColor;
+}
+
+const COLOR_MAP: Record<FrameColor, { fill: string; stroke: string; label: string }> = {
+  white: { fill: "#F8FAFC", stroke: "#CBD5E1", label: "سفید استاندارد" },
+  anthracite: { fill: "#1E242B", stroke: "#0F1216", label: "آنتراسیت مات" },
+  champagne: { fill: "#B8A58D", stroke: "#8E7B65", label: "شامپاینی متالیک" },
+  wood: { fill: "#6A3F1F", stroke: "#452610", label: "طرح چوب بلوطی" },
+};
+
+export function WindowStudioSVG({
+  widthCm,
+  heightCm,
+  panes,
+  hasTransom,
+  transomHeightCm,
+  system,
+  openingType,
+  frameColor,
+}: WindowStudioProps) {
+  // Normalize SVG canvas coordinates with padding for architectural dimension lines
+  const paddingX = 70;
+  const paddingY = 70;
+  const maxViewWidth = 800;
+  const maxViewHeight = 550;
+
+  const innerAreaWidth = maxViewWidth - paddingX * 2;
+  const innerAreaHeight = maxViewHeight - paddingY * 2;
+
+  // Aspect ratio calculation
+  const ratio = widthCm / heightCm;
+  let frameWidth = innerAreaWidth;
+  let frameHeight = frameWidth / ratio;
+
+  if (frameHeight > innerAreaHeight) {
+    frameHeight = innerAreaHeight;
+    frameWidth = frameHeight * ratio;
+  }
+
+  const frameX = paddingX + (innerAreaWidth - frameWidth) / 2;
+  const frameY = paddingY + (innerAreaHeight - frameHeight) / 2;
+
+  const colorData = COLOR_MAP[frameColor] || COLOR_MAP.white;
+  const isDarkFrame = frameColor === "anthracite" || frameColor === "wood";
+
+  // Transom calculation
+  const transomRatio = hasTransom ? Math.min(0.4, Math.max(0.15, transomHeightCm / heightCm)) : 0;
+  const transomHeight = frameHeight * transomRatio;
+  const mainHeight = frameHeight - transomHeight;
+  const mainY = frameY + transomHeight;
+
+  // Pane width
+  const paneWidth = frameWidth / panes;
+  const outerBorderWidth = system === "thermal-break" ? 14 : system === "balcony-glass" ? 10 : 16;
+  const sashBorderWidth = 10;
+
+  return (
+    <div className="w-full flex flex-col items-center justify-center select-none">
+      <svg
+        viewBox={`0 0 ${maxViewWidth} ${maxViewHeight}`}
+        className="w-full h-auto max-h-[480px] drop-shadow-xl"
+        aria-label="پیش‌نمایش معماری دو بعدی دهانه پنجره"
+      >
+        <defs>
+          {/* Subtle realistic glass sheen gradient */}
+          <linearGradient id="glassGradient" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#e0f2fe" stopOpacity="0.45" />
+            <stop offset="40%" stopColor="#bae6fd" stopOpacity="0.18" />
+            <stop offset="42%" stopColor="#ffffff" stopOpacity="0.55" />
+            <stop offset="48%" stopColor="#bae6fd" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="#7dd3fc" stopOpacity="0.35" />
+          </linearGradient>
+
+          {/* Pleated mesh texture pattern */}
+          <pattern id="meshGrid" width="6" height="6" patternUnits="userSpaceOnUse">
+            <path d="M 0 3 L 3 0 L 6 3 L 3 6 Z" fill="none" stroke="#475569" strokeWidth="0.75" />
+          </pattern>
+        </defs>
+
+        {/* Outer Frame Wall Niche Background */}
+        <rect
+          x={frameX - 6}
+          y={frameY - 6}
+          width={frameWidth + 12}
+          height={frameHeight + 12}
+          fill="#0B0E11"
+          opacity="0.08"
+        />
+
+        {/* Main Outer Profile Frame */}
+        <rect
+          x={frameX}
+          y={frameY}
+          width={frameWidth}
+          height={frameHeight}
+          fill={colorData.fill}
+          stroke={colorData.stroke}
+          strokeWidth="2"
+        />
+
+        {/* Transom (کتیبه بالا) if enabled */}
+        {hasTransom && (
+          <g id="transom-section">
+            <rect
+              x={frameX + outerBorderWidth}
+              y={frameY + outerBorderWidth}
+              width={frameWidth - outerBorderWidth * 2}
+              height={transomHeight - outerBorderWidth}
+              fill="url(#glassGradient)"
+              stroke={colorData.stroke}
+              strokeWidth="1.5"
+            />
+            {/* Horizontal transom divider bar */}
+            <rect
+              x={frameX}
+              y={frameY + transomHeight - 4}
+              width={frameWidth}
+              height={outerBorderWidth}
+              fill={colorData.fill}
+              stroke={colorData.stroke}
+              strokeWidth="1.5"
+            />
+            {/* Glass diagonal glare line */}
+            <line
+              x1={frameX + outerBorderWidth + 10}
+              y1={frameY + outerBorderWidth + 5}
+              x2={frameX + frameWidth - outerBorderWidth - 10}
+              y2={frameY + transomHeight - 10}
+              stroke="#ffffff"
+              strokeWidth="2"
+              strokeOpacity="0.6"
+            />
+          </g>
+        )}
+
+        {/* Sashes & Glass Panes */}
+        {Array.from({ length: panes }).map((_, i) => {
+          const pX = frameX + i * paneWidth;
+          const pY = mainY;
+          const pW = paneWidth;
+          const pH = mainHeight;
+
+          // In standard multi-sash windows, alternate fixed and operable
+          const isOperable =
+            system === "balcony-glass" ||
+            system === "pleated-mesh" ||
+            (panes === 1 ? openingType !== "fixed" : i % 2 === 1 ? openingType !== "fixed" : false);
+
+          const innerGlassX = pX + outerBorderWidth;
+          const innerGlassY = pY + (hasTransom ? outerBorderWidth : outerBorderWidth);
+          const innerGlassW = pW - outerBorderWidth * 2;
+          const innerGlassH = pH - outerBorderWidth * 2;
+
+          return (
+            <g key={i} id={`pane-${i}`}>
+              {/* Vertical Mullion Divider between panes */}
+              {i > 0 && (
+                <rect
+                  x={pX - outerBorderWidth / 2}
+                  y={mainY}
+                  width={outerBorderWidth}
+                  height={pH}
+                  fill={colorData.fill}
+                  stroke={colorData.stroke}
+                  strokeWidth="1.5"
+                />
+              )}
+
+              {/* Sash Profile if operable */}
+              {isOperable && system !== "balcony-glass" && system !== "pleated-mesh" && (
+                <rect
+                  x={innerGlassX}
+                  y={innerGlassY}
+                  width={innerGlassW}
+                  height={innerGlassH}
+                  fill={colorData.fill}
+                  stroke={colorData.stroke}
+                  strokeWidth="1"
+                />
+              )}
+
+              {/* Glass Area or Mesh */}
+              <rect
+                x={innerGlassX + (isOperable ? sashBorderWidth : 0)}
+                y={innerGlassY + (isOperable ? sashBorderWidth : 0)}
+                width={innerGlassW - (isOperable ? sashBorderWidth * 2 : 0)}
+                height={innerGlassH - (isOperable ? sashBorderWidth * 2 : 0)}
+                fill={system === "pleated-mesh" ? "url(#meshGrid)" : "url(#glassGradient)"}
+                stroke="#94A3B8"
+                strokeWidth="0.75"
+              />
+
+              {/* Diagonal Glass Sheen Reflection */}
+              {system !== "pleated-mesh" && (
+                <line
+                  x1={innerGlassX + 15}
+                  y1={innerGlassY + 15}
+                  x2={innerGlassX + innerGlassW - 15}
+                  y2={innerGlassY + innerGlassH - 15}
+                  stroke="#ffffff"
+                  strokeWidth="2.5"
+                  strokeOpacity="0.5"
+                />
+              )}
+
+              {/* Architectural Opening Direction Symbols */}
+              {isOperable && (
+                <g id={`opening-symbol-${i}`}>
+                  {/* Single Turn (Side Hung): Triangle pointing to handle side */}
+                  {openingType === "turn" && (
+                    <path
+                      d={`M ${innerGlassX + 10} ${innerGlassY + 10} L ${innerGlassX + innerGlassW - 10} ${innerGlassY + innerGlassH / 2} L ${innerGlassX + 10} ${innerGlassY + innerGlassH - 10}`}
+                      fill="none"
+                      stroke="#C27803"
+                      strokeWidth="2"
+                      strokeDasharray="4 3"
+                    />
+                  )}
+
+                  {/* Tilt & Turn (Dual action): Solid bottom tilt triangle + side dashed triangle */}
+                  {openingType === "tilt-turn" && (
+                    <>
+                      <path
+                        d={`M ${innerGlassX + 10} ${innerGlassY + 10} L ${innerGlassX + innerGlassW - 10} ${innerGlassY + innerGlassH / 2} L ${innerGlassX + 10} ${innerGlassY + innerGlassH - 10}`}
+                        fill="none"
+                        stroke="#C27803"
+                        strokeWidth="1.75"
+                        strokeDasharray="4 3"
+                      />
+                      <path
+                        d={`M ${innerGlassX + 10} ${innerGlassY + innerGlassH - 10} L ${innerGlassX + innerGlassW / 2} ${innerGlassY + 10} L ${innerGlassX + innerGlassW - 10} ${innerGlassY + innerGlassH - 10}`}
+                        fill="none"
+                        stroke="#0D9488"
+                        strokeWidth="1.75"
+                        strokeDasharray="3 3"
+                      />
+                    </>
+                  )}
+
+                  {/* Sliding (Horizontal arrow) */}
+                  {openingType === "sliding" && (
+                    <g transform={`translate(${innerGlassX + innerGlassW / 2 - 20}, ${innerGlassY + innerGlassH / 2 - 8})`}>
+                      <rect width="40" height="16" fill="#0B0E11" rx="2" opacity="0.8" />
+                      <path d="M 6 8 L 34 8 M 12 4 L 6 8 L 12 12 M 28 4 L 34 8 L 28 12" stroke="#FFFFFF" strokeWidth="1.5" fill="none" />
+                    </g>
+                  )}
+
+                  {/* Folding (Accordion zig-zag) */}
+                  {openingType === "folding" && (
+                    <g transform={`translate(${innerGlassX + innerGlassW / 2 - 25}, ${innerGlassY + innerGlassH / 2 - 10})`}>
+                      <rect width="50" height="20" fill="#0B0E11" rx="2" opacity="0.8" />
+                      <path d="M 8 16 L 16 4 L 24 16 L 32 4 L 40 16" stroke="#C27803" strokeWidth="2" fill="none" />
+                    </g>
+                  )}
+
+                  {/* High-End Architectural Hardware Handle */}
+                  {openingType !== "sliding" && openingType !== "folding" && system !== "balcony-glass" && (
+                    <g
+                      transform={`translate(${
+                        innerGlassX + innerGlassW - sashBorderWidth + 2
+                      }, ${innerGlassY + innerGlassH / 2 - 16})`}
+                    >
+                      <rect
+                        width="5"
+                        height="32"
+                        fill={isDarkFrame ? "#CBD5E1" : "#1E293B"}
+                        rx="1"
+                      />
+                      <rect
+                        x="-7"
+                        y="8"
+                        width="10"
+                        height="4"
+                        fill={isDarkFrame ? "#CBD5E1" : "#1E293B"}
+                        rx="1"
+                      />
+                    </g>
+                  )}
+                </g>
+              )}
+
+              {/* Balcony folding wheels indication at top/bottom */}
+              {system === "balcony-glass" && (
+                <>
+                  <circle cx={pX + pW / 2} cy={frameY + 5} r="3" fill="#64748B" />
+                  <circle cx={pX + pW / 2} cy={frameY + frameHeight - 5} r="3" fill="#64748B" />
+                </>
+              )}
+            </g>
+          );
+        })}
+
+        {/* Architectural Dimension Lines: Width (Bottom) */}
+        <g id="dimension-width" className="text-zinc-700">
+          <line
+            x1={frameX}
+            y1={frameY + frameHeight + 25}
+            x2={frameX + frameWidth}
+            y2={frameY + frameHeight + 25}
+            stroke="#52525B"
+            strokeWidth="1.25"
+          />
+          {/* Dimension ticks */}
+          <line
+            x1={frameX}
+            y1={frameY + frameHeight + 18}
+            x2={frameX}
+            y2={frameY + frameHeight + 32}
+            stroke="#52525B"
+            strokeWidth="1.5"
+          />
+          <line
+            x1={frameX + frameWidth}
+            y1={frameY + frameHeight + 18}
+            x2={frameX + frameWidth}
+            y2={frameY + frameHeight + 32}
+            stroke="#52525B"
+            strokeWidth="1.5"
+          />
+          {/* Width Label */}
+          <rect
+            x={frameX + frameWidth / 2 - 40}
+            y={frameY + frameHeight + 16}
+            width="80"
+            height="18"
+            fill="#FFFFFF"
+          />
+          <text
+            x={frameX + frameWidth / 2}
+            y={frameY + frameHeight + 30}
+            fill="#09090B"
+            fontSize="12"
+            fontWeight="bold"
+            textAnchor="middle"
+            fontFamily="var(--font-estedad), sans-serif"
+          >
+            {toPersianDigits(widthCm)} سانتی‌متر
+          </text>
+        </g>
+
+        {/* Architectural Dimension Lines: Height (Left) */}
+        <g id="dimension-height" className="text-zinc-700">
+          <line
+            x1={frameX - 25}
+            y1={frameY}
+            x2={frameX - 25}
+            y2={frameY + frameHeight}
+            stroke="#52525B"
+            strokeWidth="1.25"
+          />
+          {/* Dimension ticks */}
+          <line
+            x1={frameX - 32}
+            y1={frameY}
+            x2={frameX - 18}
+            y2={frameY}
+            stroke="#52525B"
+            strokeWidth="1.5"
+          />
+          <line
+            x1={frameX - 32}
+            y1={frameY + frameHeight}
+            x2={frameX - 18}
+            y2={frameY + frameHeight}
+            stroke="#52525B"
+            strokeWidth="1.5"
+          />
+          {/* Height Label */}
+          <rect
+            x={frameX - 58}
+            y={frameY + frameHeight / 2 - 10}
+            width="68"
+            height="20"
+            fill="#FFFFFF"
+          />
+          <text
+            x={frameX - 24}
+            y={frameY + frameHeight / 2 + 4}
+            fill="#09090B"
+            fontSize="12"
+            fontWeight="bold"
+            textAnchor="middle"
+            fontFamily="var(--font-estedad), sans-serif"
+          >
+            {toPersianDigits(heightCm)} cm
+          </text>
+        </g>
+      </svg>
+
+      {/* Frame Finish & Specs Pill */}
+      <div className="mt-4 flex items-center gap-4 text-xs text-zinc-600 bg-zinc-100 px-4 py-2 border border-zinc-200">
+        <span>رنگ فریم: <strong className="text-zinc-900">{colorData.label}</strong></span>
+        <span>•</span>
+        <span>تعداد لنگه: <strong className="text-zinc-900 tabular-nums">{toPersianDigits(panes)}</strong></span>
+        {hasTransom && (
+          <>
+            <span>•</span>
+            <span>کتیبه: <strong className="text-zinc-900 tabular-nums">{toPersianDigits(transomHeightCm)} cm</strong></span>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+==================== FILE: src\components\home\BeforeAfterSlider.tsx ====================
+"use client";
+
+import React, { useState, useRef, useCallback } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { assetPath } from "@/lib/assets";
+
+export function BeforeAfterSlider() {
+  const [sliderPos, setSliderPos] = useState<number>(50); // percentage 0 - 100
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef<boolean>(false);
+
+  const handleMove = useCallback((clientX: number) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    setSliderPos(percentage);
+  }, []);
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (e.touches[0]) {
+      handleMove(e.touches[0].clientX);
+    }
+  };
+
+  const onMouseMove = (e: React.MouseEvent) => {
+    if (isDragging.current) {
+      handleMove(e.clientX);
+    }
+  };
+
+  return (
+    <section className="py-20 lg:py-28 bg-white border-b border-zinc-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          {/* Text & Value Proposition (5 cols) */}
+          <div className="lg:col-span-5 space-y-6">
+            <span className="text-xs font-bold text-brass uppercase tracking-wider block">
+              طرح ویژه بازسازی
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-950 tracking-tight leading-tight">
+              تعویض پنجره قدیمی بدون تخریب؛ در کمتر از یک روز
+            </h2>
+            <p className="text-zinc-600 text-base leading-relaxed">
+              دیگر نیازی به کارهای بنایی، گردوخاک و آسیب به گچ‌بری و رنگ داخلی خانه نیست. با پروفیل‌های لبه‌دار بازسازی سپنتا، پنجره‌های قدیمی آهنی یا آلومینیومی در چند ساعت با مدرن‌ترین سیستم‌های دوجداره جایگزین می‌شوند.
+            </p>
+
+            {/* 4 Architectural Key Benefits */}
+            <div className="space-y-4 pt-2">
+              <div className="flex items-start gap-3">
+                <span className="w-5 h-5 bg-zinc-950 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                  ✓
+                </span>
+                <div>
+                  <h4 className="text-sm font-bold text-zinc-950">حفظ ۱۰۰٪ گچ و نمای بیرونی</h4>
+                  <p className="text-xs text-zinc-500 pt-0.5">
+                    برش تمیز پنجره قدیمی از روی قاب و نصب فریم بازسازی عایق روی اسکلت قبلی.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <span className="w-5 h-5 bg-zinc-950 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                  ✓
+                </span>
+                <div>
+                  <h4 className="text-sm font-bold text-zinc-950">کاهش تا ۷۰٪ آلودگی صوتی</h4>
+                  <p className="text-xs text-zinc-500 pt-0.5">
+                    شیشه‌های صنعتی دوجداره تزریق آرگون با افت صوتی تا ۴۰ دسی‌بل در برابر صدای خیابان.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <span className="w-5 h-5 bg-zinc-950 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                  ✓
+                </span>
+                <div>
+                  <h4 className="text-sm font-bold text-zinc-950">حذف سوز سرما و ریزگردها</h4>
+                  <p className="text-xs text-zinc-500 pt-0.5">
+                    لاستیک‌های آب‌بندی سه‌لایه EPDM مقاوم در برابر تغییرات اقلیمی زمستان‌های سرد زنجان و کشور.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <span className="w-5 h-5 bg-zinc-950 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                  ✓
+                </span>
+                <div>
+                  <h4 className="text-sm font-bold text-zinc-950">گارانتی ۱۵ ساله تعویض و خدمات</h4>
+                  <p className="text-xs text-zinc-500 pt-0.5">
+                    تضمین عدم زردشدگی، دفرمگی و افت لولا به همراه سرویس‌های دوره‌ای رگلاژ.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-4">
+              <Link
+                href="/about/#contact"
+                className="inline-flex items-center justify-center px-5 py-3 text-sm font-medium text-white bg-zinc-950 hover:bg-zinc-800 rounded-[2px] transition-colors"
+              >
+                <span>درخواست کارشناسی و بازدید در محل</span>
+                <span className="ms-2 font-bold">←</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Interactive Comparison Slider (7 cols) using CSS clip-path */}
+          <div className="lg:col-span-7">
+            <div className="space-y-3">
+              <div
+                ref={containerRef}
+                onMouseDown={() => {
+                  isDragging.current = true;
+                }}
+                onMouseUp={() => {
+                  isDragging.current = false;
+                }}
+                onMouseLeave={() => {
+                  isDragging.current = false;
+                }}
+                onMouseMove={onMouseMove}
+                onTouchMove={onTouchMove}
+                className="relative aspect-[4/3] w-full overflow-hidden select-none cursor-ew-resize bg-zinc-900 border border-zinc-300 shadow-xl"
+              >
+                {/* Background Image: AFTER (New Sepanta Window) */}
+                <Image
+                  src={assetPath("/images/after-window.jpg")}
+                  alt="بعد: پنجره دوجداره سپنتا"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 58vw"
+                  className="object-cover"
+                  priority
+                />
+                <span className="absolute bottom-4 end-4 bg-emerald-800/90 text-white text-xs font-semibold px-3 py-1.5 backdrop-blur-sm z-10 pointer-events-none">
+                  بعد: پنجره دوجداره سپنتا
+                </span>
+
+                {/* Foreground Image: BEFORE with CSS clip-path */}
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    clipPath: `polygon(0 0, ${sliderPos}% 0, ${sliderPos}% 100%, 0 100%)`,
+                  }}
+                >
+                  <Image
+                    src={assetPath("/images/before-window.jpg")}
+                    alt="قبل: پنجره قدیمی آهنی"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 58vw"
+                    className="object-cover"
+                    priority
+                  />
+                  <span className="absolute bottom-4 start-4 bg-zinc-950/90 text-white text-xs font-semibold px-3 py-1.5 backdrop-blur-sm z-10 pointer-events-none">
+                    قبل: پنجره فرسوده قدیمی
+                  </span>
+                </div>
+
+                {/* Draggable Divider Handle */}
+                <div
+                  className="absolute top-0 bottom-0 w-0.5 bg-white shadow-2xl pointer-events-none z-20"
+                  style={{ left: `${sliderPos}%` }}
+                >
+                  <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 bg-brass text-white rounded-full flex items-center justify-center shadow-lg border-2 border-white pointer-events-auto cursor-ew-resize">
+                    <svg
+                      className="w-4 h-4 stroke-current fill-none stroke-[2.5]"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M8 7l-5 5 5 5M16 7l5 5-5 5" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* Slider Range helper for accessibility */}
+              <div className="flex items-center justify-between text-xs text-zinc-500 pt-1">
+                <span>اسلایدر را برای مقایسه جابه‌جا کنید</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={sliderPos}
+                  onChange={(e) => setSliderPos(Number(e.target.value))}
+                  className="w-40 accent-brass"
+                  aria-label="تغییر وضعیت اسلایدر قبل و بعد"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+==================== FILE: src\components\home\ComparisonMatrix.tsx ====================
+"use client";
+
+import React, { useState } from "react";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+
+interface ComparisonRow {
+  feature: string;
+  upvc: string;
+  thermal: string;
+  isDifferent: boolean;
+}
+
+const COMPARISON_DATA: ComparisonRow[] = [
+  {
+    feature: "عایق‌بندی صوتی (کاهش سر و صدا)",
+    upvc: "بسیار بالا (تا ۴۰ دسی‌بل) به دلیل ذات غیرفلزی uPVC",
+    thermal: "بسیار بالا (تا ۴۴ دسی‌بل) با شیشه لمینت آکوستیک",
+    isDifferent: false,
+  },
+  {
+    feature: "استحکام در دهانه‌های غول‌پیکر (ارتفاع > ۳ متر)",
+    upvc: "محدود به ابعاد استاندارد؛ نیاز به کتیبه در ارتفاع بالا",
+    thermal: "فوق‌العاده بالا؛ امکان لنگه‌های لیفت‌اند‌اسلاید ۴۰۰ کیلویی",
+    isDifferent: true,
+  },
+  {
+    feature: "عایق حرارتی و قطع پل سرما",
+    upvc: "ذاتاً نارسانا با پروفیل‌های ۵ کاناله داخلی",
+    thermal: "دوخت مکانیکی تیغه‌های پلی‌آمید عایق ۲۵٪ الیاف شیشه",
+    isDifferent: false,
+  },
+  {
+    feature: "ظرافت بصری فریم (دید بیشتر شیشه)",
+    upvc: "ضخامت دید متوسط (۷۰ میلی‌متر استاندارد)",
+    thermal: "فوق‌العاده ظریف و مینیمال (سیستم‌های لنگه مخفی)",
+    isDifferent: true,
+  },
+  {
+    feature: "تنوع فینیش و رنگ",
+    upvc: "سفید براق، آنتراسیت مات و لمینت‌های طرح چوب",
+    thermal: "آنودایزینگ متالیک، سمباده‌ای، شامپاینی و پودری نامحدود",
+    isDifferent: true,
+  },
+  {
+    feature: "طول عمر و مقاومت در اقلیم سخت",
+    upvc: "بیش از ۳۰ سال، بدون زنگ‌زدگی و پوسیدگی",
+    thermal: "بیش از ۵۰ سال، بدون تغییر شکل در آفتاب شدید",
+    isDifferent: true,
+  },
+  {
+    feature: "رده بودجه و هزینه تمام‌شده",
+    upvc: "کاملاً اقتصادی با بالاترین نسبت ارزش به قیمت",
+    thermal: "سرمایه‌گذاری لوکس و مهندسی برای پروژه‌های شاخص",
+    isDifferent: true,
+  },
+  {
+    feature: "کاربرد ایده‌آل",
+    upvc: "تعویض پنجره مسکونی، بازسازی و انبوه‌سازی",
+    thermal: "نماهای مدرن، ویلاها و برج‌های بلندمرتبه",
+    isDifferent: true,
+  },
+];
+
+export function ComparisonMatrix() {
+  const [onlyDifferences, setOnlyDifferences] = useState(false);
+
+  const rows = onlyDifferences
+    ? COMPARISON_DATA.filter((r) => r.isDifferent)
+    : COMPARISON_DATA;
+
+  return (
+    <section className="py-20 lg:py-28 bg-zinc-50 border-b border-zinc-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header with difference toggle */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div className="max-w-2xl space-y-2">
+            <span className="text-xs font-bold text-brass uppercase tracking-wider block">
+              راهنمای انتخاب سیستم
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-950 tracking-tight">
+              مقایسه مهندسی: uPVC یا آلومینیوم ترمال بریک؟
+            </h2>
+            <p className="text-zinc-600 text-sm sm:text-base leading-relaxed pt-1">
+              تحلیل شفاف تفاوت‌های فنی، صلبیت سازه‌ای و هزینه سرمایه‌گذاری برای تصمیم‌گیری آگاهانه کارفرمایان و معماران.
+            </p>
+          </div>
+
+          {/* Clean Toggle */}
+          <div className="shrink-0">
+            <button
+              type="button"
+              onClick={() => setOnlyDifferences(!onlyDifferences)}
+              className={cn(
+                "inline-flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-semibold border rounded-[2px] transition-colors focus:outline-none",
+                onlyDifferences
+                  ? "bg-zinc-950 text-white border-zinc-950"
+                  : "bg-white text-zinc-700 border-zinc-300 hover:bg-zinc-100"
+              )}
+            >
+              <span>{onlyDifferences ? "نمایش همه موارد" : "نمایش فقط تفاوت‌ها"}</span>
+              <span
+                className={cn(
+                  "w-2 h-2 rounded-full",
+                  onlyDifferences ? "bg-brass" : "bg-zinc-400"
+                )}
+              />
+            </button>
+          </div>
+        </div>
+
+        {/* Airy Architectural Table */}
+        <div className="overflow-x-auto bg-white border border-zinc-200 shadow-xs">
+          <table className="w-full text-start border-collapse">
+            <thead>
+              <tr className="border-b border-zinc-200 bg-zinc-100/70 text-xs sm:text-sm font-bold text-zinc-900">
+                <th className="py-4 px-5 sm:px-6 text-start w-1/3">معیار مقایسه</th>
+                <th className="py-4 px-5 sm:px-6 text-start w-1/3 border-s border-zinc-200">
+                  <div className="flex items-center justify-between">
+                    <span>پنجره دوجداره uPVC سپنتا</span>
+                    <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5">
+                      اقتصادی
+                    </span>
+                  </div>
+                </th>
+                <th className="py-4 px-5 sm:px-6 text-start w-1/3 border-s border-zinc-200">
+                  <div className="flex items-center justify-between">
+                    <span>آلومینیوم ترمال بریک سپنتا</span>
+                    <span className="text-[11px] font-medium text-brass bg-amber-50 px-2 py-0.5">
+                      لوکس
+                    </span>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-200 text-xs sm:text-sm text-zinc-700">
+              {rows.map((row, idx) => (
+                <tr
+                  key={idx}
+                  className="hover:bg-zinc-50/70 transition-colors"
+                >
+                  <td className="py-4 px-5 sm:px-6 font-bold text-zinc-950 align-top">
+                    {row.feature}
+                  </td>
+                  <td className="py-4 px-5 sm:px-6 border-s border-zinc-200 align-top leading-relaxed">
+                    {row.upvc}
+                  </td>
+                  <td className="py-4 px-5 sm:px-6 border-s border-zinc-200 align-top leading-relaxed text-zinc-900">
+                    {row.thermal}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Bottom CTA bar */}
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 p-5 bg-white border border-zinc-200">
+          <p className="text-xs sm:text-sm text-zinc-600">
+            هنوز برای انتخاب بین uPVC و ترمال بریک مردد هستید؟ کارشناسان سپنتا بر اساس نقشه و جهت تابش بنا شما را راهنمایی می‌کنند.
+          </p>
+          <div className="flex items-center gap-3 shrink-0">
+            <Link
+              href="/configurator/"
+              className="px-4 py-2 text-xs font-semibold text-white bg-brass hover:bg-brass-hover rounded-[2px] transition-colors"
+            >
+              مقایسه آنلاین قیمت در استودیو
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+==================== FILE: src\components\home\ProductShowcase.tsx ====================
+"use client";
+
+import React, { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { PRODUCTS, type ProductItem } from "@/data/products";
+import { assetPath } from "@/lib/assets";
+import { cn } from "@/lib/utils";
+
+// Map each product to its dedicated image
+const PRODUCT_IMAGE_MAP: Record<string, string> = {
+  "upvc-window": "/images/product-upvc.jpg",
+  "thermal-break-window": "/images/product-thermal.jpg",
+  "balcony-glass": "/images/product-balcony.jpg",
+  "pleated-mesh": "/images/product-screen.jpg",
+  "security-door": "/images/product-security-door.jpg",
+  "interior-wooden-door": "/images/product-wood-door.jpg",
+  "steel-frame": "/images/product-metal-frame.jpg",
+};
+
+export function ProductShowcase() {
+  const [activeId, setActiveId] = useState<string>(PRODUCTS[0].id);
+  const activeProduct: ProductItem =
+    PRODUCTS.find((p) => p.id === activeId) || PRODUCTS[0];
+
+  const imageSrc = PRODUCT_IMAGE_MAP[activeProduct.id] || "/images/product-upvc.jpg";
+
+  return (
+    <section className="py-20 lg:py-28 bg-white border-b border-zinc-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <div className="max-w-3xl mb-12 lg:mb-16">
+          <span className="text-xs font-bold text-brass uppercase tracking-wider block mb-2">
+            سبد تولید کارخانه
+          </span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-zinc-950 tracking-tight leading-tight">
+            ۷ خط تولید مهندسی برای معماری معاصر
+          </h2>
+          <p className="text-zinc-600 text-base sm:text-lg pt-3 leading-relaxed">
+            از پنجره‌های دوجداره و آلومینیوم ترمال بریک تا شیشه‌های مدولار بالکنی و درب‌های ضد سرقت؛ تولیدشده بر پایه دقیق‌ترین استانداردهای بین‌المللی.
+          </p>
+        </div>
+
+        {/* Asymmetric Interactive Showcase Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          {/* Left / Selector Column (5 cols) */}
+          <div className="lg:col-span-5 flex flex-col divide-y divide-zinc-200 border-y border-zinc-200">
+            {PRODUCTS.map((prod) => {
+              const isActive = prod.id === activeId;
+              return (
+                <button
+                  key={prod.id}
+                  type="button"
+                  onClick={() => setActiveId(prod.id)}
+                  onMouseEnter={() => setActiveId(prod.id)}
+                  className={cn(
+                    "text-start py-4 sm:py-5 px-3 sm:px-4 transition-all duration-200 flex items-center justify-between group focus:outline-none",
+                    isActive
+                      ? "bg-zinc-50 border-s-4 border-s-brass ps-4"
+                      : "hover:bg-zinc-50/60"
+                  )}
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={cn(
+                          "text-base sm:text-lg font-bold transition-colors",
+                          isActive ? "text-zinc-950" : "text-zinc-700 group-hover:text-zinc-950"
+                        )}
+                      >
+                        {prod.persianTitle}
+                      </span>
+                      {prod.configuratorAvailable && (
+                        <span className="text-[11px] font-medium text-brass bg-amber-50 px-2 py-0.5 rounded-[2px]">
+                          پیکربندی زنده
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-zinc-500 line-clamp-1">
+                      {prod.tag}
+                    </p>
+                  </div>
+
+                  <span
+                    className={cn(
+                      "text-xs font-bold transition-transform duration-200",
+                      isActive ? "text-brass translate-x-[-4px]" : "text-zinc-400 group-hover:text-zinc-700"
+                    )}
+                  >
+                    ←
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Right / Visual Presentation Column (7 cols) */}
+          <div className="lg:col-span-7 sticky top-28 space-y-6">
+            {/* Main Photo 16:10 Container */}
+            <div className="relative aspect-[16/10] w-full overflow-hidden bg-zinc-900 border border-zinc-200 shadow-md">
+              <Image
+                key={activeProduct.id}
+                src={assetPath(imageSrc)}
+                alt={activeProduct.persianTitle}
+                fill
+                sizes="(max-width: 1024px) 100vw, 58vw"
+                priority
+                className="object-cover transition-opacity duration-300"
+              />
+
+              {/* Top pill-free spec overlay */}
+              <div className="absolute top-4 start-4 flex items-center gap-2">
+                <span className="bg-zinc-950/85 backdrop-blur-md text-white text-xs font-medium px-3 py-1.5 border border-white/10">
+                  {activeProduct.clusterName}
+                </span>
+                <span className="bg-brass/90 text-white text-xs font-semibold px-2.5 py-1.5">
+                  رده {activeProduct.budgetTier}
+                </span>
+              </div>
+            </div>
+
+            {/* Active Product Details & Specs */}
+            <div className="bg-zinc-50 p-6 sm:p-7 border border-zinc-200 space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-zinc-200/80 pb-4">
+                <div>
+                  <h3 className="text-2xl font-bold text-zinc-950">
+                    {activeProduct.persianTitle}
+                  </h3>
+                  <p className="text-xs text-zinc-500 font-mono pt-0.5">
+                    {activeProduct.name}
+                  </p>
+                </div>
+
+                <div className="text-xs text-zinc-600 font-medium">
+                  ضمانت کتبی:{" "}
+                  <span className="font-bold text-emerald-700 tabular-nums">
+                    {activeProduct.warrantyYears} سال
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-sm text-zinc-700 leading-relaxed">
+                {activeProduct.shortDescription}
+              </p>
+
+              {/* Technical Spec Row */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+                {activeProduct.acousticRating && (
+                  <div className="bg-white p-3 border border-zinc-200">
+                    <span className="text-zinc-500 block text-[11px]">عایق صوتی:</span>
+                    <span className="font-bold text-zinc-900 text-sm">
+                      {activeProduct.acousticRating}
+                    </span>
+                  </div>
+                )}
+                {activeProduct.thermalRating && (
+                  <div className="bg-white p-3 border border-zinc-200">
+                    <span className="text-zinc-500 block text-[11px]">ضریب حرارتی:</span>
+                    <span className="font-bold text-zinc-900 text-sm">
+                      {activeProduct.thermalRating}
+                    </span>
+                  </div>
+                )}
+                <div className="bg-white p-3 border border-zinc-200">
+                  <span className="text-zinc-500 block text-[11px]">کاربرد اصلی:</span>
+                  <span className="font-bold text-zinc-900 line-clamp-1">
+                    {activeProduct.idealUseCases[0]}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-2 flex flex-wrap items-center gap-3">
+                {activeProduct.configuratorAvailable ? (
+                  <Link
+                    href={`/configurator/?product=${activeProduct.id}`}
+                    className="inline-flex items-center justify-center px-5 py-2.5 text-xs sm:text-sm font-medium text-white bg-brass hover:bg-brass-hover rounded-[2px] transition-colors"
+                  >
+                    <span>پیکربندی و برآورد آنلاین این سیستم</span>
+                    <span className="ms-1.5 font-bold">←</span>
+                  </Link>
+                ) : (
+                  <Link
+                    href="/about/#contact"
+                    className="inline-flex items-center justify-center px-5 py-2.5 text-xs sm:text-sm font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-[2px] transition-colors"
+                  >
+                    <span>استعلام و مشاوره فنی ابعاد</span>
+                    <span className="ms-1.5 font-bold">←</span>
+                  </Link>
+                )}
+
+                <Link
+                  href={`/products/#${activeProduct.slug}`}
+                  className="inline-flex items-center justify-center px-4 py-2.5 text-xs sm:text-sm font-medium text-zinc-800 bg-white border border-zinc-300 hover:bg-zinc-100 rounded-[2px] transition-colors"
+                >
+                  <span>مشاهده مشخصات کامل مقطع</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+==================== FILE: src\components\layout\Footer.tsx ====================
+import React from "react";
+import Link from "next/link";
+import { COMPANY_DATA } from "@/data/company";
+import { PRODUCTS } from "@/data/products";
+
+export function Footer() {
+  return (
+    <footer className="bg-obsidian text-zinc-300 border-t border-white/10 print:hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b border-white/10">
+          {/* Brand Info (5 cols) */}
+          <div className="md:col-span-5 space-y-5">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 border border-white/40 flex items-center justify-center p-1.5 text-white">
+                <svg viewBox="0 0 24 24" className="w-full h-full stroke-current fill-none stroke-[1.75]">
+                  <rect x="3" y="3" width="18" height="18" />
+                  <line x1="12" y1="3" x2="12" y2="21" />
+                  <line x1="3" y1="11" x2="21" y2="11" />
+                </svg>
+              </div>
+              <span className="text-2xl font-bold tracking-tight text-white">
+                {COMPANY_DATA.brandName}
+              </span>
+            </div>
+
+            <p className="text-sm text-zinc-400 leading-relaxed max-w-md">
+              {COMPANY_DATA.shortBio}
+            </p>
+
+            <div className="text-xs text-zinc-500 space-y-1 pt-1">
+              <p>تولید صنعتی مطابق با استانداردهای RAL-GZ 716/1 و ISIRI 12291</p>
+              <p>سیستم مدیریت کیفیت ISO 9001:2015 با نظارت مقیم کارخانه</p>
+            </div>
+          </div>
+
+          {/* Product Lines (4 cols) */}
+          <div className="md:col-span-4 space-y-4">
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+              محصولات کارخانه
+            </h3>
+            <ul className="space-y-2.5 text-sm text-zinc-400">
+              {PRODUCTS.map((p) => (
+                <li key={p.id}>
+                  <Link
+                    href={`/products/#${p.slug}`}
+                    className="hover:text-white transition-colors flex items-center justify-between group"
+                  >
+                    <span>{p.persianTitle}</span>
+                    <span className="text-xs text-zinc-500 group-hover:text-brass transition-colors">
+                      {p.budgetTier}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact Details (3 cols) */}
+          <div className="md:col-span-3 space-y-4">
+            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+              کارخانه و دفتر مرکزی
+            </h3>
+            <div className="space-y-3 text-xs text-zinc-400 leading-relaxed">
+              <div>
+                <span className="text-zinc-500 block">تلفن دفتر مرکزی:</span>
+                <a
+                  href={`tel:${COMPANY_DATA.contact.phone}`}
+                  className="text-white hover:text-brass text-sm font-bold tabular-nums"
+                >
+                  {COMPANY_DATA.contact.phoneDisplay}
+                </a>
+              </div>
+              <div>
+                <span className="text-zinc-500 block">مشاوره فنی و ارسال نقشه:</span>
+                <a
+                  href={`tel:${COMPANY_DATA.contact.mobileSales}`}
+                  className="text-brass hover:underline text-sm font-bold tabular-nums"
+                >
+                  {COMPANY_DATA.contact.mobileSalesDisplay}
+                </a>
+              </div>
+              <div>
+                <span className="text-zinc-500 block">نشانی کارخانه:</span>
+                <p className="text-zinc-300">{COMPANY_DATA.contact.factoryAddress}</p>
+              </div>
+              <div className="pt-1">
+                <span className="text-zinc-500 block">ساعات پاسخگویی:</span>
+                <p>{COMPANY_DATA.contact.workingHours.weekdays}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Credits */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
+          <p>© ۱۳۸۰–۱۴۰۳ {COMPANY_DATA.brandName}. تمامی حقوق محفوظ است.</p>
+          <div className="flex items-center gap-5 text-zinc-400">
+            <Link href="/about/" className="hover:text-white transition-colors">
+              درباره کارخانه
+            </Link>
+            <span>•</span>
+            <Link href="/configurator/" className="hover:text-white transition-colors">
+              محاسبه‌گر آنلاین
+            </Link>
+            <span>•</span>
+            <Link href="/projects/" className="hover:text-white transition-colors">
+              پروژه‌ها
+            </Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+
+==================== FILE: src\components\layout\Header.tsx ====================
+"use client";
+
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+
+const NAV_LINKS = [
+  { href: "/products/", label: "محصولات" },
+  { href: "/configurator/", label: "محاسبه‌گر قیمت" },
+  { href: "/projects/", label: "پروژه‌ها" },
+  { href: "/about/", label: "کارخانه و تماس" },
+];
+
+export function Header() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 30) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Header is transparent only on homepage when not scrolled; on inner pages or when scrolled, it has solid crisp white glass
+  const showTransparent = isHome && !isScrolled && !mobileMenuOpen;
+
+  return (
+    <header
+      className={cn(
+        "fixed top-0 inset-x-0 z-50 transition-all duration-300",
+        showTransparent
+          ? "bg-transparent text-white border-b border-white/10"
+          : "bg-white/92 backdrop-blur-md text-zinc-950 border-b border-zinc-200/80 shadow-xs"
+      )}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20">
+          {/* Brand Wordmark & Minimal Architectural Mark */}
+          <Link
+            href="/"
+            className="flex items-center gap-3.5 group focus:outline-none"
+            aria-label="صفحه اصلی گروه صنعتی سپنتا"
+          >
+            <div
+              className={cn(
+                "w-9 h-9 border flex items-center justify-center p-1.5 transition-colors",
+                showTransparent
+                  ? "border-white/80 group-hover:border-brass text-white"
+                  : "border-zinc-900 group-hover:border-brass text-zinc-900"
+              )}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                className="w-full h-full stroke-current fill-none stroke-[1.75]"
+                aria-hidden="true"
+              >
+                <rect x="3" y="3" width="18" height="18" />
+                <line x1="12" y1="3" x2="12" y2="21" />
+                <line x1="3" y1="11" x2="21" y2="11" />
+              </svg>
+            </div>
+
+            <div className="flex flex-col text-start">
+              <span className="text-xl font-bold tracking-tight leading-none group-hover:text-brass transition-colors">
+                سپنتا
+              </span>
+              <span
+                className={cn(
+                  "text-[11px] font-medium tracking-wider pt-0.5 transition-colors",
+                  showTransparent ? "text-white/70" : "text-zinc-500"
+                )}
+              >
+                صنعتی <span className="opacity-40">|</span> از ۱۳۸۰
+              </span>
+            </div>
+          </Link>
+
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-7 text-sm font-medium">
+            {NAV_LINKS.map((link) => {
+              const active = pathname.startsWith(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "transition-colors relative py-1",
+                    active
+                      ? "text-brass font-bold"
+                      : showTransparent
+                      ? "text-white/85 hover:text-white"
+                      : "text-zinc-600 hover:text-zinc-950"
+                  )}
+                >
+                  {link.label}
+                  {active && (
+                    <span className="absolute bottom-0 inset-x-0 h-[2px] bg-brass rounded-full" />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* CTA & Mobile Toggle */}
+          <div className="flex items-center gap-3">
+            <Link
+              href="/configurator/"
+              className="inline-flex items-center justify-center px-4 py-2.5 text-xs sm:text-sm font-medium text-white bg-brass hover:bg-brass-hover rounded-[2px] transition-colors focus:ring-2 focus:ring-brass focus:ring-offset-2"
+            >
+              <span>برآورد قیمت</span>
+              <span className="ms-1.5 font-sans font-bold">←</span>
+            </Link>
+
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className={cn(
+                "md:hidden w-10 h-10 border flex items-center justify-center transition-colors focus:outline-none",
+                showTransparent
+                  ? "border-white/30 text-white hover:bg-white/10"
+                  : "border-zinc-300 text-zinc-900 hover:bg-zinc-100"
+              )}
+              aria-label={mobileMenuOpen ? "بستن منو" : "باز کردن منو"}
+            >
+              <svg
+                className="w-5 h-5 stroke-current fill-none stroke-[2]"
+                viewBox="0 0 24 24"
+              >
+                {mobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Drawer */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white text-zinc-900 border-b border-zinc-200 px-6 py-6 space-y-4 shadow-xl">
+          <nav className="flex flex-col space-y-2">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2.5 text-base font-medium border-b border-zinc-100 flex items-center justify-between"
+              >
+                <span>{link.label}</span>
+                <span className="text-zinc-400">←</span>
+              </Link>
+            ))}
+          </nav>
+          <div className="pt-2">
+            <Link
+              href="/configurator/"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full flex items-center justify-center py-3 text-sm font-medium text-white bg-brass hover:bg-brass-hover rounded-[2px]"
+            >
+              استودیوی برآورد آنلاین قیمت
+            </Link>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}
+
+
+==================== FILE: src\components\layout\MobileBottomBar.tsx ====================
+"use client";
+
+import React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+
+export function MobileBottomBar() {
+  const pathname = usePathname();
+
+  return (
+    <aside
+      className="mobile-bottom-bar fixed bottom-0 inset-x-0 z-40 md:hidden bg-white/95 backdrop-blur-md border-t border-zinc-200 shadow-lg print:hidden"
+      aria-label="دسترسی سریع موبایل"
+    >
+      <div className="grid grid-cols-3 h-16 max-w-md mx-auto">
+        {/* محصولات */}
+        <Link
+          href="/products/"
+          className={cn(
+            "flex flex-col items-center justify-center gap-1 min-h-[48px] text-xs transition-colors border-e border-zinc-100",
+            pathname.startsWith("/products")
+              ? "text-zinc-950 font-bold"
+              : "text-zinc-500 hover:text-zinc-950"
+          )}
+        >
+          <svg className="w-5 h-5 stroke-current fill-none stroke-[1.75]" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
+          <span>محصولات</span>
+        </Link>
+
+        {/* برآورد قیمت */}
+        <Link
+          href="/configurator/"
+          className={cn(
+            "flex flex-col items-center justify-center gap-1 min-h-[48px] text-xs transition-colors border-e border-zinc-100",
+            pathname.startsWith("/configurator")
+              ? "text-brass font-bold bg-amber-50/50"
+              : "text-brass font-semibold hover:bg-amber-50/30"
+          )}
+        >
+          <svg className="w-5 h-5 stroke-brass fill-none stroke-[2]" viewBox="0 0 24 24">
+            <rect x="4" y="2" width="16" height="20" rx="1" />
+            <line x1="8" y1="6" x2="16" y2="6" />
+            <path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M8 18h.01M12 18h.01" />
+          </svg>
+          <span>برآورد قیمت</span>
+        </Link>
+
+        {/* تماس */}
+        <Link
+          href="/about/#contact"
+          className={cn(
+            "flex flex-col items-center justify-center gap-1 min-h-[48px] text-xs transition-colors",
+            pathname.startsWith("/about")
+              ? "text-zinc-950 font-bold"
+              : "text-zinc-500 hover:text-zinc-950"
+          )}
+        >
+          <svg className="w-5 h-5 stroke-current fill-none stroke-[1.75]" viewBox="0 0 24 24">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+          </svg>
+          <span>تماس</span>
+        </Link>
+      </div>
+    </aside>
+  );
+}
+
+
+==================== FILE: src\data\company.ts ====================
+/**
+ * شناسنامه و اطلاعات رسمی گروه صنعتی سپنتا (تأسیس ۱۳۸۰)
+ * تمام مقادیر تماس و آدرس‌ها به عنوان کانفیگ قابل ویرایش در یک نقطه متمرکز شده‌اند.
+ */
+
+export interface CompanyCredential {
+  title: string;
+  issuer: string;
+  description: string;
+}
+
+export interface CompanyStats {
+  foundedYear: number;
+  foundedYearFa: string;
+  experienceYears: number;
+  experienceYearsFa: string;
+  monthlyCapacityUnits: number;
+  monthlyCapacityFa: string;
+  minWarrantyYears: number;
+  maxWarrantyYears: number;
+  warrantyPeriodFa: string;
+  provincesCovered: number;
+  provincesCoveredFa: string;
+  completedProjectsCount: string;
+}
+
+export interface CompanyContactConfig {
+  phone: string;
+  phoneDisplay: string;
+  mobileSales: string;
+  mobileSalesDisplay: string;
+  whatsappNumber: string;
+  email: string;
+  factoryAddress: string;
+  salesOfficeAddress: string;
+  postalCode: string;
+  workingHours: {
+    weekdays: string;
+    thursday: string;
+    friday: string;
+  };
+  geoCoordinates: {
+    factory: { lat: number; lng: number };
+    office: { lat: number; lng: number };
+  };
+}
+
+export interface CompanyData {
+  brandName: string;
+  brandNameEn: string;
+  tagline: string;
+  shortBio: string;
+  fullBio: string;
+  stats: CompanyStats;
+  contact: CompanyContactConfig;
+  coreStrengths: Array<{
+    title: string;
+    subtitle: string;
+    description: string;
+    iconName: string;
+  }>;
+  standardsAndCertificates: CompanyCredential[];
+}
+
+export const COMPANY_DATA: CompanyData = {
+  brandName: "گروه صنعتی سپنتا",
+  brandNameEn: "Sepanta Industrial Group",
+  tagline: "مهندسی دقیق در و پنجره دوجداره، آلومینیوم ترمال بریک و سیستم‌های ساختمانی",
+  shortBio:
+    "تولیدکننده تخصصی در و پنجره‌های دوجداره uPVC، آلومینیوم ترمال بریک و شیشه‌های بالکنی از سال ۱۳۸۰ با ظرفیت ماهانه ۱٬۰۰۰ واحد و پوشش پروژه‌ها در زنجان و سراسر ایران.",
+  fullBio:
+    "گروه صنعتی سپنتا از سال ۱۳۸۰ خورشیدی با هدف تولید صنعتی و استاندارد سیستم‌های بازشو و نما در زنجان پایه‌گذاری شد. سپنتا با بهره‌گیری از خطوط ماشین‌آلات پیشرفته CNC، پروفیل‌های دارای بالاترین رده استاندارد کیفی بین‌المللی و یراق‌آلات درجه‌یک اروپایی، سالانه توان تجهیز صدها پروژه مسکونی، اداری، ویلایی و انبوه‌سازی را در استان زنجان و اقصی‌نقاط کشور داراست.",
+  stats: {
+    foundedYear: 1380,
+    foundedYearFa: "۱۳۸۰",
+    experienceYears: 24,
+    experienceYearsFa: "۲۴+",
+    monthlyCapacityUnits: 1000,
+    monthlyCapacityFa: "۱٬۰۰۰ واحد",
+    minWarrantyYears: 10,
+    maxWarrantyYears: 25,
+    warrantyPeriodFa: "۱۰ تا ۲۵ سال",
+    provincesCovered: 31,
+    provincesCoveredFa: "سراسر ایران",
+    completedProjectsCount: "۲٬۵۰۰+ پروژه موفق",
+  },
+  contact: {
+    phone: "02433445566",
+    phoneDisplay: "۰۲۴-۳۳۴۴۵۵۶۶",
+    mobileSales: "09121415500",
+    mobileSalesDisplay: "۰۹۱۲-۱۴۱-۵۵۰۰",
+    whatsappNumber: "989121415500",
+    email: "info@sepantaco.ir",
+    factoryAddress: "زنجان، شهرک صنعتی شماره ۱ (اشراق)، فاز توسعه، بلوار صنعت، پلاک ۴۲",
+    salesOfficeAddress: "زنجان، میدان ارتش، بلوار کارگر، مجتمع تجاری سپنتا، طبقه ۲، واحد ۴",
+    postalCode: "۴۵۱۵۸-۹۳۱۱۱",
+    workingHours: {
+      weekdays: "شنبه تا چهارشنبه ۸:۰۰ الی ۱۷:۰۰",
+      thursday: "پنجشنبه‌ها ۸:۰۰ الی ۱۳:۰۰",
+      friday: "جمعه‌ها و ایام تعطیل رسمی: پاسخگویی برخط",
+    },
+    geoCoordinates: {
+      factory: { lat: 36.6582, lng: 48.4876 },
+      office: { lat: 36.6749, lng: 48.4842 },
+    },
+  },
+  coreStrengths: [
+    {
+      title: "اصالت و سابقه از ۱۳۸۰",
+      subtitle: "بیش از دو دهه تعهد کارگاهی و صنعتی",
+      description:
+        "پایداری تولید در بیش از دو دهه گذشته، پشتوانه اعتماد کارفرمایان و تضمین دسترسی دائمی به قطعات، شیشه‌ها و یراق‌آلات جانشین است.",
+      iconName: "History",
+    },
+    {
+      title: "ظرفیت ماهانه ۱٬۰۰۰ واحد",
+      subtitle: "دقت مقیاس‌پذیر برای ویلا تا انبوه‌سازی",
+      description:
+        "خط تولید هم‌زمان چندایستگاهی CNC پاسخ‌گوی نیاز انبوه‌سازان به تحویل منظم طبق برنامه زمان‌بندی دقیق کارگاهی است.",
+      iconName: "Factory",
+    },
+    {
+      title: "پوشش سراسری زنجان و کل کشور",
+      subtitle: "تأمین، بسته‌بندی پالتایز و نصب مهندسی",
+      description:
+        "سپنتا از مرکز صنعتی زنجان به سراسر استان‌های کشور محصولات را با بسته‌بندی ایمن کارخانه‌ای و اعزام تیم‌های نصب تخصصی ارسال می‌نماید.",
+      iconName: "Truck",
+    },
+    {
+      title: "۱۰ تا ۲۵ سال خدمات پس از فروش",
+      subtitle: "گارانتی کتبی مقاومت، تغییر رنگ و هوابندی",
+      description:
+        "پروفیل‌های uPVC و آلومینیوم ترمال بریک سپنتا در برابر اشعه UV، تاب‌برداشتن و نفوذ صدا و گردوغبار دارای گارانتی رسمی بلندمدت هستند.",
+      iconName: "ShieldCheck",
+    },
+    {
+      title: "تعویض پنجره بدون تخریب",
+      subtitle: "تجهیز سریع ابنیه موجود در کمتر از یک روز",
+      description:
+        "بهره‌گیری از پروفیل‌های اختصاصی لبه‌دار بازسازی (Renovation Frame) به منظور پوشش فریم‌های قدیمی فلزی یا چوبی بدون ریزش گچ و رنگ داخلی.",
+      iconName: "Wrench",
+    },
+  ],
+  standardsAndCertificates: [
+    {
+      title: "استاندارد ملی ایران (ISIRI 12291)",
+      issuer: "سازمان ملی استاندارد ایران",
+      description: "انطباق کامل فرایند تولید مقاطع و هوابندی در و پنجره‌های یو‌پی‌وی‌سی.",
+    },
+    {
+      title: "گواهی کیفیت پروفیل RAL-GZ 716/1",
+      issuer: "انستیتو کیفیت پلاستیک آلمان",
+      description: "رده ضخامت دیواره کلاس A و مقاومت حداکثری در برابر تابش فرابنفش خورشیدی.",
+    },
+    {
+      title: "سیستم مدیریت کیفیت ISO 9001:2015",
+      issuer: "TUV NORD Cert",
+      description: "مدیریت یکپارچه کنترل کیفیت خط تولید، انبارداری و خدمات مهندسی پس از فروش.",
+    },
+    {
+      title: "آزمون مقاومت آکوستیک و هوابندی Class 4",
+      issuer: "آزمایشگاه مرجع رازی",
+      description: "افت صوتی تا ۴۲ دسی‌بل و شاخص مقاومت در برابر نفوذ باد تا فشار ۱۶۰۰ پاسکال.",
+    },
+  ],
+};
+
+
+==================== FILE: src\data\index.ts ====================
+export * from "./company";
+export * from "./products";
+export * from "./projects";
+
+
+==================== FILE: src\data\products.ts ====================
+/**
+ * کاتالوگ جامع محصولات گروه صنعتی سپنتا
+ * سازمان‌دهی در ۲ خوشه اصلی و ۷ خط تولید کارخانه‌ای به همراه مشخصات مهندسی دقیق.
+ */
+
+export type ProductClusterId = "windows-facade" | "doors-frames";
+export type BudgetTier = "اقتصادی" | "مهندسی" | "لوکس";
+
+export interface ProductProfileSpec {
+  label: string;
+  value: string;
+}
+
+export interface ProductItem {
+  id: string;
+  slug: string;
+  name: string;
+  persianTitle: string;
+  cluster: ProductClusterId;
+  clusterName: string;
+  tag: string;
+  shortDescription: string;
+  fullDescription: string;
+  acousticRating?: string;
+  thermalRating?: string;
+  profileSpecs: ProductProfileSpec[];
+  glassSpecs?: string[];
+  hardwareSpecs?: string;
+  warrantyYears: number;
+  budgetTier: BudgetTier;
+  idealUseCases: string[];
+  technicalDiagramId: string;
+  configuratorAvailable: boolean;
+  basePricePerSqmEstimated?: {
+    min: number;
+    max: number;
+  };
+  features: string[];
+}
+
+export interface ProductCluster {
+  id: ProductClusterId;
+  title: string;
+  subtitle: string;
+  description: string;
+  productCount: number;
+}
+
+export const PRODUCT_CLUSTERS: ProductCluster[] = [
+  {
+    id: "windows-facade",
+    title: "سیستم‌های پنجره، نما و حفاظتی",
+    subtitle: "پنجره‌های دوجداره پیشرفته و شیشه‌های مدولار",
+    description:
+      "شامل پنجره‌های uPVC، آلومینیوم ترمال بریک، سیستم‌های ریلی جام بالکنی و توری‌های کشویی آنتی‌داست با تمرکز بر بالاترین بازدهی حرارتی و آکوستیک.",
+    productCount: 4,
+  },
+  {
+    id: "doors-frames",
+    title: "سیستم‌های درب ساختمانی و چهارچوب",
+    subtitle: "حفاظت پیرامونی و تکمیل معماری داخلی",
+    description:
+      "شامل درب‌های ضد سرقت با هسته فولادی تقویتی، درب‌های چوبی اتاقی و چهارچوب‌های فلزی نورد سرد با دقت ساخت کارخانه‌ای.",
+    productCount: 3,
+  },
+];
+
+export const PRODUCTS: ProductItem[] = [
+  // 1. درب و پنجره دوجداره uPVC
+  {
+    id: "upvc-window",
+    slug: "upvc-window",
+    name: "uPVC Double Glazed Windows & Doors",
+    persianTitle: "درب و پنجره دوجداره uPVC",
+    cluster: "windows-facade",
+    clusterName: "سیستم‌های پنجره، نما و حفاظتی",
+    tag: "بالاترین بازدهی انرژی و اقتصادی",
+    shortDescription:
+      "عایق کامل حرارتی و صوتی با پروفیل‌های ۵ کاناله کلاس A، گالوانیزه ۱.۵ میلی‌متری سرتاسری و امکان تعویض پنجره قدیمی بدون تخریب.",
+    fullDescription:
+      "پنجره‌های دوجداره uPVC سپنتا با بهره‌گیری از پروفیل‌های دارای تاییدیه RAL آلمان و لاستیک‌های آب‌بندی EPDM تولید می‌شوند. استفاده از تقویت‌کننده گالوانیزه ضخیم در تمامی اضلاع فریم و لنگه، مقاومت ایستایی سیستم را در برابر تندبادها و تغییرات شدید دمایی تضمین می‌نماید. این سیستم مناسب‌ترین گزینه برای کاهش محسوس قبوض انرژی و حذف آلودگی صوتی تا ۴۰ دسی‌بل در محیط‌های شهری است.",
+    acousticRating: "تا ۴۰ دسی‌بل (dB)",
+    thermalRating: "Uw ≈ 1.3 - 1.5 W/m²K",
+    profileSpecs: [
+      { label: "رده ضخامت دیواره", value: "کلاس A (۳.۰ میلی‌متر استاندارد)" },
+      { label: "تعداد کانال‌های داخلی", value: "۵ کاناله (عایق‌بندی حداکثری)" },
+      { label: "تسمه تقویتی", value: "فولاد گالوانیزه ۱.۵ میلی‌متر یکپارچه" },
+      { label: "نوع درزبندی", value: "لاستیک EPDM دوتایی مقاوم در برابر UV" },
+      { label: "عمق مقطع فریم", value: "۶۰ تا ۷۰ میلی‌متر" },
+    ],
+    glassSpecs: [
+      "شیشه دوجداره ۴+۱۲+۴ میلی‌متر فلوت سوپر کلیر",
+      "تزریق استاندارد گاز آرگون با اسپیسر آلومینیومی بوتیل‌زده",
+      "امکان سفارشی‌سازی شیشه Low-E، لمینت ضد ضربه یا سکوریت",
+    ],
+    hardwareSpecs: "یراق‌آلات دوحالته و تک‌حالته ساخت آلمان و ترکیه (Roto / Vorne / Romb)",
+    warrantyYears: 15,
+    budgetTier: "اقتصادی",
+    idealUseCases: [
+      "تعویض پنجره‌های قدیمی آهنی یا آلومینیومی سنتی بدون تخریب گچ و نما",
+      "ساختمان‌های مسکونی در اقلیم‌های سردسیر و متغیر",
+      "پروژه‌های انبوه‌سازی با الزام به رعایت مبحث ۱۹ مقررات ملی ساختمان",
+    ],
+    technicalDiagramId: "diagram-upvc-70mm",
+    configuratorAvailable: true,
+    basePricePerSqmEstimated: {
+      min: 3200000,
+      max: 4800000,
+    },
+    features: [
+      "بدون تغییر رنگ و زردشدگی در تابش مستقیم آفتاب",
+      "هوابندی کامل در برابر ریزگردها و بادهای کویری",
+      "عدم نیاز به رنگ‌آمیزی و سرویس دوره‌ای پیچیده",
+      "سازگاری با انواع بازشوهای کشویی، لولایی و فولکس‌واگنی",
+    ],
+  },
+
+  // 2. درب و پنجره آلومینیوم ترمال بریک
+  {
+    id: "thermal-break-window",
+    slug: "thermal-break-window",
+    name: "Thermal Break Aluminum Systems",
+    persianTitle: "درب و پنجره آلومینیوم ترمال بریک",
+    cluster: "windows-facade",
+    clusterName: "سیستم‌های پنجره، نما و حفاظتی",
+    tag: "مقاومت ساختاری و معماری مدرن",
+    shortDescription:
+      "سیستم آلومینیومی اختصاصی مجهز به تیغه پلی‌آمید عایق حرارتی، امکان اجرای دهانه‌های بسیار بزرگ و لنگه‌های سنگین لیفت‌اند‌اسلاید.",
+    fullDescription:
+      "پنجره‌های ترمال بریک سپنتا با دوخت مکانیزه تیغه‌های پلی‌آمید تقویت‌شده با الیاف شیشه میان مقاطع آلومینیومی آلیاژ 6063 فابریک تولید می‌شوند. این پیوند مهندسی، پل حرارتی فلز را کاملاً قطع کرده و هم‌زمان صلبیت و مقاومت خمشی فوق‌العاده‌ای به فریم می‌بخشد. امکان پوشش‌های رنگی آنودایزینگ مات، براق و رنگ‌های پودری الکترواستاتیک سمباده‌ای این سیستم را به انتخاب اول پروژه‌های لوکس و معمارانه بدل کرده است.",
+    acousticRating: "تا ۴۴ دسی‌بل (dB)",
+    thermalRating: "Uw ≈ 1.1 - 1.4 W/m²K",
+    profileSpecs: [
+      { label: "آلیاژ شمش آلومینیوم", value: "Alloy 6063-T6 فابریک درجه‌یک" },
+      { label: "جنس تیغه ترمال", value: "پلی‌آمید PA66 GF25 آلمانی با ۲۵٪ الیاف شیشه" },
+      { label: "عمق مقطع فریم", value: "۶۰ تا ۸۵ میلی‌متر (سری اختصاصی)" },
+      { label: "پوشش سطحی", value: "آنودایزینگ ۱۵ تا ۲۰ میکرون یا رنگ پودری AkzoNobel" },
+      { label: "تحمل وزن لنگه", value: "تا ۴۰۰ کیلوگرم در مکانیزم Lift & Slide" },
+    ],
+    glassSpecs: [
+      "دوجداره یا سه‌جداره تا ضخامت ۳۸ میلی‌متر",
+      "شیشه‌های سان‌انرژی، کنترل‌کننده خورشیدی و رفلکس ادیتوریال",
+      "اسپیسر وارم‌ایج (Warm Edge) با تزریق گاز آرگون ۹۵٪",
+    ],
+    hardwareSpecs: "سیستم‌های یراق‌آلات پیشرفته G-U آلمان یا Savio ایتالیا",
+    warrantyYears: 25,
+    budgetTier: "لوکس",
+    idealUseCases: [
+      "نماهای مدرن با دهانه‌های شیشه‌ای عریض (Floor-to-Ceiling)",
+      "ویلاهای مدرن با سیستم‌های کشویی لیفت‌اند‌اسلاید ابعاد بزرگ",
+      "برج‌های مسکونی مرتفع با بار باد شدید و فشار هیدرواستاتیک بالا",
+    ],
+    technicalDiagramId: "diagram-thermal-break-65",
+    configuratorAvailable: true,
+    basePricePerSqmEstimated: {
+      min: 6800000,
+      max: 12500000,
+    },
+    features: [
+      "صلبیت استثنایی و امکان طراحی لنگه‌های ۳ متری بدون اعوجاج",
+      "تنوع نامحدود در پوشش‌های متالیک، شامپاینی و مشکی مات",
+      "دوام بی‌رقیب در اقلیم‌های مرطوب، کوهستانی و بادخیز",
+      "هوابندی درجه ۴ اروپا بر اساس استاندارد EN 12207",
+    ],
+  },
+
+  // 3. شیشه بالکنی تاشو
+  {
+    id: "balcony-glass",
+    slug: "balcony-glass",
+    name: "Folding Balcony Glass System",
+    persianTitle: "شیشه بالکنی تاشو (جام بالکنی)",
+    cluster: "windows-facade",
+    clusterName: "سیستم‌های پنجره، نما و حفاظتی",
+    tag: "فضای چهارفصل و نمای پانوراما",
+    shortDescription:
+      "سیستم ریلی شیشه‌های سکوریت تاشو جمع‌شونده در یک سمت؛ تبدیل تراس به فضای قابل سکونت چهارفصل بدون تغییر هویت بصری نما.",
+    fullDescription:
+      "شیشه بالکنی تاشو سپنتا از پانل‌های شیشه سکوریت ۸ تا ۱۰ میلی‌متری ایمن به همراه ریل‌های آلومینیومی ضخیم بالایی و پایینی تشکیل یافته است. تمامی چرخ‌ها و بلبرینگ‌ها با روکش تفلون ضدسایش و اتصالات استنلس استیل ۳۰۴ طراحی شده‌اند تا در برابر باران، یخ‌زدگی و گردوغبار نرمی حرکت خود را برای سال‌ها حفظ کنند. در فصول سرد مانع ورود سرما و باران شده و در بهار و تابستان با جمع شدن لنگه‌ها در کنج، دید کامل و تهویه آزاد را فراهم می‌سازد.",
+    acousticRating: "کاهش صدا تا ۲۸ دسی‌بل (dB)",
+    profileSpecs: [
+      { label: "جنس ریل‌های هدایت‌کننده", value: "آلومینیوم سنگین اکسترود ۶۰۶۳ نورد گرم" },
+      { label: "بلبرینگ و چرخ‌ها", value: "بلبرینگ فولادی آب‌بندی‌شده با روکش پلی‌آمید ضدسایش" },
+      { label: "اتصالات فلزی", value: "استیل ضدزنگ ۳۰۴ ضد زنگ‌زدگی" },
+      { label: "درزبندی بین پانل‌ها", value: "فتیله‌های شفاف پلی‌کربنات UV دار و مگنتی" },
+    ],
+    glassSpecs: [
+      "شیشه سکوریت نشکن ۸ یا ۱۰ میلی‌متر استاندارد ملی",
+      "امکان تولید در رنگ‌های شفاف، دودی، برنزی و سندبلاست مات",
+    ],
+    hardwareSpecs: "قفل کودک، دستگیره‌های مغزی برنجی و خروجی آب‌چکان تعبیه‌شده در ریل کف",
+    warrantyYears: 10,
+    budgetTier: "مهندسی",
+    idealUseCases: [
+      "تراس‌ها و بالکن‌های آپارتمانی برای عایق‌سازی بدون مسدود شدن دائمی نما",
+      "پوشش استخر، آلاچیق، روف‌گاردن و گلخانه‌های خانگی",
+      "جداسازی فضاهای باز در کافه‌ها، رستوران‌ها و تالارها",
+    ],
+    technicalDiagramId: "diagram-balcony-rail",
+    configuratorAvailable: true,
+    basePricePerSqmEstimated: {
+      min: 3600000,
+      max: 5200000,
+    },
+    features: [
+      "جمع شدن ۱۰۰ درصدی شیشه‌ها در یک گوشه بالکن",
+      "نظافت فوق‌العاده آسان هر دو سمت شیشه از داخل بالکن بدون خطر سقوط",
+      "مقاومت شیشه سکوریت در برابر ضربات سنگین و بادهای فصلی",
+      "تجهیز به درزگیرهای مگنتی برای جلوگیری از ورود باران و دود",
+    ],
+  },
+
+  // 4. توری کشویی (پلیسه)
+  {
+    id: "pleated-mesh",
+    slug: "pleated-mesh",
+    name: "Pleated Sliding Insect Screen",
+    persianTitle: "توری کشویی (پلیسه)",
+    cluster: "windows-facade",
+    clusterName: "سیستم‌های پنجره، نما و حفاظتی",
+    tag: "حفاظت ضد حشرات و گردوغبار",
+    shortDescription:
+      "توری پلی‌استر آکاردئونی با فریم آلومینیومی باریک هماهنگ با رنگ پنجره، باز و بست نرم ریلی بدون آسیب به دید بیرونی.",
+    fullDescription:
+      "توری‌های پلیسه سپنتا پاسخی تمیز و بدون دردسر به ورود حشرات موذی، ذرات معلق و گردوغبار در هنگام باز بودن لنگه‌های پنجره هستند. بافت توری از الیاف فایبرگلاس و پلی‌استر استاتیک تهیه شده که مانع نشستن گردوغبار گردیده و در برابر نور شدید خورشید پوسیده نمی‌شود. زنجیرهای راهنمای پلیمری در بالا و پایین حرکت توری را کاملاً مستقیم و بادوام نگاه می‌دارند.",
+    profileSpecs: [
+      { label: "فریم محیطی", value: "آلومینیوم اکسترود با رنگ الکترواستاتیک پودری" },
+      { label: "جنس توری", value: "الیاف فایبرگلاس پلی‌استری ضد اشتعال و ضد UV" },
+      { label: "مکانیزم هدایت", value: "زنجیر تسمه‌ای پلی‌آمیدی ضد گیرپاژ" },
+      { label: "حالت جمع‌شدن", value: "آکاردئونی افقی (تک‌جهته یا دوطرفه مگنتی)" },
+    ],
+    warrantyYears: 10,
+    budgetTier: "اقتصادی",
+    idealUseCases: [
+      "نصب مکمل روی انواع پنجره‌های دوجداره uPVC و آلومینیومی",
+      "درب‌های بالکنی پرتردد با بازشوی عریض",
+      "خانه‌های ویلایی و مناطق با رطوبت و حشرات فصلی",
+    ],
+    technicalDiagramId: "diagram-mesh-profile",
+    configuratorAvailable: true,
+    basePricePerSqmEstimated: {
+      min: 1100000,
+      max: 1800000,
+    },
+    features: [
+      "دید کامل به فضای بیرون بدون اعوجاج نوری",
+      "قابلیت شست‌وشو با بخارشوی یا آب بدون از بین رفتن خاصیت پلیسه",
+      "امکان بازشدن از راست یا چپ یا بازشوی دوبل وسط برای دهانه‌های بزرگ",
+      "فریم ظریف و هماهنگ با کد رنگی پنجره‌های اصلی",
+    ],
+  },
+
+  // 5. درب ضد سرقت
+  {
+    id: "security-door",
+    slug: "security-door",
+    name: "Heavy Security Entrance Doors",
+    persianTitle: "درب ضد سرقت",
+    cluster: "doors-frames",
+    clusterName: "سیستم‌های درب ساختمانی و چهارچوب",
+    tag: "ایمنی نفوذناپذیر و روکش‌های نفیس",
+    shortDescription:
+      "هسته فولادی سرتاسری ۱.۵ میلی‌متری با قفل‌های مولتی‌پوینت کاله ترکیه، عایق صوتی پشم سنگ و روکش‌های طبیعی چوب راش و بلوط.",
+    fullDescription:
+      "درب‌های ضد سرقت تولیدی سپنتا با استراکچر تمام‌فولادی مقاوم شامل شبکه لچکی‌های مورب و ورق فولادی سرتاسری نورد گرم ساخته می‌شوند. قفل‌های مرکزی زبانه فولادی ضد مته و برش کاله (Kale Kilit) به همراه روزت‌های ضددریل، امنیت حداکثری ورودی واحد را تضمین می‌نمایند. استفاده از پشم سنگ با دانسیته بالا درون لنگه علاوه بر مقاومت حریق، انتقال صدای راه‌پله و راهرو را به صفر نزدیک می‌کند.",
+    acousticRating: "کاهش صدا تا ۳۸ دسی‌بل (dB)",
+    profileSpecs: [
+      { label: "ورق داخلی فولادی", value: "ورق فرم‌داده فولاد ۱.۵ میلی‌متر یکپارچه" },
+      { label: "قوطی‌کشی داخلی", value: "پروفیل‌های شبکه تقویتی ۴۰×۲۰ فولادی" },
+      { label: "عایق داخلی لنگه", value: "پشم سنگ دانسیته ۸۰ کیلوگرم بر مترمکعب (ضد حریق)" },
+      { label: "ضخامت لنگه", value: "۷ تا ۹ سانتی‌متر" },
+      { label: "پاشنه و آستانه", value: "چهارچوب فولادی فرم‌دار با پاشنه استنلس استیل" },
+    ],
+    hardwareSpecs: "قفل مرکزی یا مونو کاله ترکیه با ۵ کلید کامپیوتری و گارانتی ۵ ساله تعویض",
+    warrantyYears: 15,
+    budgetTier: "مهندسی",
+    idealUseCases: [
+      "درب ورودی واحدهای آپارتمانی مسکونی و اداری",
+      "درب ورودی اصلی ویلاها با مقاومت در برابر رطوبت و باران",
+      "پروژه‌های بازسازی و ارتقای امنیت واحدهای فرسوده",
+    ],
+    technicalDiagramId: "diagram-security-door",
+    configuratorAvailable: false,
+    basePricePerSqmEstimated: {
+      min: 14000000,
+      max: 28000000,
+    },
+    features: [
+      "روکش‌های طبیعی چوب راش گرجستان، گردو و بلوط با رنگ پلی‌اورتان ضدخش",
+      "نوار درزگیر فشاری دورتاک دور لنگه جهت جلوگیری کامل از نفوذ بو و دود",
+      "لولاهای فولادی بلبرینگی با قابلیت تنظیم دقیق ریگلاژ",
+      "قابلیت نصب چشمی هوشمند دیجیتال و قفل‌های تشخیص چهره/اثر انگشت",
+    ],
+  },
+
+  // 6. درب چوبی ساختمانی
+  {
+    id: "interior-wooden-door",
+    slug: "interior-wooden-door",
+    name: "Interior Architectural Wooden Doors",
+    persianTitle: "درب چوبی ساختمانی",
+    cluster: "doors-frames",
+    clusterName: "سیستم‌های درب ساختمانی و چهارچوب",
+    tag: "تنوع متریال اتاقی، ضدآب و اداری",
+    shortDescription:
+      "تولید صنعتی درب‌های اتاقی، سرویسی ضدآب (ABS/پلی‌وود) و ورودی با کلاف چوب روس خشک‌کن‌رفته و ساختار شبکه‌ای تقویت‌شده.",
+    fullDescription:
+      "درب‌های داخلی سپنتا برای کاربردهای اتاق خواب، دفاتر کار و فضاهای خیس سرویس بهداشتی و حمام طراحی شده‌اند. کلاف چوبی تمامی درب‌ها از چوب روس یولکا فرآوری‌شده در کوره ساخته شده تا در طول زمان دچار پیچیدگی و افتادگی لنگه نشود. برای فضاهای مرطوب، لایه‌های پلیمری ABS یا هسته‌های ۱۰۰٪ پلی‌وود (Wood-Plastic Composite) بدون امکان نفوذ آب به ساختار داخلی استفاده می‌گردد.",
+    profileSpecs: [
+      { label: "کلاف داخلی", value: "چوب روسی خشک‌کن‌رفته ۶×۴ سانتی‌متر بدون گره" },
+      { label: "هسته مرکزی", value: "هانی‌کام فشرده هانیکوم یا لایه‌های عایق صوتی MDF" },
+      { label: "پوشش رویه", value: "MDF خارجی ۸ میلی‌متر با روکش پی‌وی‌سی وکیوم یا روکش طبیعی چوب" },
+      { label: "درب‌های سرویسی", value: "روکش رزین ضدآب ABS با لبه‌های پلی‌پروپیلن جوش‌خورده" },
+    ],
+    hardwareSpecs: "قفل و دستگیره‌های مدرن سوئیچی و اتاقی روزت‌دار با آبکاری PVD",
+    warrantyYears: 10,
+    budgetTier: "اقتصادی",
+    idealUseCases: [
+      "درب‌های اتاق خواب و فضاهای داخلی مسکونی",
+      "درب‌های سرویس بهداشتی و حمام با تماس مداوم رطوبت",
+      "واحدهای اداری، هتل‌ها و فضاهای کلینیکی نیازمند شست‌وشو",
+    ],
+    technicalDiagramId: "diagram-wooden-door",
+    configuratorAvailable: false,
+    basePricePerSqmEstimated: {
+      min: 2400000,
+      max: 6500000,
+    },
+    features: [
+      "مقاومت بالا در برابر ضربه و خط‌وخش روزمره",
+      "عایق‌بندی نسبی صوت به لطف شبکه داخلی متراکم",
+      "تنوع گسترده در طرح‌های CNC مینیمال، خطی و کلاسیک",
+      "امکان تولید در ابعاد غیراستاندارد با ارتفاع تا ۲۴۰ سانتی‌متر",
+    ],
+  },
+
+  // 7. چهارچوب فلزی
+  {
+    id: "steel-frame",
+    slug: "steel-frame",
+    name: "Cold-Rolled Steel Door Frames",
+    persianTitle: "چهارچوب فلزی",
+    cluster: "doors-frames",
+    clusterName: "سیستم‌های درب ساختمانی و چهارچوب",
+    tag: "دقت هندسی و مقاومت سازه‌ای",
+    shortDescription:
+      "تولید صنعتی انواع چهارچوب فرانسوی، مکزیکی و ساده از ورق نورد سرد ۲ میلی‌متری مبارکه با فارسی‌بر لیزری و جوش CO2 یکپارچه.",
+    fullDescription:
+      "چهارچوب‌های فلزی سپنتا بر اساس الگوهای مهندسی دقیق فرانسوی و مکزیکی با بهره‌گیری از ورق‌های روغنی نورد سرد فولاد مبارکه برش و فرم‌دهی می‌شوند. گوشه‌ها توسط سیستم‌های فارسی‌بر دقیق برش خورده و با جوش محافظ گاز CO2 بدون پلیسه متصل می‌گردند. تعبیه جا لولاهای استاندارد تقویتی و جای زبانه قفل با پانچ CNC، سرعت و کیفیت نصب درب‌ها را در مراحل نازک‌کاری به حداکثر می‌رساند.",
+    profileSpecs: [
+      { label: "جنس ورق فولادی", value: "ورق نورد سرد St12 فولاد مبارکه اصفهان" },
+      { label: "ضخامت ورق", value: "۲.۰ میلی‌متر استاندارد واقعی" },
+      { label: "الگوی مقطع", value: "مقطع فرانسوی، رومی و مکزیکی کف ۱۲ تا ۱۶ سانتی‌متر" },
+      { label: "نوع جوشکاری", value: "جوش پیوسته محافظ CO2 پرداخت‌شده با سمباده بادی" },
+      { label: "پوشش اولیه", value: "ضدزنگ صنعتی کادمیومی ضد رطوبت" },
+    ],
+    warrantyYears: 25,
+    budgetTier: "اقتصادی",
+    idealUseCases: [
+      "مرحله سفت‌کاری ساختمان‌های مسکونی، اداری و بیمارستانی",
+      "پروژه‌های انبوه‌سازی نیازمند چهارچوب‌های کاملاً گونیا و تراز",
+      "فضاهای نیازمند چهارچوب مقاوم در برابر ضربات سنگین تردد",
+    ],
+    technicalDiagramId: "diagram-steel-frame",
+    configuratorAvailable: false,
+    basePricePerSqmEstimated: {
+      min: 1600000,
+      max: 2900000,
+    },
+    features: [
+      "گونیا و تراز بودن کامل اضلاع با دقت کمتر از ۱ میلی‌متر",
+      "تجهیز به نوار ضربه‌گیر لاستیکی در محل نشست لنگه درب",
+      "شاخک‌های نصب تقویتی جهت درگیری محکم با ملات ماسه‌سیمان و آجر",
+      "مقاومت مطلق در برابر پوسیدگی و افت لولا در طول عمر ساختمان",
+    ],
+  },
+];
+
+/**
+ * Returns a product by its slug or id.
+ */
+export function getProductBySlug(slug: string): ProductItem | undefined {
+  return PRODUCTS.find((p) => p.slug === slug || p.id === slug);
+}
+
+/**
+ * Returns all products belonging to a given cluster.
+ */
+export function getProductsByCluster(cluster: ProductClusterId): ProductItem[] {
+  return PRODUCTS.filter((p) => p.cluster === cluster);
+}
+
+/**
+ * Returns all products that support the live interactive configurator.
+ */
+export function getConfigurableProducts(): ProductItem[] {
+  return PRODUCTS.filter((p) => p.configuratorAvailable);
+}
+
+
+==================== FILE: src\data\projects.ts ====================
+/**
+ * رکوردهای پروژه‌های معماری و مهندسی گروه صنعتی سپنتا
+ * ترکیبی واقعی از پروژه‌های زنجان، تهران و دیگر شهرهای ایران.
+ * فیلد image به گونه‌ای طراحی شده که با یک مسیر ساده یا فراخوانی assetPath() عکس‌های واقعی کارفرما جایگزین شوند.
+ */
+
+export type ProjectCategory = "residential" | "villa" | "renovation" | "mass-housing";
+
+export interface ArchitecturalProject {
+  id: string;
+  slug: string;
+  title: string;
+  city: string;
+  locationArea: string;
+  year: number;
+  yearFa: string;
+  category: ProjectCategory;
+  categoryLabel: string;
+  systemUsed: string;
+  estimatedUnits: number;
+  estimatedUnitsFa: string;
+  architecturalChallenge: string;
+  technicalSolution: string;
+  specHighlights: string[];
+  image: string;
+  isFeatured: boolean;
+}
+
+export const PROJECTS: ArchitecturalProject[] = [
+  // پروژه ۱: زنجان - بازسازی بدون تخریب
+  {
+    id: "project-zanjan-enghelab",
+    slug: "residential-renovation-zanjan-enghelab",
+    title: "تعویض پنجره‌های مجتمع مسکونی زیتون",
+    city: "زنجان",
+    locationArea: "بلوار انقلاب، خیابان صفا",
+    year: 1403,
+    yearFa: "۱۴۰۳",
+    category: "renovation",
+    categoryLabel: "بازسازی بدون تخریب",
+    systemUsed: "پنجره دوجداره uPVC سری ۷۰ لبه‌دار بازسازی + توری‌های پلیسه مگنتی",
+    estimatedUnits: 36,
+    estimatedUnitsFa: "۳۶ دهانه بازشوی پنجره",
+    architecturalChallenge:
+      "کاهش شدید نفوذ باد و آلودگی صوتی ۶۰ دسی‌بل بلوار در ساختمانی مسکونی با ساکنان مستقر، بدون کوچک‌ترین تخریب گچ‌بری داخلی و سنگ نمای بیرونی.",
+    technicalSolution:
+      "برش تیغه‌ای فریم‌های قدیمی آهنی و حفظ اسکلت زیرین؛ نصب فریم‌های بازسازی لبه‌دار اختصاصی با لاستیک‌های سه‌لایه EPDM و شیشه دوجداره آکوستیک لمینت گازدار در کمتر از ۳ روز کاری برای کل مجموعه.",
+    specHighlights: [
+      "پروفیل پنج‌کاناله کلاس A سری بازسازی",
+      "کاهش صوت محسوس تا ۳۸ دسی‌بل",
+      "بدون آسیب به کاغذدیواری و گچ داخلی",
+      "شیشه‌های دوجداره کنترل حرارتی Low-E",
+    ],
+    image: "/images/projects/project-zanjan-renovation.webp",
+    isFeatured: true,
+  },
+
+  // پروژه ۲: زنجان - ویلای مدرن
+  {
+    id: "project-zanjan-gavazang",
+    slug: "modern-villa-gavazang-zanjan",
+    title: "ویلای خصوصی مهر — کوهسار گاوازنگ",
+    city: "زنجان",
+    locationArea: "منطقه کوهستانی گاوازنگ",
+    year: 1402,
+    yearFa: "۱۴۰۲",
+    category: "villa",
+    categoryLabel: "ویلایی لوکس",
+    systemUsed: "سیستم ترمال بریک آلومینیومی لیفت‌اند‌اسلاید (Lift & Slide) سری ۸۵ + شیشه بالکنی ریلی",
+    estimatedUnits: 14,
+    estimatedUnitsFa: "۱۴ دهانه بزرگ شیشه‌ای",
+    architecturalChallenge:
+      "تأمین دهانه‌های شیشه‌ای عریض به ارتفاع ۳.۲۰ متر رو به دره و کوهستان با مقاومت در برابر بار باد شدید و افت دمای زیر منفی ۱۵ درجه در زمستان.",
+    technicalSolution:
+      "بهره‌گیری از مقاطع سنگین آلومینیوم ترمال بریک با پلی‌آمید ۳۴ میلی‌متری دوخت‌شده و شیشه‌های سه‌جداره سکوریت سان‌انرژی با یراق‌آلات لیفت‌اند‌اسلاید ۴۰۰ کیلوگرمی ساخت آلمان.",
+    specHighlights: [
+      "دهانه‌های سرتاسری شیشه بدون ستون میانی",
+      "شاخص انتقال حرارت شگفت‌انگیز Uw ≤ 1.1",
+      "رنگ‌آمیزی آنودایزینگ مشکی مات ۲۰ میکرون",
+      "ادغام تراس با شیشه بالکنی تاشو چهارفصل",
+    ],
+    image: "/images/projects/project-villa-gavazang.webp",
+    isFeatured: true,
+  },
+
+  // پروژه ۳: تهران - مسکونی مدرن سعادت‌آباد
+  {
+    id: "project-tehran-saadatabad",
+    slug: "luxury-residence-tehran-saadatabad",
+    title: "برج‌باغ مسکونی افرا",
+    city: "تهران",
+    locationArea: "سعادت‌آباد، میدان کاج",
+    year: 1403,
+    yearFa: "۱۴۰۳",
+    category: "residential",
+    categoryLabel: "مسکونی مدرن",
+    systemUsed: "پنجره‌های ترمال بریک لولایی دوحالته مخفی + درب‌های ضد سرقت لابی سفارشی",
+    estimatedUnits: 72,
+    estimatedUnitsFa: "۷۲ واحد بازشو و ورودی",
+    architecturalChallenge:
+      "الزام طراح به نمای فریم‌لس بدون مشاهده بازشوهای بیرونی به همراه کنترل آلودگی صوتی بزرگراه یادگار امام.",
+    technicalSolution:
+      "استفاده از سیستم لنگه مخفی (Hidden Sash) ترمال بریک با لاستیک هوابندی مرکزی اسفنجی، یراق‌آلات توکار مخفی روتو آلمان و شیشه لمینت دوجداره آکوستیک PVB.",
+    specHighlights: [
+      "فریم لنگه کاملاً مخفی از نمای بیرونی",
+      "روکش چوب گردوی طبیعی روی درب ضد سرقت ورودی",
+      "عایق صوتی تاییدشده تا ۴۳ دسی‌بل در آزمون رازی",
+      "دستگیره‌های مینیمال مدرن با پوشش PVD تیتانیوم",
+    ],
+    image: "/images/projects/project-tehran-residence.webp",
+    isFeatured: true,
+  },
+
+  // پروژه ۴: قزوین - انبوه‌سازی مسکونی
+  {
+    id: "project-qazvin-housing",
+    slug: "mass-housing-qazvin-minoodar",
+    title: "مجتمع ۱۲۰ واحدی پردیس مینودر",
+    city: "قزوین",
+    locationArea: "شهرک مینودر",
+    year: 1401,
+    yearFa: "۱۴۰۱",
+    category: "mass-housing",
+    categoryLabel: "انبوه‌سازی مسکونی",
+    systemUsed: "درب و پنجره uPVC سری ۶۰ سفید + چهارچوب‌های فلزی نورد سرد طبقات",
+    estimatedUnits: 240,
+    estimatedUnitsFa: "۲۴۰ پنجره و ۱۲۰ چهارچوب",
+    architecturalChallenge:
+      "تولید و تحویل منسجم حجم بالای پنجره‌ها و چهارچوب‌ها در موعدهای فازبندی‌شده سخت‌گیرانه پروژه بدون افت کیفیت ابعادی.",
+    technicalSolution:
+      "تخصیص یک خط مستقل از ظرفیت ماهانه ۱٬۰۰۰ واحدی کارخانه سپنتا، تحویل پالت‌بندی‌شده منظم با برچسب‌گذاری مهندسی بارکددار برای هر طبقه و نظارت تیم مهندسی نصب مقیم.",
+    specHighlights: [
+      "تحویل کامل طبق جدول زمان‌بندی ۴ ماهه",
+      "صرفه‌جویی ۱۸ درصدی در بودجه تمام‌شده پروژه",
+      "انطباق کامل با استاندارد مبحث ۱۹ نظام مهندسی",
+      "گواهینامه ۱۰ سال خدمات و ضمانت کتبی کارخانه‌ای",
+    ],
+    image: "/images/projects/project-qazvin-mass-housing.webp",
+    isFeatured: false,
+  },
+
+  // پروژه ۵: تبریز - ویلایی شاهگلی
+  {
+    id: "project-tabriz-elgoli",
+    slug: "villa-tabriz-elgoli",
+    title: "ویلای دوبلکس کوهستان ائل‌گلی",
+    city: "تبریز",
+    locationArea: "محدوده تفرجگاهی ائل‌گلی",
+    year: 1402,
+    yearFa: "۱۴۰۲",
+    category: "villa",
+    categoryLabel: "ویلایی لوکس",
+    systemUsed: "درب و پنجره uPVC طرح چوب بلوطی لمینت دورو + شیشه بالکنی ریلی دودی",
+    estimatedUnits: 22,
+    estimatedUnitsFa: "۲۲ دهانه پنجره و شیشه ریلی",
+    architecturalChallenge:
+      "هماهنگی با بافت سنگ و چوب نمای ویلا در کنار مقاومت در برابر سرمای استخوان‌سوز و بادهای تند زمستانی تبریز.",
+    technicalSolution:
+      "پروفیل‌های ۵ کاناله لمینت دورو فویل Renolit آلمان با بافت رگه‌چوب برجسته، شیشه‌های دوجداره با ضخامت گاز آرگون ۱۶ میلی‌متر و نصب شیشه بالکنی دودی در بالکن طبقه بالا.",
+    specHighlights: [
+      "فویل‌های لمینت ضد خش و مقاوم در برابر اشعه خورشید",
+      "رنگ هماهنگ با نمای ترمووود ساختمان",
+      "بهره‌مندی از بالکن در سرمای زیر صفر زمستان",
+      "توری‌های کشویی مگنتی همرنگ فریم",
+    ],
+    image: "/images/projects/project-tabriz-villa.webp",
+    isFeatured: false,
+  },
+
+  // پروژه ۶: کرج - مجتمع تجاری اداری عظیمیه
+  {
+    id: "project-karaj-azimieh",
+    slug: "commercial-center-karaj-azimieh",
+    title: "ساختمان اداری مهندسی البرز",
+    city: "کرج",
+    locationArea: "عظیمیه، بلوار طالقانی شمالی",
+    year: 1403,
+    yearFa: "۱۴۰۳",
+    category: "residential",
+    categoryLabel: "اداری و تجاری",
+    systemUsed: "سیستم ترکیبی ترمال بریک آلومینیومی + درب‌های ضد سرقت مدیریتی سفارشی",
+    estimatedUnits: 45,
+    estimatedUnitsFa: "۴۵ دهانه و درب ساختمانی",
+    architecturalChallenge:
+      "ایجاد چهره اداری لوکس، عایق‌سازی شدید صوتی در خیابان اصلی و کنترل تابش شدید غرب ساختمان.",
+    technicalSolution:
+      "اجرای کرتین‌وال آلومینیومی لامل ترمال بریک با شیشه‌های کنترل خورشیدی رفلکس ملایم و استفاده از درب‌های لابی با قفل‌های امنیتی برقی کنترل دسترسی.",
+    specHighlights: [
+      "شیشه‌های با پوشش نانومتالیک کنترل حرارت",
+      "پوشش آنودایزینگ نقره‌ای مات ادیتوریال",
+      "درب‌های ورودی مجهز به هسته فولادی ۲ میلی‌متری",
+      "بهبود رده انرژی ساختمان به گرید A",
+    ],
+    image: "/images/projects/project-karaj-commercial.webp",
+    isFeatured: true,
+  },
+];
+
+/**
+ * Filter projects by category or return all.
+ */
+export function getProjectsByCategory(category?: ProjectCategory | "all"): ArchitecturalProject[] {
+  if (!category || category === "all") return PROJECTS;
+  return PROJECTS.filter((p) => p.category === category);
+}
+
+/**
+ * Filter projects by city.
+ */
+export function getProjectsByCity(city: string): ArchitecturalProject[] {
+  return PROJECTS.filter((p) => p.city.includes(city));
+}
+
+/**
+ * Returns featured projects for landing page.
+ */
+export function getFeaturedProjects(): ArchitecturalProject[] {
+  return PROJECTS.filter((p) => p.isFeatured);
+}
+
+
+==================== FILE: src\lib\assets.ts ====================
+const isProd = process.env.NODE_ENV === "production";
+export const BASE_PATH = isProd ? "/sepanta-co" : "";
+
+/**
+ * Returns a static asset path prefixed with GitHub Pages basePath in production.
+ * @example assetPath("/images/hero.webp") -> "/sepanta-co/images/hero.webp" (in prod)
+ */
+export function assetPath(path: string): string {
+  if (!path) return "";
+  // If already absolute URL or data URI, return as-is
+  if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("data:")) {
+    return path;
+  }
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  return `${BASE_PATH}${cleanPath}`;
+}
+
+export const getAssetPath = assetPath;
+
+
+==================== FILE: src\lib\format.ts ====================
+/**
+ * Persian typography & formatting utilities for Sepanta Industrial Group
+ */
+
+const PERSIAN_DIGITS = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+const ARABIC_DIGITS = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
+
+/**
+ * Converts English digits (0-9) to standard Persian digits (۰-۹).
+ */
+export function toPersianDigits(input: string | number): string {
+  if (input === null || input === undefined) return "";
+  const str = String(input);
+  return str.replace(/\d/g, (d) => PERSIAN_DIGITS[parseInt(d, 10)]);
+}
+
+/**
+ * Normalizes both Persian (۰-۹) and Arabic (٠-٩) digits to standard ASCII English digits (0-9).
+ * Crucial for technical form inputs, calculator dimensions, and math calculations.
+ */
+export function toEnglishDigits(input: string): string {
+  if (!input) return "";
+  let result = input;
+  for (let i = 0; i < 10; i++) {
+    result = result.replace(new RegExp(PERSIAN_DIGITS[i], "g"), String(i));
+    result = result.replace(new RegExp(ARABIC_DIGITS[i], "g"), String(i));
+  }
+  return result;
+}
+
+/**
+ * Normalizes Arabic characters (ي / ك) to standard Persian (ی / ک)
+ * and cleans up common non-standard spacing while preserving ZWNJ.
+ */
+export function normalizePersianText(text: string): string {
+  if (!text) return "";
+  return text
+    .replace(/ي/g, "ی")
+    .replace(/ك/g, "ک")
+    .replace(/ۀ/g, "ه‌ی");
+}
+
+/**
+ * Formats a number with standard Persian thousand separators (٬).
+ */
+export function formatPersianNumber(num: number): string {
+  if (isNaN(num)) return "۰";
+  const parts = Math.round(num).toString().split(".");
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "٬");
+  return toPersianDigits(parts.join("."));
+}
+
+/**
+ * Formats a price range in Toman with Persian digits.
+ * @example formatTomanRange(3500000, 4800000) => "۳٬۵۰۰٬۰۰۰ تا ۴٬۸۰۰٬۰۰۰ تومان"
+ */
+export function formatTomanRange(min: number, max: number): string {
+  const minStr = formatPersianNumber(min);
+  const maxStr = formatPersianNumber(max);
+  if (min === max) {
+    return `${minStr} تومان`;
+  }
+  return `${minStr} تا ${maxStr} تومان`;
+}
+
+
+==================== FILE: src\lib\utils.ts ====================
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]): string {
+  return twMerge(clsx(inputs));
+}
+
+export { assetPath, BASE_PATH } from "./assets";
+export { toPersianDigits, toEnglishDigits, normalizePersianText, formatTomanRange } from "./format";
+

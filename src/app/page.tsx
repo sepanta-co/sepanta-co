@@ -87,7 +87,7 @@ export default function HomePage() {
                 href="/about/#contact"
                 className="flex items-center justify-between md:justify-start gap-3 text-zinc-300 hover:text-white transition-colors py-1.5 md:py-0 px-2 md:ps-6"
               >
-                <span className="text-brass font-bold">پروژهها و انبوهسازان:</span>
+                <span className="text-brass font-bold">پروژه‌ها و انبوه‌سازان:</span>
                 <span>ظرفیت ۱٬۰۰۰ واحد ماهانه و برآورد روی نقشه</span>
                 <span className="text-brass">←</span>
               </Link>

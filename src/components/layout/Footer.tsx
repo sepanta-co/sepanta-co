@@ -120,11 +120,11 @@ export function Footer() {
             </Link>
             <span>•</span>
             <Link href="/configurator/" className="hover:text-white transition-colors">
-              محاسبهگر آنلاین
+              محاسبه‌گر آنلاین
             </Link>
             <span>•</span>
             <Link href="/projects/" className="hover:text-white transition-colors">
-              پروژهها
+              پروژه‌ها
             </Link>
           </div>
         </div>

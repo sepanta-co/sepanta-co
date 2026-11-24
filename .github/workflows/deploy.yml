@@ -1,4 +1,4 @@
-﻿name: Deploy Sepanta Demo to GitHub Pages
+name: Deploy Sepanta Demo to GitHub Pages
 
 on:
   push:
@@ -37,6 +37,7 @@ jobs:
         run: npm run build
         env:
           NODE_ENV: production
+          NEXT_PUBLIC_BASE_PATH: /sepanta-co
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

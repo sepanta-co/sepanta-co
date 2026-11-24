@@ -343,7 +343,7 @@ function ConfiguratorStudio() {
         {/* Page Top Headline */}
         <div className="max-w-3xl space-y-3 no-print">
           <span className="text-xs font-bold text-brass block">
-            محاسبهگر فنی و مهندسی سپنتا
+            محاسبه‌گر فنی و مهندسی سپنتا
           </span>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-zinc-950 tracking-tight leading-tight">
             پیکربندی ابعادی و برآورد قیمت کارخانه
@@ -1025,7 +1025,7 @@ export default function ConfiguratorPage() {
       fallback={
         <div className="w-full min-h-[60vh] flex items-center justify-center pt-28 pb-20">
           <div className="text-sm font-semibold text-zinc-500">
-            در حال بارگذاری محاسبهگر فنی سپنتا...
+            در حال بارگذاری محاسبه‌گر فنی سپنتا...
           </div>
         </div>
       }

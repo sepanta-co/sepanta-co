@@ -11,7 +11,10 @@ const rawBasePath =
       ? `/${repoName}`
       : "";
 
-const normalizedBasePath = rawBasePath.replace(/\/+$/, "");
+const cleanedRaw = rawBasePath.trim();
+const normalizedBasePath = cleanedRaw
+  ? (cleanedRaw.startsWith("/") ? cleanedRaw : `/${cleanedRaw}`).replace(/\/+$/, "")
+  : "";
 
 const nextConfig: NextConfig = {
   output: "export",

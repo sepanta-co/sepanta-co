@@ -146,7 +146,7 @@ export default function ProjectsPage() {
             سوابق اجرایی کارخانه
           </span>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-zinc-950 tracking-tight leading-tight">
-            پروژههای تأمین و اجراشده توسط گروه صنعتی سپنتا
+            پروژه‌های تأمین و اجراشده توسط گروه صنعتی سپنتا
           </h1>
           <p className="text-zinc-600 text-base sm:text-lg leading-relaxed">
             بیش از دو دهه اجرای پروژه‌های مسکونی مدرن، ویلاهای لوکس کوهستانی، انبوه‌سازی و تعویض پنجره بدون تخریب در زنجان و سراسر کشور.

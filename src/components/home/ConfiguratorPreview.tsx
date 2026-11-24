@@ -67,7 +67,7 @@ export function ConfiguratorPreview() {
         {/* Section Header */}
         <div className="max-w-3xl space-y-3">
           <span className="text-xs font-bold text-brass block">
-            محاسبهگر فنی سپنتا
+            محاسبه‌گر فنی سپنتا
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight text-white">
             ترسیم ابعادی دهانه و برآورد شفاف هزینه کارخانه
@@ -163,7 +163,7 @@ export function ConfiguratorPreview() {
                   href={`/configurator/?product=${activePreset.system}&w=${activePreset.widthCm}&h=${activePreset.heightCm}&panes=${activePreset.panes}`}
                   className="w-full inline-flex items-center justify-center py-3.5 px-4 text-sm font-bold text-white bg-brass hover:bg-brass-hover rounded-[2px] transition-colors"
                 >
-                  <span>شخصی‌سازی این دهانه در محاسبهگر</span>
+                  <span>شخصی‌سازی این دهانه در محاسبه‌گر</span>
                   <ArrowLeft className="w-4 h-4 ms-2" />
                 </Link>
               </div>

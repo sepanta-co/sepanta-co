@@ -1,5 +1,7 @@
-const RAW_BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-export const BASE_PATH = RAW_BASE.replace(/\/+$/, "");
+const RAW_BASE = (process.env.NEXT_PUBLIC_BASE_PATH ?? "").trim();
+export const BASE_PATH = RAW_BASE
+  ? (RAW_BASE.startsWith("/") ? RAW_BASE : `/${RAW_BASE}`).replace(/\/+$/, "")
+  : "";
 
 export function assetPath(path: string): string {
   if (!path) return "";

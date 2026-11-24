@@ -8,8 +8,8 @@ import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
   { href: "/products/", label: "محصولات" },
-  { href: "/configurator/", label: "محاسبهگر فنی" },
-  { href: "/projects/", label: "پروژهها" },
+  { href: "/configurator/", label: "محاسبه‌گر فنی" },
+  { href: "/projects/", label: "پروژه‌ها" },
   { href: "/about/", label: "کارخانه و تماس" },
 ];
 

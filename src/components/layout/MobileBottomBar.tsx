@@ -44,7 +44,7 @@ export function MobileBottomBar() {
           <span>برآورد قیمت</span>
         </Link>
 
-        {/* پروژهها */}
+        {/* پروژه‌ها */}
         <Link
           href="/projects/"
           className={cn(
@@ -55,7 +55,7 @@ export function MobileBottomBar() {
           )}
         >
           <Building2 className="w-5 h-5 stroke-[1.75]" />
-          <span>پروژهها</span>
+          <span>پروژه‌ها</span>
         </Link>
 
         {/* تماس */}

@@ -43,7 +43,7 @@ export function Footer() {
               {PRODUCTS.map((p) => (
                 <li key={p.id}>
                   <Link
-                    href={`/products/#${p.slug}`}
+                    href={`/products/${p.slug}/`}
                     className="hover:text-white transition-colors flex items-center justify-between group"
                   >
                     <span>{p.persianTitle}</span>

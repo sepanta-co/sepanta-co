@@ -267,10 +267,10 @@ export function ProductShowcase() {
                 )}
 
                 <Link
-                  href={`/products/#${activeProduct.slug}`}
+                  href={`/products/${activeProduct.slug}/`}
                   className="inline-flex items-center justify-center px-4 py-2.5 text-xs sm:text-sm font-medium text-zinc-800 bg-white border border-zinc-300 hover:bg-zinc-100 rounded-[2px] transition-colors"
                 >
-                  <span>مشخصات کامل خط تولید</span>
+                  <span>صفحه اختصاصی و مشخصات فنی</span>
                 </Link>
               </div>
             </div>

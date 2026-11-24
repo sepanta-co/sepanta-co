@@ -246,7 +246,7 @@ export default function HomePage() {
 
                 <div className="pt-2">
                   <Link
-                    href="/projects/"
+                    href={`/projects/${leadProject.slug}/`}
                     className="inline-flex items-center gap-2 text-xs font-bold text-zinc-950 hover:text-brass transition-colors"
                   >
                     <span>بررسی جزئیات فنی و راهکار اجرایی</span>
@@ -265,14 +265,17 @@ export default function HomePage() {
                 className="border border-zinc-200 bg-white flex flex-col justify-between hover:border-zinc-400 transition-colors shadow-xs"
               >
                 <div>
-                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-900 border-b border-zinc-200">
+                  <Link
+                    href={`/projects/${p.slug}/`}
+                    className="block relative aspect-[4/3] w-full overflow-hidden bg-zinc-900 border-b border-zinc-200 group"
+                  >
                     <StaticImage
                       src={p.image}
                       alt={p.title}
                       fill
-                      className="object-cover"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                  </div>
+                  </Link>
 
                   <div className="p-5 space-y-2.5">
                     <div className="flex items-center justify-between text-xs text-zinc-500">
@@ -280,9 +283,11 @@ export default function HomePage() {
                       <span className="tabular-nums font-semibold">{p.yearFa}</span>
                     </div>
 
-                    <h4 className="text-base font-bold text-zinc-950 leading-snug">
-                      {p.title}
-                    </h4>
+                    <Link href={`/projects/${p.slug}/`} className="block">
+                      <h4 className="text-base font-bold text-zinc-950 leading-snug hover:text-brass transition-colors">
+                        {p.title}
+                      </h4>
+                    </Link>
 
                     <p className="text-xs text-zinc-600 line-clamp-2 leading-relaxed">
                       {p.architecturalChallenge}
@@ -290,10 +295,17 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <div className="p-5 pt-0">
-                  <span className="text-[11px] text-zinc-500 block border-t border-zinc-100 pt-2.5 font-medium">
+                <div className="p-5 pt-0 flex items-center justify-between border-t border-zinc-100 pt-2.5">
+                  <span className="text-[11px] text-zinc-500 font-medium">
                     {p.systemUsed}
                   </span>
+                  <Link
+                    href={`/projects/${p.slug}/`}
+                    className="text-xs font-bold text-zinc-900 hover:text-brass transition-colors inline-flex items-center gap-1"
+                  >
+                    <span>جزئیات</span>
+                    <ArrowLeft className="w-3 h-3" />
+                  </Link>
                 </div>
               </div>
             ))}

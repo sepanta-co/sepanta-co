@@ -55,14 +55,17 @@ export default function ProductsPage() {
                     >
                       <div>
                         {/* High-res Image Header 16:10 */}
-                        <div className="relative aspect-[16/10] w-full overflow-hidden bg-zinc-900 border-b border-zinc-200">
+                        <Link
+                          href={`/products/${product.slug}/`}
+                          className="block relative aspect-[16/10] w-full overflow-hidden bg-zinc-900 border-b border-zinc-200 group"
+                        >
                           <StaticImage
                             src={product.image}
                             alt={product.persianTitle}
                             fill
-                            className="object-cover"
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
                           />
-                        </div>
+                        </Link>
 
                         {/* Content */}
                         <div className="p-6 sm:p-8 space-y-5">
@@ -75,9 +78,11 @@ export default function ProductsPage() {
                                 ضمانت {toPersianDigits(product.warrantyYears)} ساله کتبی
                               </span>
                             </div>
-                            <h3 className="text-2xl font-bold text-zinc-950">
-                              {product.persianTitle}
-                            </h3>
+                            <Link href={`/products/${product.slug}/`} className="block group">
+                              <h3 className="text-2xl font-bold text-zinc-950 group-hover:text-brass transition-colors">
+                                {product.persianTitle}
+                              </h3>
+                            </Link>
                             <p className="font-mono text-xs text-zinc-400 pt-0.5">
                               {product.name}
                             </p>
@@ -140,11 +145,11 @@ export default function ProductsPage() {
                       </div>
 
                       {/* Card Bottom CTA */}
-                      <div className="p-6 pt-0 border-t border-zinc-100 flex items-center justify-between">
+                      <div className="p-6 pt-0 border-t border-zinc-100 flex flex-col sm:flex-row items-center gap-3">
                         {product.configuratorSystem ? (
                           <Link
                             href={`/configurator/?product=${product.configuratorSystem}`}
-                            className="w-full inline-flex items-center justify-center py-2.5 text-xs font-bold text-white bg-brass hover:bg-brass-hover rounded-[2px] transition-colors min-h-[44px]"
+                            className="w-full sm:flex-1 inline-flex items-center justify-center py-2.5 text-xs font-bold text-white bg-brass hover:bg-brass-hover rounded-[2px] transition-colors min-h-[44px]"
                           >
                             <span>پیکربندی ابعادی این سیستم</span>
                             <span className="ms-1.5 font-bold">←</span>
@@ -152,12 +157,18 @@ export default function ProductsPage() {
                         ) : (
                           <Link
                             href="/about/#contact"
-                            className="w-full inline-flex items-center justify-center py-2.5 text-xs font-bold text-zinc-900 bg-zinc-100 hover:bg-zinc-200 border border-zinc-300 rounded-[2px] transition-colors min-h-[44px]"
+                            className="w-full sm:flex-1 inline-flex items-center justify-center py-2.5 text-xs font-bold text-zinc-900 bg-zinc-100 hover:bg-zinc-200 border border-zinc-300 rounded-[2px] transition-colors min-h-[44px]"
                           >
                             <span>استعلام تلفنی ابعاد سفارشی</span>
                             <span className="ms-1.5 font-bold">←</span>
                           </Link>
                         )}
+                        <Link
+                          href={`/products/${product.slug}/`}
+                          className="w-full sm:w-auto inline-flex items-center justify-center py-2.5 px-4 text-xs font-bold text-zinc-800 bg-white border border-zinc-300 hover:bg-zinc-50 rounded-[2px] transition-colors min-h-[44px]"
+                        >
+                          <span>مشخصات فنی</span>
+                        </Link>
                       </div>
                     </article>
                   );

@@ -124,14 +124,15 @@ function ConfiguratorStudio() {
     const rawH = searchParams.get("h") || "";
     const rawPanes = searchParams.get("panes") || "";
 
+    const lower = rawProd.trim().toLowerCase();
     const normalizedSys =
-      rawProd === "upvc-window" || rawProd === "upvc"
+      lower === "upvc-window" || lower === "upvc"
         ? "upvc"
-        : rawProd === "thermal-break-window" || rawProd === "thermal-break"
+        : lower === "thermal-break-window" || lower === "thermal-break" || lower === "thermal"
         ? "thermal-break"
-        : rawProd === "balcony-glass"
+        : lower === "frameless-folding-glass" || lower === "balcony-glass" || lower === "balcony"
         ? "balcony-glass"
-        : rawProd === "pleated-mesh"
+        : lower === "sliding-pleated-mesh" || lower === "pleated-mesh" || lower === "mesh"
         ? "pleated-mesh"
         : null;
 

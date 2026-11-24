@@ -63,14 +63,17 @@ function ProjectsGallery() {
           >
             <div>
               {/* Image at Top in aspect-[4/3] */}
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-zinc-900 border-b border-zinc-200">
+              <Link
+                href={`/projects/${project.slug}/`}
+                className="block relative aspect-[4/3] w-full overflow-hidden bg-zinc-900 border-b border-zinc-200 group"
+              >
                 <StaticImage
                   src={project.image}
                   alt={project.title}
                   fill
-                  className="object-cover"
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-              </div>
+              </Link>
 
               <div className="p-6 sm:p-7 space-y-4">
                 <div className="flex items-center justify-between text-xs text-zinc-500">
@@ -84,9 +87,11 @@ function ProjectsGallery() {
                   <span className="text-xs font-medium text-zinc-500 block mb-1">
                     {project.categoryLabel}
                   </span>
-                  <h3 className="text-xl font-bold text-zinc-950 leading-snug">
-                    {project.title}
-                  </h3>
+                  <Link href={`/projects/${project.slug}/`} className="block group">
+                    <h3 className="text-xl font-bold text-zinc-950 leading-snug group-hover:text-brass transition-colors">
+                      {project.title}
+                    </h3>
+                  </Link>
                 </div>
 
                 <div className="bg-zinc-50 p-3 border border-zinc-200 text-xs space-y-1">
@@ -126,8 +131,14 @@ function ProjectsGallery() {
             </div>
 
             <div className="px-6 py-4 border-t border-zinc-100 bg-zinc-50/50 flex items-center justify-between text-xs">
-              <span className="text-zinc-500">پوشش سراسری:</span>
-              <span className="font-bold text-zinc-900">تأمین و نصب توسط سپنتا</span>
+              <span className="text-zinc-500">پوشش سراسری: تأمین و نصب</span>
+              <Link
+                href={`/projects/${project.slug}/`}
+                className="font-bold text-brass hover:underline inline-flex items-center gap-1"
+              >
+                <span>مشاهده مشخصات و چالش پروژه</span>
+                <span>←</span>
+              </Link>
             </div>
           </article>
         ))}

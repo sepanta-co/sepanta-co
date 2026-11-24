@@ -76,7 +76,7 @@ export const PROJECTS: ArchitecturalProject[] = [
     specHighlights: [
       "دهانه‌های سرتاسری شیشه بدون ستون میانی",
       "ضریب انتقال حرارت Uw ≤ 1.1 W/m²K",
-      "پوشش آنادایز نقرهای مات ۲۰ میکرون",
+      "پوشش آنادایز نقره‌ای مات ۲۰ میکرون",
       "ادغام تراس با شیشه بالکنی تاشو چهارفصل",
     ],
     image: "/images/projects/project-villa-gavazang.webp",
@@ -187,7 +187,7 @@ export const PROJECTS: ArchitecturalProject[] = [
       "اجرای کرتین‌وال آلومینیومی لامل ترمال بریک با شیشه‌های کنترل خورشیدی رفلکس ملایم و استفاده از درب‌های لابی با قفل‌های امنیتی برقی کنترل دسترسی.",
     specHighlights: [
       "شیشه‌های با پوشش نانومتالیک کنترل حرارت",
-      "پوشش آنادایز نقرهای مات ۲۰ میکرون",
+      "پوشش آنادایز نقره‌ای مات ۲۰ میکرون",
       "درب‌های ورودی مجهز به هسته فولادی ۲ میلی‌متری",
       "بهبود رده انرژی ساختمان به گرید A",
     ],
@@ -195,6 +195,13 @@ export const PROJECTS: ArchitecturalProject[] = [
     isFeatured: true,
   },
 ];
+
+/**
+ * Find project by unique slug.
+ */
+export function getProjectBySlug(slug: string): ArchitecturalProject | undefined {
+  return PROJECTS.find((p) => p.slug === slug);
+}
 
 /**
  * Filter projects by category or return all.

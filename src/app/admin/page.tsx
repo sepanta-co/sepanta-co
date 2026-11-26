@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
-import { getAdminSession } from "@/lib/admin-auth";
+import { getAdminSession, toPublicUserProfile } from "@/lib/admin-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +21,7 @@ export default async function AdminPage() {
         <AdminDashboard
           initialSession={
             session
-              ? { authenticated: true, username: session.username }
+              ? { authenticated: true, user: toPublicUserProfile(session) }
               : { authenticated: false }
           }
         />

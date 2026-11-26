@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAdminSession, verifySameOrigin } from "@/lib/admin-auth";
+import { requireAdminAccess, verifySameOrigin } from "@/lib/admin-auth";
 import { getDb, type PricingRuleRow } from "@/lib/db";
 import { getFxSettings } from "@/lib/fx-sync";
 import { toLatinDigits } from "@/lib/persian-seo";
@@ -22,13 +22,8 @@ function parseNumber(val: unknown): number {
 }
 
 export async function GET() {
-  const session = await getAdminSession();
-  if (!session) {
-    return NextResponse.json(
-      { ok: false, error: "دسترسی غیرمجاز" },
-      { status: 401 }
-    );
-  }
+  const auth = await requireAdminAccess("pricing:view");
+  if (!auth.ok) return auth.response;
 
   const db = getDb();
   const rules = db
@@ -46,13 +41,8 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
-  const session = await getAdminSession();
-  if (!session) {
-    return NextResponse.json(
-      { ok: false, error: "دسترسی غیرمجاز" },
-      { status: 401 }
-    );
-  }
+  const auth = await requireAdminAccess("pricing:edit");
+  if (!auth.ok) return auth.response;
 
   if (!verifySameOrigin(request)) {
     return NextResponse.json(

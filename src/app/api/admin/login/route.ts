@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import {
+  authenticateUser,
   COOKIE_NAME,
   createSessionToken,
   getSessionCookieOptions,
-  verifyAdminCredentials,
+  toPublicUserProfile,
   verifySameOrigin,
 } from "@/lib/admin-auth";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
@@ -57,14 +58,19 @@ export async function POST(request: Request) {
     typeof body.username === "string" ? body.username.trim() : "";
   const password = typeof body.password === "string" ? body.password : "";
 
-  if (!username || !password || !verifyAdminCredentials(username, password)) {
+  const session =
+    username && password ? authenticateUser(username, password) : null;
+  if (!session) {
     return NextResponse.json(
-      { ok: false, error: "نام کاربری یا رمز عبور اشتباه است." },
+      { ok: false, error: "نام کاربری یا رمز عبور اشتباه است یا حساب غیرفعال است." },
       { status: 401 }
     );
   }
 
-  const token = createSessionToken(username);
+  const token = createSessionToken({
+    userId: session.userId,
+    username: session.username,
+  });
   if (!token) {
     return NextResponse.json(
       { ok: false, error: "پیکربندی احراز هویت سرور کامل نیست." },
@@ -72,7 +78,11 @@ export async function POST(request: Request) {
     );
   }
 
-  const response = NextResponse.json({ ok: true, username }, { status: 200 });
+  const user = toPublicUserProfile(session);
+  const response = NextResponse.json(
+    { ok: true, username: user.username, user },
+    { status: 200 }
+  );
   response.cookies.set(COOKIE_NAME, token, getSessionCookieOptions());
   return response;
 }

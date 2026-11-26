@@ -8,6 +8,7 @@ import {
   DollarSign,
   Download,
   History,
+  ListChecks,
   Lock,
   LogOut,
   Plus,
@@ -16,8 +17,22 @@ import {
   Search,
   ShieldCheck,
   SlidersHorizontal,
+  UserCog,
   Users,
 } from "lucide-react";
+import type { AdminUserProfile } from "@/lib/admin-auth";
+import {
+  ROLE_LABELS,
+  type PermissionKey,
+} from "@/lib/permissions";
+import {
+  StaffManagementPanel,
+  type StaffMemberItem,
+} from "./StaffManagementPanel";
+import {
+  TasksChecklistPanel,
+  type StaffTaskItem,
+} from "./TasksChecklistPanel";
 import {
   FRAME_FINISHES,
   GLASS_OPTIONS,
@@ -50,7 +65,7 @@ import {
 
 interface SessionState {
   authenticated: boolean;
-  username?: string;
+  user?: AdminUserProfile;
 }
 
 interface AdminInquiryItem {
@@ -110,7 +125,17 @@ interface AdminServiceRequest {
   city: string;
 }
 
-type AdminTab = "inquiries" | "pricing" | "warranties";
+type AdminTab = "tasks" | "inquiries" | "pricing" | "warranties" | "staff";
+
+function resolveDefaultTab(user?: AdminUserProfile): AdminTab {
+  if (!user) return "tasks";
+  if (user.role === "staff") return "tasks";
+  if (user.permissions.includes("inquiries:view")) return "inquiries";
+  if (user.permissions.includes("pricing:view")) return "pricing";
+  if (user.permissions.includes("warranties:manage")) return "warranties";
+  if (user.permissions.includes("staff:manage")) return "staff";
+  return "tasks";
+}
 
 function formatFaDate(iso: string): string {
   try {
@@ -130,7 +155,9 @@ export function AdminDashboard({
   initialSession: SessionState;
 }) {
   const [session, setSession] = useState<SessionState>(initialSession);
-  const [activeTab, setActiveTab] = useState<AdminTab>("inquiries");
+  const [activeTab, setActiveTab] = useState<AdminTab>(() =>
+    resolveDefaultTab(initialSession.user)
+  );
 
   // Login state
   const [username, setUsername] = useState("");
@@ -178,10 +205,24 @@ export function AdminDashboard({
   const [creatingWarranty, setCreatingWarranty] = useState(false);
   const [savingServiceId, setSavingServiceId] = useState<number | null>(null);
 
+  // Staff & tasks state
+  const [staffList, setStaffList] = useState<StaffMemberItem[]>([]);
+  const [tasksList, setTasksList] = useState<StaffTaskItem[]>([]);
+  const [selectedTaskStaffFilter, setSelectedTaskStaffFilter] = useState("all");
+  const [defaultAssignStaffId, setDefaultAssignStaffId] = useState<number | null>(
+    null
+  );
+
   const [feedback, setFeedback] = useState<{
     type: "success" | "error";
     text: string;
   } | null>(null);
+
+  const hasPerm = useCallback(
+    (perm: PermissionKey) =>
+      Boolean(session.user?.permissions.includes(perm)),
+    [session.user]
+  );
 
   const loadInquiries = useCallback(
     async (status = statusFilter, q = searchQuery) => {
@@ -280,99 +321,194 @@ export function AdminDashboard({
     }
   }, []);
 
-  useEffect(() => {
-    if (!session.authenticated) return;
-    let active = true;
+  const loadStaff = useCallback(async () => {
+    const res = await fetch("/api/admin/staff/", { cache: "no-store" });
+    if (res.status === 401) {
+      setSession({ authenticated: false });
+      return;
+    }
+    if (!res.ok) return;
+    const data = (await res.json()) as {
+      ok?: boolean;
+      staff?: StaffMemberItem[];
+    };
+    if (data.ok && data.staff) {
+      setStaffList(data.staff);
+    }
+  }, []);
 
-    Promise.all([
-      fetch("/api/admin/inquiries/", { cache: "no-store" }),
-      fetch("/api/admin/pricing-rules/", { cache: "no-store" }),
-      fetch("/api/admin/warranties/", { cache: "no-store" }),
-      fetch("/api/admin/fx/", { cache: "no-store" }),
-    ])
-      .then(async ([inqRes, priceRes, warRes, fxRes]) => {
+  const loadTasks = useCallback(async () => {
+    const res = await fetch("/api/admin/tasks/", { cache: "no-store" });
+    if (res.status === 401) {
+      setSession({ authenticated: false });
+      return;
+    }
+    if (!res.ok) return;
+    const data = (await res.json()) as {
+      ok?: boolean;
+      tasks?: StaffTaskItem[];
+    };
+    if (data.ok && data.tasks) {
+      setTasksList(data.tasks);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!session.authenticated || !session.user) return;
+    let active = true;
+    const perms = new Set(session.user.permissions);
+
+    const requests: Promise<void>[] = [
+      fetch("/api/admin/tasks/", { cache: "no-store" }).then(async (res) => {
         if (!active) return;
-        if (
-          inqRes.status === 401 ||
-          priceRes.status === 401 ||
-          warRes.status === 401 ||
-          fxRes.status === 401
-        ) {
+        if (res.status === 401) {
           setSession({ authenticated: false });
           return;
         }
+        if (!res.ok) return;
+        const data = (await res.json()) as {
+          ok?: boolean;
+          tasks?: StaffTaskItem[];
+        };
+        if (active && data.ok && data.tasks) {
+          setTasksList(data.tasks);
+        }
+      }),
+    ];
 
-        const [inqData, priceData, warData, fxData] = (await Promise.all([
-          inqRes.json(),
-          priceRes.json(),
-          warRes.json(),
-          fxRes.json(),
-        ])) as [
-          {
-            ok?: boolean;
-            kpis?: { total: number; newCount: number; pipelineIrr: number };
-            inquiries?: AdminInquiry[];
-          },
-          { ok?: boolean; rules?: PricingRuleRow[] },
-          {
-            ok?: boolean;
-            warranties?: AdminWarranty[];
-            serviceRequests?: AdminServiceRequest[];
-          },
-          {
+    if (perms.has("inquiries:view")) {
+      requests.push(
+        fetch("/api/admin/inquiries/", { cache: "no-store" }).then(
+          async (res) => {
+            if (!active) return;
+            if (res.status === 401) {
+              setSession({ authenticated: false });
+              return;
+            }
+            if (!res.ok) return;
+            const inqData = (await res.json()) as {
+              ok?: boolean;
+              kpis?: { total: number; newCount: number; pipelineIrr: number };
+              inquiries?: AdminInquiry[];
+            };
+            if (active && inqData.ok && inqData.inquiries) {
+              setInquiries(inqData.inquiries);
+              if (inqData.kpis) setKpis(inqData.kpis);
+              const statuses: Record<number, string> = {};
+              const notesMap: Record<number, string> = {};
+              for (const inq of inqData.inquiries) {
+                statuses[inq.id] = inq.status;
+                notesMap[inq.id] = inq.adminNotes ?? "";
+              }
+              setDraftStatuses(statuses);
+              setDraftNotes(notesMap);
+            }
+          }
+        )
+      );
+    }
+
+    if (perms.has("pricing:view")) {
+      requests.push(
+        fetch("/api/admin/pricing-rules/", { cache: "no-store" }).then(
+          async (res) => {
+            if (!active) return;
+            if (res.status === 401) {
+              setSession({ authenticated: false });
+              return;
+            }
+            if (!res.ok) return;
+            const priceData = (await res.json()) as {
+              ok?: boolean;
+              rules?: PricingRuleRow[];
+            };
+            if (active && priceData.ok && priceData.rules) {
+              setPricingRules(priceData.rules);
+            }
+          }
+        ),
+        fetch("/api/admin/fx/", { cache: "no-store" }).then(async (res) => {
+          if (!active) return;
+          if (res.status === 401) {
+            setSession({ authenticated: false });
+            return;
+          }
+          if (!res.ok) return;
+          const fxData = (await res.json()) as {
             ok?: boolean;
             fx?: FxSettingsRow;
             history?: FxRateHistoryRow[];
-          },
-        ];
-
-        if (!active) return;
-
-        if (inqData.ok && inqData.inquiries) {
-          setInquiries(inqData.inquiries);
-          if (inqData.kpis) setKpis(inqData.kpis);
-          const statuses: Record<number, string> = {};
-          const notesMap: Record<number, string> = {};
-          for (const inq of inqData.inquiries) {
-            statuses[inq.id] = inq.status;
-            notesMap[inq.id] = inq.adminNotes ?? "";
+          };
+          if (active && fxData.ok && fxData.fx) {
+            setFxSettings(fxData.fx);
+            setFxModeDraft(fxData.fx.mode);
+            setManualUsdDraft(String(fxData.fx.manual_usd_irr));
+            setSyncIntervalDraft(String(fxData.fx.sync_interval_minutes));
           }
-          setDraftStatuses(statuses);
-          setDraftNotes(notesMap);
-        }
+          if (active && fxData.ok && fxData.history) {
+            setFxHistory(fxData.history);
+          }
+        })
+      );
+    }
 
-        if (priceData.ok && priceData.rules) {
-          setPricingRules(priceData.rules);
-        }
+    if (perms.has("warranties:manage")) {
+      requests.push(
+        fetch("/api/admin/warranties/", { cache: "no-store" }).then(
+          async (res) => {
+            if (!active) return;
+            if (res.status === 401) {
+              setSession({ authenticated: false });
+              return;
+            }
+            if (!res.ok) return;
+            const warData = (await res.json()) as {
+              ok?: boolean;
+              warranties?: AdminWarranty[];
+              serviceRequests?: AdminServiceRequest[];
+            };
+            if (active && warData.ok) {
+              setWarranties(warData.warranties ?? []);
+              setServiceRequests(warData.serviceRequests ?? []);
+            }
+          }
+        )
+      );
+    }
 
-        if (warData.ok) {
-          setWarranties(warData.warranties ?? []);
-          setServiceRequests(warData.serviceRequests ?? []);
-        }
+    if (perms.has("staff:manage")) {
+      requests.push(
+        fetch("/api/admin/staff/", { cache: "no-store" }).then(async (res) => {
+          if (!active) return;
+          if (res.status === 401) {
+            setSession({ authenticated: false });
+            return;
+          }
+          if (!res.ok) return;
+          const staffData = (await res.json()) as {
+            ok?: boolean;
+            staff?: StaffMemberItem[];
+          };
+          if (active && staffData.ok && staffData.staff) {
+            setStaffList(staffData.staff);
+          }
+        })
+      );
+    }
 
-        if (fxData.ok && fxData.fx) {
-          setFxSettings(fxData.fx);
-          setFxModeDraft(fxData.fx.mode);
-          setManualUsdDraft(String(fxData.fx.manual_usd_irr));
-          setSyncIntervalDraft(String(fxData.fx.sync_interval_minutes));
-        }
-        if (fxData.ok && fxData.history) {
-          setFxHistory(fxData.history);
-        }
-      })
-      .catch(() => {
-        if (active) {
-          setFeedback({
-            type: "error",
-            text: "خطا در دریافت اطلاعات پنل مدیریت.",
-          });
-        }
-      });
+    Promise.all(requests).catch(() => {
+      if (active) {
+        setFeedback({
+          type: "error",
+          text: "خطا در دریافت اطلاعات پنل مدیریت.",
+        });
+      }
+    });
 
     return () => {
       active = false;
     };
-  }, [session.authenticated]);
+  }, [session.authenticated, session.user]);
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -390,14 +526,16 @@ export function AdminDashboard({
         ok?: boolean;
         error?: string;
         username?: string;
+        user?: AdminUserProfile;
       };
 
-      if (!res.ok || !data.ok) {
+      if (!res.ok || !data.ok || !data.user) {
         setLoginError(data.error || "ورود ناموفق بود.");
         return;
       }
 
-      setSession({ authenticated: true, username: data.username || username });
+      setSession({ authenticated: true, user: data.user });
+      setActiveTab(resolveDefaultTab(data.user));
       setPassword("");
     } catch {
       setLoginError("خطا در اتصال به سرور.");
@@ -741,6 +879,26 @@ export function AdminDashboard({
     );
   }
 
+  const currentUser = session.user;
+  const canViewInquiries = hasPerm("inquiries:view");
+  const canEditInquiries = hasPerm("inquiries:edit");
+  const canDownloadUploads = hasPerm("uploads:download");
+  const canViewPricing = hasPerm("pricing:view");
+  const canEditPricing = hasPerm("pricing:edit");
+  const canManageWarranties = hasPerm("warranties:manage");
+  const canManageStaff = hasPerm("staff:manage");
+
+  const handleRefreshAll = () => {
+    loadTasks();
+    if (canViewInquiries) loadInquiries();
+    if (canViewPricing) {
+      loadPricing();
+      loadFx();
+    }
+    if (canManageWarranties) loadWarranties();
+    if (canManageStaff) loadStaff();
+  };
+
   return (
     <div className="space-y-6">
       {/* Top Bar */}
@@ -749,23 +907,30 @@ export function AdminDashboard({
           <h1 className="text-xl font-extrabold text-ink sm:text-2xl">
             پنل مدیریت و CRM کارخانه سپنتا
           </h1>
-          <p className="mt-1 text-xs text-ink-muted">
-            کاربر فعال:{" "}
-            <span dir="ltr" className="font-mono font-bold text-ink">
-              {session.username}
+          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-ink-muted">
+            <span className="font-bold text-ink">
+              {currentUser?.fullName || currentUser?.username}
             </span>
-          </p>
+            {currentUser?.jobTitle && (
+              <span>• {currentUser.jobTitle}</span>
+            )}
+            <span dir="ltr" className="font-mono text-ink-muted">
+              (@{currentUser?.username})
+            </span>
+            <span className="rounded-md bg-accent-soft px-2 py-0.5 text-[11px] font-bold text-accent-hover">
+              {currentUser?.userId === "root"
+                ? "مدیر ارشد"
+                : currentUser
+                  ? ROLE_LABELS[currentUser.role]
+                  : "کاربر"}
+            </span>
+          </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
           <button
             type="button"
-            onClick={() => {
-              loadInquiries();
-              loadPricing();
-              loadWarranties();
-              loadFx();
-            }}
+            onClick={handleRefreshAll}
             className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-surface-subtle px-3.5 py-2 text-xs font-semibold text-ink hover:border-accent"
           >
             <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
@@ -798,7 +963,7 @@ export function AdminDashboard({
         </div>
       )}
 
-      {/* Navigation Tabs */}
+      {/* Permission-Aware Navigation Tabs */}
       <div
         role="tablist"
         aria-label="بخش‌های پنل مدیریت"
@@ -807,51 +972,126 @@ export function AdminDashboard({
         <button
           type="button"
           role="tab"
-          aria-selected={activeTab === "inquiries"}
-          onClick={() => setActiveTab("inquiries")}
+          aria-selected={activeTab === "tasks"}
+          onClick={() => setActiveTab("tasks")}
           className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
-            activeTab === "inquiries"
+            activeTab === "tasks"
               ? "bg-accent text-white shadow-xs"
               : "border border-border bg-surface text-ink-muted hover:text-ink"
           }`}
         >
-          <Users className="h-4 w-4" aria-hidden="true" />
-          <span>مدیریت استعلام‌ها و فروش (Mini-CRM)</span>
+          <ListChecks className="h-4 w-4" aria-hidden="true" />
+          <span>
+            {canManageStaff ? "وظایف و چک‌لیست تیم" : "شرح وظایف من"}
+          </span>
         </button>
 
-        <button
-          type="button"
-          role="tab"
-          aria-selected={activeTab === "pricing"}
-          onClick={() => setActiveTab("pricing")}
-          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
-            activeTab === "pricing"
-              ? "bg-accent text-white shadow-xs"
-              : "border border-border bg-surface text-ink-muted hover:text-ink"
-          }`}
-        >
-          <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
-          <span>نرخ دلار و فرمول قیمت محصولات</span>
-        </button>
+        {canViewInquiries && (
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "inquiries"}
+            onClick={() => setActiveTab("inquiries")}
+            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+              activeTab === "inquiries"
+                ? "bg-accent text-white shadow-xs"
+                : "border border-border bg-surface text-ink-muted hover:text-ink"
+            }`}
+          >
+            <Users className="h-4 w-4" aria-hidden="true" />
+            <span>مدیریت استعلام‌ها و فروش (Mini-CRM)</span>
+          </button>
+        )}
 
-        <button
-          type="button"
-          role="tab"
-          aria-selected={activeTab === "warranties"}
-          onClick={() => setActiveTab("warranties")}
-          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
-            activeTab === "warranties"
-              ? "bg-accent text-white shadow-xs"
-              : "border border-border bg-surface text-ink-muted hover:text-ink"
-          }`}
-        >
-          <ShieldCheck className="h-4 w-4" aria-hidden="true" />
-          <span>ضمانت‌نامه‌ها و خدمات پس از فروش</span>
-        </button>
+        {canViewPricing && (
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "pricing"}
+            onClick={() => setActiveTab("pricing")}
+            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+              activeTab === "pricing"
+                ? "bg-accent text-white shadow-xs"
+                : "border border-border bg-surface text-ink-muted hover:text-ink"
+            }`}
+          >
+            <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
+            <span>نرخ دلار و فرمول قیمت محصولات</span>
+          </button>
+        )}
+
+        {canManageWarranties && (
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "warranties"}
+            onClick={() => setActiveTab("warranties")}
+            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+              activeTab === "warranties"
+                ? "bg-accent text-white shadow-xs"
+                : "border border-border bg-surface text-ink-muted hover:text-ink"
+            }`}
+          >
+            <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+            <span>ضمانت‌نامه‌ها و خدمات پس از فروش</span>
+          </button>
+        )}
+
+        {canManageStaff && (
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "staff"}
+            onClick={() => setActiveTab("staff")}
+            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+              activeTab === "staff"
+                ? "bg-accent text-white shadow-xs"
+                : "border border-border bg-surface text-ink-muted hover:text-ink"
+            }`}
+          >
+            <UserCog className="h-4 w-4" aria-hidden="true" />
+            <span>کارکنان و دسترسی‌ها</span>
+          </button>
+        )}
       </div>
 
+      {/* TAB: Tasks Checklist */}
+      {activeTab === "tasks" && (
+        <TasksChecklistPanel
+          tasks={tasksList}
+          staffList={staffList}
+          canManageStaff={canManageStaff}
+          selectedStaffFilter={selectedTaskStaffFilter}
+          onSelectedStaffFilterChange={setSelectedTaskStaffFilter}
+          defaultAssignStaffId={defaultAssignStaffId}
+          onRefreshTasks={async () => {
+            await loadTasks();
+            if (canManageStaff) await loadStaff();
+          }}
+          onFeedback={setFeedback}
+        />
+      )}
+
+      {/* TAB: Staff Management */}
+      {activeTab === "staff" && canManageStaff && (
+        <StaffManagementPanel
+          staffList={staffList}
+          currentUserId={currentUser?.userId ?? "root"}
+          onRefreshStaff={async () => {
+            await loadStaff();
+            await loadTasks();
+          }}
+          onJumpToTasksForStaff={(staffId) => {
+            setDefaultAssignStaffId(staffId);
+            setSelectedTaskStaffFilter(String(staffId));
+            setActiveTab("tasks");
+          }}
+          onFeedback={setFeedback}
+        />
+      )}
+
       {/* TAB 1: Mini-CRM */}
-      {activeTab === "inquiries" && (
+      {activeTab === "inquiries" && canViewInquiries && (
         <div className="space-y-6">
           {/* KPIs */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -984,7 +1224,7 @@ export function AdminDashboard({
                           </div>
                         )}
 
-                        {inq.attachmentPath && (
+                        {inq.attachmentPath && canDownloadUploads && (
                           <div>
                             <a
                               href={`/api/admin/uploads/${inq.attachmentPath}`}
@@ -1031,63 +1271,71 @@ export function AdminDashboard({
                           </div>
                         )}
 
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
-                          <div className="md:col-span-4">
-                            <label className="block text-xs font-semibold text-ink">
-                              تغییر وضعیت پرونده
-                            </label>
-                            <select
-                              value={draftStatuses[inq.id] ?? inq.status}
-                              onChange={(e) =>
-                                setDraftStatuses((prev) => ({
-                                  ...prev,
-                                  [inq.id]: e.target.value,
-                                }))
-                              }
-                              className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
-                            >
-                              {Object.entries(INQUIRY_STATUS_LABELS).map(
-                                ([key, label]) => (
-                                  <option key={key} value={key}>
-                                    {label}
-                                  </option>
-                                )
-                              )}
-                            </select>
-                          </div>
+                        {canEditInquiries ? (
+                          <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
+                            <div className="md:col-span-4">
+                              <label className="block text-xs font-semibold text-ink">
+                                تغییر وضعیت پرونده
+                              </label>
+                              <select
+                                value={draftStatuses[inq.id] ?? inq.status}
+                                onChange={(e) =>
+                                  setDraftStatuses((prev) => ({
+                                    ...prev,
+                                    [inq.id]: e.target.value,
+                                  }))
+                                }
+                                className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
+                              >
+                                {Object.entries(INQUIRY_STATUS_LABELS).map(
+                                  ([key, label]) => (
+                                    <option key={key} value={key}>
+                                      {label}
+                                    </option>
+                                  )
+                                )}
+                              </select>
+                            </div>
 
-                          <div className="md:col-span-6">
-                            <label className="block text-xs font-semibold text-ink">
-                              یادداشت داخلی کارشناس (فقط ادمین)
-                            </label>
-                            <input
-                              type="text"
-                              value={draftNotes[inq.id] ?? ""}
-                              onChange={(e) =>
-                                setDraftNotes((prev) => ({
-                                  ...prev,
-                                  [inq.id]: e.target.value,
-                                }))
-                              }
-                              placeholder="مثلاً: تاریخ بازدید هماهنگ شد..."
-                              className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
-                            />
-                          </div>
+                            <div className="md:col-span-6">
+                              <label className="block text-xs font-semibold text-ink">
+                                یادداشت داخلی کارشناس (فقط ادمین)
+                              </label>
+                              <input
+                                type="text"
+                                value={draftNotes[inq.id] ?? ""}
+                                onChange={(e) =>
+                                  setDraftNotes((prev) => ({
+                                    ...prev,
+                                    [inq.id]: e.target.value,
+                                  }))
+                                }
+                                placeholder="مثلاً: تاریخ بازدید هماهنگ شد..."
+                                className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
+                              />
+                            </div>
 
-                          <div className="flex items-end md:col-span-2">
-                            <button
-                              type="button"
-                              disabled={savingInquiryId === inq.id}
-                              onClick={() => handleSaveInquiry(inq.id)}
-                              className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-accent px-4 py-2.5 text-xs font-semibold text-white hover:bg-accent-hover disabled:opacity-60"
-                            >
-                              <Save className="h-4 w-4" aria-hidden="true" />
-                              <span>
-                                {savingInquiryId === inq.id ? "ذخیره..." : "ذخیره"}
-                              </span>
-                            </button>
+                            <div className="flex items-end md:col-span-2">
+                              <button
+                                type="button"
+                                disabled={savingInquiryId === inq.id}
+                                onClick={() => handleSaveInquiry(inq.id)}
+                                className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-accent px-4 py-2.5 text-xs font-semibold text-white hover:bg-accent-hover disabled:opacity-60"
+                              >
+                                <Save className="h-4 w-4" aria-hidden="true" />
+                                <span>
+                                  {savingInquiryId === inq.id ? "ذخیره..." : "ذخیره"}
+                                </span>
+                              </button>
+                            </div>
                           </div>
-                        </div>
+                        ) : (
+                          inq.adminNotes && (
+                            <div className="rounded-xl border border-border bg-surface p-3.5 text-xs text-ink-muted">
+                              <strong>یادداشت کارشناس:</strong> {inq.adminNotes}
+                            </div>
+                          )
+                        )}
                       </div>
                     )}
                   </div>
@@ -1099,8 +1347,14 @@ export function AdminDashboard({
       )}
 
       {/* TAB 2: Live FX & Formula Pricing Editor */}
-      {activeTab === "pricing" && (
+      {activeTab === "pricing" && canViewPricing && (
         <div className="space-y-6">
+          {!canEditPricing && (
+            <div className="rounded-xl border border-border bg-surface px-4 py-3 text-xs font-semibold text-ink-muted">
+              دسترسی شما به این بخش فقط‌خواندنی است؛ برای ویرایش نرخ دلار یا
+              فرمول کالاها مجوز «ویرایش تعرفه و فرمول کالاها» لازم است.
+            </div>
+          )}
           {/* FX Control Panel */}
           <section className="rounded-2xl border border-amber-200 bg-surface p-5 shadow-xs sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-4">
@@ -1122,24 +1376,26 @@ export function AdminDashboard({
                 </p>
               </div>
 
-              <button
-                type="button"
-                disabled={syncingFx}
-                onClick={handleSyncFxNow}
-                className="inline-flex items-center gap-2 rounded-xl bg-surface-dark px-4 py-2.5 text-xs font-semibold text-ink-inverse transition-colors hover:bg-surface-elevated disabled:opacity-60"
-              >
-                <RefreshCw
-                  className={`h-4 w-4 text-amber-400 ${
-                    syncingFx ? "animate-spin" : ""
-                  }`}
-                  aria-hidden="true"
-                />
-                <span>
-                  {syncingFx
-                    ? "در حال دریافت نرخ..."
-                    : "بروزرسانی لحظه‌ای نرخ دلار"}
-                </span>
-              </button>
+              {canEditPricing && (
+                <button
+                  type="button"
+                  disabled={syncingFx}
+                  onClick={handleSyncFxNow}
+                  className="inline-flex items-center gap-2 rounded-xl bg-surface-dark px-4 py-2.5 text-xs font-semibold text-ink-inverse transition-colors hover:bg-surface-elevated disabled:opacity-60"
+                >
+                  <RefreshCw
+                    className={`h-4 w-4 text-amber-400 ${
+                      syncingFx ? "animate-spin" : ""
+                    }`}
+                    aria-hidden="true"
+                  />
+                  <span>
+                    {syncingFx
+                      ? "در حال دریافت نرخ..."
+                      : "بروزرسانی لحظه‌ای نرخ دلار"}
+                  </span>
+                </button>
+              )}
             </div>
 
             {fxSettings && (
@@ -1204,7 +1460,8 @@ export function AdminDashboard({
                 )}
 
                 {/* Mode & Manual Override Form */}
-                <div className="grid grid-cols-1 gap-4 rounded-xl border border-border bg-surface-subtle p-4 md:grid-cols-12">
+                {canEditPricing && (
+                  <div className="grid grid-cols-1 gap-4 rounded-xl border border-border bg-surface-subtle p-4 md:grid-cols-12">
                   <div className="md:col-span-4">
                     <p className="text-xs font-semibold text-ink">
                       حالت دریافت نرخ دلار
@@ -1298,6 +1555,7 @@ export function AdminDashboard({
                     </button>
                   </div>
                 </div>
+                )}
 
                 {/* Recent FX Rate History */}
                 {fxHistory.length > 0 && (
@@ -1395,19 +1653,21 @@ export function AdminDashboard({
                         </p>
                       </div>
 
-                      <button
-                        type="button"
-                        disabled={savingPricingKey === rule.system_key}
-                        onClick={() => handleSavePricingRule(rule)}
-                        className="inline-flex items-center gap-1.5 rounded-xl bg-accent px-4 py-2.5 text-xs font-semibold text-white hover:bg-accent-hover disabled:opacity-60"
-                      >
-                        <Save className="h-4 w-4" aria-hidden="true" />
-                        <span>
-                          {savingPricingKey === rule.system_key
-                            ? "در حال ذخیره..."
-                            : "ذخیره فرمول و تعرفه"}
-                        </span>
-                      </button>
+                      {canEditPricing && (
+                        <button
+                          type="button"
+                          disabled={savingPricingKey === rule.system_key}
+                          onClick={() => handleSavePricingRule(rule)}
+                          className="inline-flex items-center gap-1.5 rounded-xl bg-accent px-4 py-2.5 text-xs font-semibold text-white hover:bg-accent-hover disabled:opacity-60"
+                        >
+                          <Save className="h-4 w-4" aria-hidden="true" />
+                          <span>
+                            {savingPricingKey === rule.system_key
+                              ? "در حال ذخیره..."
+                              : "ذخیره فرمول و تعرفه"}
+                          </span>
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -1698,7 +1958,7 @@ export function AdminDashboard({
       )}
 
       {/* TAB 3: Warranties & Service Requests */}
-      {activeTab === "warranties" && (
+      {activeTab === "warranties" && canManageWarranties && (
         <div className="space-y-8">
           {/* Issue New Warranty */}
           <form

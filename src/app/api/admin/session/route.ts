@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAdminSession } from "@/lib/admin-auth";
+import { getAdminSession, toPublicUserProfile } from "@/lib/admin-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -8,7 +8,7 @@ export async function GET() {
 
   return NextResponse.json(
     session
-      ? { authenticated: true, username: session.username }
+      ? { authenticated: true, user: toPublicUserProfile(session) }
       : { authenticated: false },
     {
       status: 200,

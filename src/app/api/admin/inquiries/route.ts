@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAdminSession } from "@/lib/admin-auth";
+import { requireAdminAccess } from "@/lib/admin-auth";
 import { getDb } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -23,13 +23,8 @@ interface InquiryAdminRow {
 }
 
 export async function GET(request: Request) {
-  const session = await getAdminSession();
-  if (!session) {
-    return NextResponse.json(
-      { ok: false, error: "دسترسی غیرمجاز" },
-      { status: 401 }
-    );
-  }
+  const auth = await requireAdminAccess("inquiries:view");
+  if (!auth.ok) return auth.response;
 
   const url = new URL(request.url);
   const statusFilter = url.searchParams.get("status")?.trim() || "";

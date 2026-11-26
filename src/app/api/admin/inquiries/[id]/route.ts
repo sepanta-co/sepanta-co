@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAdminSession, verifySameOrigin } from "@/lib/admin-auth";
+import { requireAdminAccess, verifySameOrigin } from "@/lib/admin-auth";
 import { getDb } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -18,13 +18,8 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getAdminSession();
-  if (!session) {
-    return NextResponse.json(
-      { ok: false, error: "دسترسی غیرمجاز" },
-      { status: 401 }
-    );
-  }
+  const auth = await requireAdminAccess("inquiries:edit");
+  if (!auth.ok) return auth.response;
 
   if (!verifySameOrigin(request)) {
     return NextResponse.json(

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAdminSession, verifySameOrigin } from "@/lib/admin-auth";
+import { requireAdminAccess, verifySameOrigin } from "@/lib/admin-auth";
 import {
   getFxSettings,
   getRecentFxHistory,
@@ -24,13 +24,8 @@ function parseNumber(val: unknown): number {
 }
 
 export async function GET() {
-  const session = await getAdminSession();
-  if (!session) {
-    return NextResponse.json(
-      { ok: false, error: "دسترسی غیرمجاز" },
-      { status: 401 }
-    );
-  }
+  const auth = await requireAdminAccess("pricing:view");
+  if (!auth.ok) return auth.response;
 
   const fx = getFxSettings();
   const history = getRecentFxHistory(20);
@@ -45,13 +40,8 @@ export async function GET() {
 }
 
 async function handleFxUpdate(request: Request) {
-  const session = await getAdminSession();
-  if (!session) {
-    return NextResponse.json(
-      { ok: false, error: "دسترسی غیرمجاز" },
-      { status: 401 }
-    );
-  }
+  const auth = await requireAdminAccess("pricing:edit");
+  if (!auth.ok) return auth.response;
 
   if (!verifySameOrigin(request)) {
     return NextResponse.json(

@@ -8,6 +8,40 @@ import {
   type FxSettingsRow,
   type PricingRuleRow,
 } from "./pricing-calculator";
+import type {
+  StaffRole,
+  TaskCategory,
+  TaskPriority,
+} from "./permissions";
+
+export interface StaffUserRow {
+  id: number;
+  username: string;
+  full_name: string;
+  job_title: string;
+  password_hash: string;
+  role: StaffRole;
+  permissions_json: string;
+  is_active: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface StaffTaskRow {
+  id: number;
+  staff_user_id: number;
+  title: string;
+  description: string | null;
+  category: TaskCategory;
+  priority: TaskPriority;
+  due_label: string | null;
+  is_completed: number;
+  completed_at: string | null;
+  completed_by_username: string | null;
+  assigned_by_username: string;
+  created_at: string;
+  updated_at: string;
+}
 
 export type { FxRateHistoryRow, FxSettingsRow, PricingRuleRow };
 
@@ -136,6 +170,35 @@ function initSchema(db: Database.Database): void {
         description TEXT NOT NULL,
         status TEXT NOT NULL DEFAULT 'open',
         created_at TEXT NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS staff_users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        full_name TEXT NOT NULL,
+        job_title TEXT NOT NULL,
+        password_hash TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT 'staff',
+        permissions_json TEXT NOT NULL DEFAULT '[]',
+        is_active INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS staff_tasks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        staff_user_id INTEGER NOT NULL REFERENCES staff_users(id) ON DELETE CASCADE,
+        title TEXT NOT NULL,
+        description TEXT,
+        category TEXT NOT NULL DEFAULT 'general',
+        priority TEXT NOT NULL DEFAULT 'normal',
+        due_label TEXT,
+        is_completed INTEGER NOT NULL DEFAULT 0,
+        completed_at TEXT,
+        completed_by_username TEXT,
+        assigned_by_username TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
       );
     `);
 

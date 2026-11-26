@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { NextResponse } from "next/server";
-import { getAdminSession } from "@/lib/admin-auth";
+import { requireAdminAccess } from "@/lib/admin-auth";
 import { getUploadsDir } from "@/lib/uploads";
 
 export const dynamic = "force-dynamic";
@@ -20,13 +20,8 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ filename: string }> }
 ) {
-  const session = await getAdminSession();
-  if (!session) {
-    return NextResponse.json(
-      { ok: false, error: "دسترسی غیرمجاز" },
-      { status: 401 }
-    );
-  }
+  const auth = await requireAdminAccess("uploads:download");
+  if (!auth.ok) return auth.response;
 
   const { filename } = await params;
   if (!SAFE_FILENAME_REGEX.test(filename)) {

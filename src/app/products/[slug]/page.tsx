@@ -12,11 +12,18 @@ import {
 } from "lucide-react";
 import { ClosingCtaSection } from "@/components/sections/ClosingCtaSection";
 import { FaqAccordion } from "@/components/sections/FaqAccordion";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { PictureImage } from "@/components/ui/PictureImage";
+import { IMAGE_MANIFEST } from "@/data/image-manifest";
 import { getProductBySlug, PRODUCTS } from "@/data/products";
 import { PROJECTS } from "@/data/projects";
 import { buildCanonicalUrl, toPersianDigits } from "@/lib/persian-seo";
+import {
+  buildBreadcrumbSchema,
+  buildFaqSchema,
+  ORGANIZATION_ID,
+} from "@/lib/schema";
 import { SITE_CONFIG } from "@/lib/site-config";
 
 export const dynamicParams = false;
@@ -78,8 +85,44 @@ export default async function ProductDetailPage({
     (item) => item.slug !== product.slug
   ).slice(0, 3);
 
+  const canonical = buildCanonicalUrl(`/products/${product.slug}/`);
+  const imageUrl = `${SITE_CONFIG.siteUrl}${IMAGE_MANIFEST[product.imageKey].src}`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Product",
+        "@id": `${canonical}#product`,
+        name: product.name,
+        description: product.seoDescription,
+        image: imageUrl,
+        url: canonical,
+        category: product.category,
+        brand: {
+          "@type": "Brand",
+          name: SITE_CONFIG.name,
+        },
+        manufacturer: {
+          "@id": ORGANIZATION_ID,
+        },
+        additionalProperty: product.specs.map((spec) => ({
+          "@type": "PropertyValue",
+          name: spec.label,
+          value: spec.value,
+        })),
+      },
+      buildFaqSchema(product.faqs),
+      buildBreadcrumbSchema([
+        { name: "صفحه اصلی", pathname: "/" },
+        { name: "محصولات", pathname: "/products/" },
+        { name: product.name, pathname: `/products/${product.slug}/` },
+      ]),
+    ],
+  };
+
   return (
     <>
+      <JsonLd data={jsonLd} />
       {/* 1. Breadcrumb + Hero Split */}
       <section className="border-b border-border bg-surface-subtle">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-16 lg:px-8">

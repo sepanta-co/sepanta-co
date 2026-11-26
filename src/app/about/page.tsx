@@ -13,10 +13,20 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { StaticInquiryForm } from "@/components/about/StaticInquiryForm";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { PictureImage } from "@/components/ui/PictureImage";
 import { PRODUCTS } from "@/data/products";
-import { buildCanonicalUrl, toPersianDigits } from "@/lib/persian-seo";
+import {
+  buildCanonicalUrl,
+  toLatinDigits,
+  toPersianDigits,
+} from "@/lib/persian-seo";
+import {
+  buildBreadcrumbSchema,
+  ORGANIZATION_ID,
+  WEBSITE_ID,
+} from "@/lib/schema";
 import { SITE_CONFIG } from "@/lib/site-config";
 
 const PAGE_TITLE = "کارخانه زنجان و تماس با ما";
@@ -74,9 +84,51 @@ const WARRANTY_ITEMS = [
 
 export default function AboutAndContactPage() {
   const productOptions = PRODUCTS.map((product) => product.name);
+  const canonical = buildCanonicalUrl("/about/");
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "AboutPage",
+        "@id": `${canonical}#about`,
+        url: canonical,
+        name: PAGE_TITLE,
+        description: PAGE_DESCRIPTION,
+        inLanguage: "fa-IR",
+        isPartOf: { "@id": WEBSITE_ID },
+        mainEntity: { "@id": ORGANIZATION_ID },
+      },
+      {
+        "@type": "LocalBusiness",
+        "@id": `${canonical}#localbusiness`,
+        name: SITE_CONFIG.name,
+        url: canonical,
+        parentOrganization: { "@id": ORGANIZATION_ID },
+        telephone: toLatinDigits(
+          SITE_CONFIG.contact.phoneHref.replace("tel:", "")
+        ),
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: SITE_CONFIG.contact.factoryAddress,
+          addressLocality: "زنجان",
+          addressRegion: "زنجان",
+          addressCountry: "IR",
+        },
+        areaServed: {
+          "@type": "Country",
+          name: "Iran",
+        },
+      },
+      buildBreadcrumbSchema([
+        { name: "صفحه اصلی", pathname: "/" },
+        { name: "کارخانه و تماس", pathname: "/about/" },
+      ]),
+    ],
+  };
 
   return (
     <>
+      <JsonLd data={jsonLd} />
       {/* 1. Factory Overview Hero */}
       <section className="border-b border-border bg-surface-subtle">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">

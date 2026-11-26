@@ -9,9 +9,17 @@ import { FaqAccordion } from "@/components/sections/FaqAccordion";
 import { FeaturedProjectsSection } from "@/components/sections/FeaturedProjectsSection";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { ProductsGridSection } from "@/components/sections/ProductsGridSection";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { PictureImage } from "@/components/ui/PictureImage";
 import { GENERAL_FAQS } from "@/data/faqs";
 import { buildCanonicalUrl, toPersianDigits } from "@/lib/persian-seo";
+import {
+  buildFaqSchema,
+  buildOrganizationSchema,
+  buildWebSiteSchema,
+  ORGANIZATION_ID,
+  WEBSITE_ID,
+} from "@/lib/schema";
 import { SITE_CONFIG } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -31,8 +39,29 @@ const RETROFIT_BENEFITS = [
 ] as const;
 
 export default function HomePage() {
+  const homeUrl = buildCanonicalUrl("/");
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      buildOrganizationSchema(),
+      buildWebSiteSchema(),
+      {
+        "@type": "WebPage",
+        "@id": `${homeUrl}#webpage`,
+        url: homeUrl,
+        name: `${SITE_CONFIG.name} | تولیدکننده درب و پنجره دوجداره uPVC و آلومینیوم ترمال بریک`,
+        description: SITE_CONFIG.tagline,
+        inLanguage: "fa-IR",
+        isPartOf: { "@id": WEBSITE_ID },
+        about: { "@id": ORGANIZATION_ID },
+      },
+      buildFaqSchema(GENERAL_FAQS.slice(0, 6)),
+    ],
+  };
+
   return (
     <>
+      <JsonLd data={jsonLd} />
       {/* 1. Hero Section */}
       <HeroSection />
 

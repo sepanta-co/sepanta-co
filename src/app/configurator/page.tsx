@@ -2,9 +2,15 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { FaqAccordion } from "@/components/sections/FaqAccordion";
 import { WindowConfigurator } from "@/components/configurator/WindowConfigurator";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { GENERAL_FAQS } from "@/data/faqs";
 import { buildCanonicalUrl } from "@/lib/persian-seo";
+import {
+  buildBreadcrumbSchema,
+  buildFaqSchema,
+  ORGANIZATION_ID,
+} from "@/lib/schema";
 
 const PAGE_TITLE = "کانفیگوریتور هوشمند ابعاد و مشخصات فنی";
 const PAGE_DESCRIPTION =
@@ -26,8 +32,38 @@ export const metadata: Metadata = {
 };
 
 export default function ConfiguratorPage() {
+  const canonical = buildCanonicalUrl("/configurator/");
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": `${canonical}#webapp`,
+        name: PAGE_TITLE,
+        description: PAGE_DESCRIPTION,
+        url: canonical,
+        applicationCategory: "DesignApplication",
+        operatingSystem: "Any",
+        browserRequirements: "Requires JavaScript",
+        inLanguage: "fa-IR",
+        creator: { "@id": ORGANIZATION_ID },
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "IRR",
+        },
+      },
+      buildFaqSchema(GENERAL_FAQS.slice(0, 4)),
+      buildBreadcrumbSchema([
+        { name: "صفحه اصلی", pathname: "/" },
+        { name: "کانفیگوریتور هوشمند", pathname: "/configurator/" },
+      ]),
+    ],
+  };
+
   return (
     <>
+      <JsonLd data={jsonLd} />
       <section className="no-print border-b border-border bg-surface-subtle">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
           <Breadcrumb

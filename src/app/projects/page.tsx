@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { Building2, Compass, Ruler } from "lucide-react";
 import { ProjectsGalleryGrid } from "@/components/projects/ProjectsGalleryGrid";
 import { ClosingCtaSection } from "@/components/sections/ClosingCtaSection";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { PRODUCTS } from "@/data/products";
 import { PROJECTS } from "@/data/projects";
 import { buildCanonicalUrl, toPersianDigits } from "@/lib/persian-seo";
+import { buildBreadcrumbSchema, WEBSITE_ID } from "@/lib/schema";
 
 const PAGE_TITLE = "پروژه‌های اجراشده";
 const PAGE_DESCRIPTION =
@@ -31,9 +33,38 @@ export default function ProjectsGalleryPage() {
   const productNames = Object.fromEntries(
     PRODUCTS.map((product) => [product.slug, product.shortName])
   );
+  const canonical = buildCanonicalUrl("/projects/");
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `${canonical}#collection`,
+        url: canonical,
+        name: PAGE_TITLE,
+        description: PAGE_DESCRIPTION,
+        inLanguage: "fa-IR",
+        isPartOf: { "@id": WEBSITE_ID },
+      },
+      {
+        "@type": "ItemList",
+        itemListElement: PROJECTS.map((project, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: project.title,
+          url: buildCanonicalUrl(`/projects/${project.slug}/`),
+        })),
+      },
+      buildBreadcrumbSchema([
+        { name: "صفحه اصلی", pathname: "/" },
+        { name: "پروژه‌ها", pathname: "/projects/" },
+      ]),
+    ],
+  };
 
   return (
     <>
+      <JsonLd data={jsonLd} />
       {/* Header & Summary Strip */}
       <section className="border-b border-border bg-surface-subtle">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">

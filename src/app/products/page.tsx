@@ -3,9 +3,11 @@ import Link from "next/link";
 import { ArrowUpLeft, Factory, Scale, SlidersHorizontal } from "lucide-react";
 import { ProductCatalogGrid } from "@/components/products/ProductCatalogGrid";
 import { ClosingCtaSection } from "@/components/sections/ClosingCtaSection";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { PRODUCTS } from "@/data/products";
 import { buildCanonicalUrl, toPersianDigits } from "@/lib/persian-seo";
+import { buildBreadcrumbSchema, WEBSITE_ID } from "@/lib/schema";
 
 const PAGE_TITLE = "محصولات و ۷ خط تولید تخصصی";
 const PAGE_DESCRIPTION =
@@ -27,8 +29,38 @@ export const metadata: Metadata = {
 };
 
 export default function ProductsCatalogPage() {
+  const canonical = buildCanonicalUrl("/products/");
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `${canonical}#collection`,
+        url: canonical,
+        name: PAGE_TITLE,
+        description: PAGE_DESCRIPTION,
+        inLanguage: "fa-IR",
+        isPartOf: { "@id": WEBSITE_ID },
+      },
+      {
+        "@type": "ItemList",
+        itemListElement: PRODUCTS.map((product, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: product.name,
+          url: buildCanonicalUrl(`/products/${product.slug}/`),
+        })),
+      },
+      buildBreadcrumbSchema([
+        { name: "صفحه اصلی", pathname: "/" },
+        { name: "محصولات", pathname: "/products/" },
+      ]),
+    ],
+  };
+
   return (
     <>
+      <JsonLd data={jsonLd} />
       {/* Header Band */}
       <section className="border-b border-border bg-surface-subtle">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">

@@ -10,12 +10,20 @@ import {
   Wrench,
 } from "lucide-react";
 import { ClosingCtaSection } from "@/components/sections/ClosingCtaSection";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { PictureImage } from "@/components/ui/PictureImage";
+import { IMAGE_MANIFEST } from "@/data/image-manifest";
 import { getProductBySlug } from "@/data/products";
 import { getProjectBySlug, PROJECTS } from "@/data/projects";
 import type { ProductLine } from "@/data/types";
 import { buildCanonicalUrl, toPersianDigits } from "@/lib/persian-seo";
+import {
+  buildBreadcrumbSchema,
+  ORGANIZATION_ID,
+  persianYearToIsoDate,
+} from "@/lib/schema";
+import { SITE_CONFIG } from "@/lib/site-config";
 
 export const dynamicParams = false;
 
@@ -97,8 +105,44 @@ export default async function ProjectDetailPage({
     },
   ] as const;
 
+  const canonical = buildCanonicalUrl(`/projects/${project.slug}/`);
+  const imageUrl = `${SITE_CONFIG.siteUrl}${IMAGE_MANIFEST[project.imageKey].src}`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "@id": `${canonical}#article`,
+        headline: project.title,
+        description: project.seoDescription,
+        image: imageUrl,
+        url: canonical,
+        datePublished: persianYearToIsoDate(project.year),
+        inLanguage: "fa-IR",
+        contentLocation: {
+          "@type": "Place",
+          name: `${project.city}، ${project.province}`,
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: project.city,
+            addressRegion: project.province,
+            addressCountry: "IR",
+          },
+        },
+        author: { "@id": ORGANIZATION_ID },
+        publisher: { "@id": ORGANIZATION_ID },
+      },
+      buildBreadcrumbSchema([
+        { name: "صفحه اصلی", pathname: "/" },
+        { name: "پروژه‌ها", pathname: "/projects/" },
+        { name: project.title, pathname: `/projects/${project.slug}/` },
+      ]),
+    ],
+  };
+
   return (
     <>
+      <JsonLd data={jsonLd} />
       {/* 1. Breadcrumb + Hero Split */}
       <section className="border-b border-border bg-surface-subtle">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-16 lg:px-8">

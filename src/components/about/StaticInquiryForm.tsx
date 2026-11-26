@@ -182,17 +182,17 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
     )}`;
 
     return (
-      <div className="rounded-2xl border border-amber-300 bg-surface p-6 shadow-xs sm:p-8">
-        <div className="inline-flex items-center gap-2 rounded-full bg-accent-soft px-3.5 py-1 text-xs font-bold text-accent-hover">
+      <div className="border-s-2 border-s-brand border border-border bg-surface p-6 sm:p-8">
+        <div className="inline-flex items-center gap-2 border border-eco/25 bg-eco-soft px-3 py-1 text-xs font-bold text-eco">
           <Check className="h-3.5 w-3.5" aria-hidden="true" />
           <span>درخواست شما با موفقیت در سامانه کارخانه ثبت شد</span>
         </div>
 
-        <h3 className="mt-4 text-lg font-bold text-ink">
+        <h3 className="mt-4 text-lg font-extrabold text-ink">
           کد رهگیری شما صادر شد
         </h3>
 
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-surface-subtle p-4">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border border-border bg-surface-subtle p-4">
           <div>
             <p className="text-xs text-ink-muted">کد رهگیری اختصاصی</p>
             <p
@@ -207,11 +207,11 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
             <button
               type="button"
               onClick={handleCopyCode}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3 py-2 text-xs font-semibold text-ink hover:border-accent"
+              className="inline-flex items-center gap-1.5 rounded-[2px] border border-border bg-surface px-3 py-2 text-xs font-bold text-ink hover:border-brand"
             >
               {codeCopied ? (
                 <>
-                  <Check className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+                  <Check className="h-3.5 w-3.5 text-eco" aria-hidden="true" />
                   <span>کپی شد</span>
                 </>
               ) : (
@@ -224,14 +224,14 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
 
             <Link
               href={`/track/?code=${submittedData.trackingCode}`}
-              className="inline-flex items-center rounded-lg bg-surface-dark px-3.5 py-2 text-xs font-semibold text-ink-inverse hover:bg-surface-elevated"
+              className="inline-flex items-center rounded-[2px] bg-brand px-3.5 py-2 text-xs font-bold text-white hover:bg-brand-hover"
             >
               پیگیری وضعیت درخواست
             </Link>
           </div>
         </div>
 
-        <pre className="mt-4 whitespace-pre-wrap rounded-xl border border-border bg-surface-subtle p-4 font-sans text-xs leading-7 text-ink sm:text-sm">
+        <pre className="mt-4 whitespace-pre-wrap border border-border bg-surface-subtle p-4 font-sans text-xs leading-7 text-ink sm:text-sm">
           {submittedData.message}
         </pre>
 
@@ -240,7 +240,7 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
+            className="inline-flex items-center gap-2 rounded-[2px] bg-brand px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-hover"
           >
             <ExternalLink className="h-4 w-4" aria-hidden="true" />
             <span>ارسال در واتساپ کارخانه</span>
@@ -249,11 +249,11 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
           <button
             type="button"
             onClick={handleCopyMessage}
-            className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface px-4 py-3 text-sm font-semibold text-ink transition-colors hover:bg-surface-subtle"
+            className="inline-flex items-center gap-2 rounded-[2px] border border-border bg-surface px-4 py-3 text-sm font-bold text-ink transition-colors hover:bg-surface-subtle"
           >
             {copied ? (
               <>
-                <Check className="h-4 w-4 text-accent" aria-hidden="true" />
+                <Check className="h-4 w-4 text-eco" aria-hidden="true" />
                 <span>متن استعلام کپی شد</span>
               </>
             ) : (
@@ -267,7 +267,7 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
           <button
             type="button"
             onClick={() => setSubmittedData(null)}
-            className="inline-flex items-center gap-1.5 px-2 py-2 text-xs font-semibold text-ink-muted hover:text-ink"
+            className="inline-flex items-center gap-1.5 px-2 py-2 text-xs font-bold text-ink-muted hover:text-ink"
           >
             <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
             <span>ثبت درخواست دیگر</span>
@@ -281,10 +281,10 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="space-y-5 rounded-2xl border border-border bg-surface p-6 shadow-xs sm:p-8"
+      className="space-y-5 border border-border bg-surface p-6 sm:p-8"
     >
       <div>
-        <h3 className="text-lg font-bold text-ink">
+        <h3 className="text-lg font-extrabold text-ink">
           ثبت رسمی درخواست مشاوره و استعلام کارخانه
         </h3>
         <p className="mt-1 text-xs leading-6 text-ink-muted">
@@ -309,7 +309,7 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
         <div>
           <label
             htmlFor="inquiry-name"
-            className="block text-xs font-semibold text-ink"
+            className="block text-xs font-bold text-ink"
           >
             نام و نام خانوادگی *
           </label>
@@ -320,7 +320,7 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
             onChange={(e) => setForm({ ...form, fullName: e.target.value })}
             placeholder="مثلاً: مهندس علی محمدی"
             aria-invalid={Boolean(errors.fullName)}
-            className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-slate-400 focus:border-accent focus:outline-none"
+            className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-slate-400 focus:border-brand focus:outline-none"
           />
           {errors.fullName && (
             <p role="alert" className="mt-1 text-xs text-red-600">
@@ -332,7 +332,7 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
         <div>
           <label
             htmlFor="inquiry-phone"
-            className="block text-xs font-semibold text-ink"
+            className="block text-xs font-bold text-ink"
           >
             شماره تماس *
           </label>
@@ -344,7 +344,7 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
             placeholder="09120000000"
             aria-invalid={Boolean(errors.phone)}
-            className="tabular-nums mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-end text-sm text-ink placeholder:text-slate-400 focus:border-accent focus:outline-none"
+            className="tabular-nums mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-end text-sm text-ink placeholder:text-slate-400 focus:border-brand focus:outline-none"
           />
           {errors.phone && (
             <p role="alert" className="mt-1 text-xs text-red-600">
@@ -358,7 +358,7 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
         <div>
           <label
             htmlFor="inquiry-city"
-            className="block text-xs font-semibold text-ink"
+            className="block text-xs font-bold text-ink"
           >
             شهر پروژه *
           </label>
@@ -369,7 +369,7 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
             onChange={(e) => setForm({ ...form, city: e.target.value })}
             placeholder="مثلاً: زنجان / تهران / کرج"
             aria-invalid={Boolean(errors.city)}
-            className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-slate-400 focus:border-accent focus:outline-none"
+            className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-slate-400 focus:border-brand focus:outline-none"
           />
           {errors.city && (
             <p role="alert" className="mt-1 text-xs text-red-600">
@@ -381,7 +381,7 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
         <div>
           <label
             htmlFor="inquiry-need"
-            className="block text-xs font-semibold text-ink"
+            className="block text-xs font-bold text-ink"
           >
             نوع محصول یا خدمت
           </label>
@@ -389,7 +389,7 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
             id="inquiry-need"
             value={form.needType}
             onChange={(e) => setForm({ ...form, needType: e.target.value })}
-            className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
+            className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
           >
             {options.map((opt) => (
               <option key={opt} value={opt}>
@@ -403,7 +403,7 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
       <div>
         <label
           htmlFor="inquiry-size"
-          className="block text-xs font-semibold text-ink"
+          className="block text-xs font-bold text-ink"
         >
           متراژ یا تعداد تقریبی دهانه‌ها (اختیاری)
         </label>
@@ -413,14 +413,14 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
           value={form.approxSize}
           onChange={(e) => setForm({ ...form, approxSize: e.target.value })}
           placeholder="مثلاً: ۶ پنجره مسکونی یا حدود ۱۸ مترمربع"
-          className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-slate-400 focus:border-accent focus:outline-none"
+          className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-slate-400 focus:border-brand focus:outline-none"
         />
       </div>
 
       <div>
         <label
           htmlFor="inquiry-notes"
-          className="block text-xs font-semibold text-ink"
+          className="block text-xs font-bold text-ink"
         >
           توضیحات کوتاه (اختیاری)
         </label>
@@ -430,7 +430,7 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
           value={form.notes}
           onChange={(e) => setForm({ ...form, notes: e.target.value })}
           placeholder="مثلاً: نیاز به شیشه سه‌جداره، رنگ آنتراسیت یا تعویض بدون تخریب..."
-          className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-slate-400 focus:border-accent focus:outline-none"
+          className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-slate-400 focus:border-brand focus:outline-none"
         />
       </div>
 
@@ -447,7 +447,7 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
       {serverError && (
         <div
           role="alert"
-          className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700 sm:text-sm"
+          className="border border-red-300 bg-red-50 px-4 py-3 text-xs font-medium text-red-700 sm:text-sm"
         >
           {serverError}
         </div>
@@ -456,7 +456,7 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
       <button
         type="submit"
         disabled={submitting}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-[2px] bg-brand px-6 py-3.5 text-sm font-bold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60"
       >
         <Send className="h-4 w-4" aria-hidden="true" />
         <span>

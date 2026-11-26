@@ -87,12 +87,12 @@ export default function ConfiguratorPage() {
 
       <section
         aria-label="ابزار پیکربندی درب و پنجره"
-        className="bg-surface py-10 md:py-14 print:py-0"
+        className="bg-canvas py-10 md:py-14 print:bg-white print:py-0"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 print:max-w-none print:px-0">
           <Suspense
             fallback={
-              <div className="rounded-2xl border border-border bg-surface-subtle p-8 text-sm text-ink-muted">
+              <div className="border border-border bg-surface-subtle p-8 text-sm text-ink-muted">
                 در حال بارگذاری ابزار پیکربندی فنی...
               </div>
             }

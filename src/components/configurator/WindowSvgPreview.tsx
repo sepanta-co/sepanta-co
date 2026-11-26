@@ -71,7 +71,7 @@ export function WindowSvgPreview({
   )} لنگه (${activeOpeningSummary}) و رنگ ${swatch.label}`;
 
   return (
-    <div className="rounded-2xl border border-border bg-surface-subtle p-4">
+    <div className="border border-border-strong bg-surface-warm p-4">
       <svg
         viewBox="0 0 420 320"
         role="img"
@@ -116,12 +116,12 @@ export function WindowSvgPreview({
           </pattern>
         </defs>
 
-        {/* Subtle CAD background grid */}
-        <rect x="0" y="0" width="420" height="320" rx="12" fill="#F8FAFC" />
-        <rect x="0" y="0" width="420" height="320" rx="12" fill="url(#sepanta-cad-grid)" />
+        {/* Crisp Architectural CAD Background */}
+        <rect x="0" y="0" width="420" height="320" fill="#F8FAFC" />
+        <rect x="0" y="0" width="420" height="320" fill="url(#sepanta-cad-grid)" />
 
         {/* Top Width Dimension Line */}
-        <g stroke="#B45309" strokeWidth="1.25">
+        <g stroke="#1E3A5F" strokeWidth="1.25">
           <line x1={startX} y1={startY - 22} x2={startX + drawW} y2={startY - 22} />
           <line x1={startX} y1={startY - 28} x2={startX} y2={startY - 16} />
           <line x1={startX + drawW} y1={startY - 28} x2={startX + drawW} y2={startY - 16} />
@@ -131,9 +131,8 @@ export function WindowSvgPreview({
           y={startY - 33}
           width="72"
           height="20"
-          rx="4"
           fill="#FFFFFF"
-          stroke="#E2E8F0"
+          stroke="#CBD5E1"
           strokeWidth="0.8"
         />
         <text
@@ -148,7 +147,7 @@ export function WindowSvgPreview({
         </text>
 
         {/* Side Height Dimension Line */}
-        <g stroke="#B45309" strokeWidth="1.25">
+        <g stroke="#1E3A5F" strokeWidth="1.25">
           <line x1={startX - 24} y1={startY} x2={startX - 24} y2={startY + drawH} />
           <line x1={startX - 30} y1={startY} x2={startX - 18} y2={startY} />
           <line x1={startX - 30} y1={startY + drawH} x2={startX - 18} y2={startY + drawH} />
@@ -159,9 +158,8 @@ export function WindowSvgPreview({
             y="-10"
             width="72"
             height="20"
-            rx="4"
             fill="#FFFFFF"
-            stroke="#E2E8F0"
+            stroke="#CBD5E1"
             strokeWidth="0.8"
           />
           <text
@@ -182,7 +180,6 @@ export function WindowSvgPreview({
           y={startY}
           width={drawW}
           height={drawH}
-          rx="2"
           fill={swatch.hex}
           stroke={strokeColor}
           strokeWidth="1.75"

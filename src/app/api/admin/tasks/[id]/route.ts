@@ -4,6 +4,7 @@ import {
   requireAdminAccess,
   verifySameOrigin,
 } from "@/lib/admin-auth";
+import { recordAuditEvent } from "@/lib/audit-log";
 import { getDb, type StaffTaskRow } from "@/lib/db";
 import type { TaskCategory, TaskPriority } from "@/lib/permissions";
 
@@ -258,8 +259,44 @@ export async function PATCH(
     )
     .get(numericId) as JoinedTaskRow;
 
+  const serialized = serializeTask(updated);
+  const isPureToggle =
+    typeof body.isCompleted === "boolean" &&
+    (!isManager ||
+      (body.title === undefined &&
+        body.description === undefined &&
+        body.category === undefined &&
+        body.priority === undefined &&
+        body.dueLabel === undefined &&
+        body.staffUserId === undefined));
+
+  recordAuditEvent({
+    session: auth.session,
+    action: isPureToggle ? "task.toggle" : "task.update",
+    entityType: "task",
+    entityId: String(serialized.id),
+    summary: isPureToggle
+      ? `${serialized.isCompleted ? "تکمیل" : "بازگردانی"} وظیفه «${serialized.title}» (${serialized.staffFullName})`
+      : `ویرایش وظیفه «${serialized.title}» (${serialized.staffFullName})`,
+    details: {
+      taskId: serialized.id,
+      staffUsername: serialized.staffUsername,
+      before: {
+        title: existing.title,
+        isCompleted: existing.is_completed === 1,
+        priority: existing.priority,
+      },
+      after: {
+        title: serialized.title,
+        isCompleted: serialized.isCompleted,
+        priority: serialized.priority,
+      },
+    },
+    request,
+  });
+
   return NextResponse.json(
-    { ok: true, task: serializeTask(updated) },
+    { ok: true, task: serialized },
     { status: 200 }
   );
 }
@@ -288,16 +325,45 @@ export async function DELETE(
   }
 
   const db = getDb();
-  const result = db
-    .prepare("DELETE FROM staff_tasks WHERE id = ?")
-    .run(numericId);
+  const existing = db
+    .prepare(
+      `SELECT st.id, st.title, st.staff_user_id, su.username AS staff_username
+       FROM staff_tasks st
+       LEFT JOIN staff_users su ON su.id = st.staff_user_id
+       WHERE st.id = ?`
+    )
+    .get(numericId) as
+    | {
+        id: number;
+        title: string;
+        staff_user_id: number;
+        staff_username: string | null;
+      }
+    | undefined;
 
-  if (result.changes === 0) {
+  if (!existing) {
     return NextResponse.json(
       { ok: false, error: "وظیفه مورد نظر یافت نشد." },
       { status: 404 }
     );
   }
+
+  db.prepare("DELETE FROM staff_tasks WHERE id = ?").run(numericId);
+
+  recordAuditEvent({
+    session: auth.session,
+    action: "task.delete",
+    entityType: "task",
+    entityId: String(numericId),
+    summary: `حذف وظیفه «${existing.title}»`,
+    details: {
+      taskId: numericId,
+      staffUserId: existing.staff_user_id,
+      staffUsername: existing.staff_username,
+      title: existing.title,
+    },
+    request,
+  });
 
   return NextResponse.json({ ok: true }, { status: 200 });
 }

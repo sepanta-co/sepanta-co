@@ -7,6 +7,7 @@ import {
   toPublicUserProfile,
   verifySameOrigin,
 } from "@/lib/admin-auth";
+import { recordAuditEvent } from "@/lib/audit-log";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
@@ -79,6 +80,19 @@ export async function POST(request: Request) {
   }
 
   const user = toPublicUserProfile(session);
+  recordAuditEvent({
+    session,
+    action: "auth.login",
+    entityType: "auth",
+    entityId: user.username,
+    summary: `ورود موفق ${user.fullName} (${user.username}) به پنل مدیریت`,
+    details: {
+      role: user.role,
+      jobTitle: user.jobTitle,
+    },
+    request,
+  });
+
   const response = NextResponse.json(
     { ok: true, username: user.username, user },
     { status: 200 }

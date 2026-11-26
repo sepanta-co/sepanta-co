@@ -140,13 +140,13 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
       <form
         onSubmit={handleLookup}
         noValidate
-        className="rounded-2xl border border-border bg-surface p-6 shadow-xs sm:p-8"
+        className="border border-border bg-surface p-6 sm:p-8"
       >
         <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:items-end">
           <div className="md:col-span-5">
             <label
               htmlFor="track-code"
-              className="block text-xs font-semibold text-ink"
+              className="block text-xs font-bold text-ink"
             >
               کد رهگیری سفارش *
             </label>
@@ -157,14 +157,14 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
               value={trackingCode}
               onChange={(e) => setTrackingCode(e.target.value)}
               placeholder="SPN-XXXXXX"
-              className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-3 text-end font-mono text-sm font-bold uppercase text-ink placeholder:text-slate-400 focus:border-accent focus:outline-none"
+              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-3 text-end font-mono text-sm font-bold uppercase text-ink placeholder:text-slate-400 focus:border-brand focus:outline-none"
             />
           </div>
 
           <div className="md:col-span-5">
             <label
               htmlFor="track-phone"
-              className="block text-xs font-semibold text-ink"
+              className="block text-xs font-bold text-ink"
             >
               شماره تماس کامل یا ۴ رقم آخر شماره *
             </label>
@@ -175,7 +175,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
               value={phoneVerify}
               onChange={(e) => setPhoneVerify(e.target.value)}
               placeholder="مثلاً 6789 یا 09123456789"
-              className="tabular-nums mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-3 text-end text-sm text-ink placeholder:text-slate-400 focus:border-accent focus:outline-none"
+              className="tabular-nums mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-3 text-end text-sm text-ink placeholder:text-slate-400 focus:border-brand focus:outline-none"
             />
           </div>
 
@@ -183,7 +183,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-[2px] bg-brand px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Search className="h-4 w-4" aria-hidden="true" />
               <span>{loading ? "بررسی..." : "پیگیری"}</span>
@@ -194,7 +194,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
         {error && (
           <div
             role="alert"
-            className="mt-4 flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700 sm:text-sm"
+            className="mt-4 flex items-center gap-2 border border-red-300 bg-red-50 px-4 py-3 text-xs font-medium text-red-700 sm:text-sm"
           >
             <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span>{error}</span>
@@ -204,18 +204,18 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
 
       {/* Tracking Result */}
       {inquiry && (
-        <div className="space-y-6 rounded-2xl border border-border bg-surface p-6 shadow-xs sm:p-8">
+        <div className="space-y-6 border-s-2 border-s-brand border border-border bg-surface p-6 sm:p-8">
           {/* Header Metadata */}
           <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-6">
             <div>
               <div className="flex flex-wrap items-center gap-2.5">
                 <span
                   dir="ltr"
-                  className="rounded-lg bg-surface-dark px-3 py-1 font-mono text-sm font-bold text-amber-400"
+                  className="bg-surface-dark px-3 py-1 font-mono text-sm font-bold text-amber-400"
                 >
                   {inquiry.trackingCode}
                 </span>
-                <span className="rounded-lg bg-accent-soft px-3 py-1 text-xs font-bold text-accent-hover">
+                <span className="border border-brand/20 bg-surface-panel px-3 py-1 text-xs font-bold text-brand">
                   {INQUIRY_STATUS_LABELS[inquiry.status] ?? inquiry.status}
                 </span>
               </div>
@@ -239,7 +239,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
                 آخرین بروزرسانی: {formatPersianDate(inquiry.updatedAt)}
               </p>
               {inquiry.estimatedTotalIrr > 0 && (
-                <p className="tabular-nums mt-2 text-base font-extrabold text-accent-hover">
+                <p className="tabular-nums mt-2 text-base font-extrabold text-brand">
                   برآورد سامانه: {formatToman(inquiry.estimatedTotalIrr)}
                 </p>
               )}
@@ -248,7 +248,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
 
           {/* 6-Stage Architectural Timeline or Cancelled Notice */}
           {inquiry.status === "cancelled" ? (
-            <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-800">
+            <div className="flex items-start gap-3 border border-red-300 bg-red-50 p-5 text-sm text-red-800">
               <XCircle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
               <div>
                 <p className="font-bold">این درخواست لغو شده است</p>
@@ -260,22 +260,22 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
             </div>
           ) : (
             <div>
-              <h3 className="text-sm font-bold text-ink sm:text-base">
+              <h3 className="text-sm font-extrabold text-ink sm:text-base">
                 مراحل پیشرفت پرونده در کارخانه سپنتا
               </h3>
 
-              <ol className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-6">
+              <ol className="mt-4 grid grid-cols-1 border-t border-s border-border md:grid-cols-6">
                 {INQUIRY_STATUS_STEPS.map((step, index) => {
                   const isDone = activeStepIndex > index;
                   const isCurrent = activeStepIndex === index;
                   return (
                     <li
                       key={step.key}
-                      className={`rounded-xl border p-3.5 transition-colors ${
+                      className={`border-e border-b p-3.5 transition-colors ${
                         isCurrent
-                          ? "border-accent bg-accent-soft/70"
+                          ? "border-brand bg-surface-panel"
                           : isDone
-                            ? "border-emerald-200 bg-emerald-50/60"
+                            ? "border-border bg-eco-soft/50"
                             : "border-border bg-surface-subtle opacity-70"
                       }`}
                     >
@@ -285,17 +285,17 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
                         </span>
                         {isDone ? (
                           <CheckCircle2
-                            className="h-4 w-4 text-emerald-700"
+                            className="h-4 w-4 text-eco"
                             aria-hidden="true"
                           />
                         ) : isCurrent ? (
                           <Clock
-                            className="h-4 w-4 text-accent"
+                            className="h-4 w-4 text-brand"
                             aria-hidden="true"
                           />
                         ) : null}
                       </div>
-                      <p className="mt-2 text-xs font-bold text-ink">
+                      <p className="mt-2 text-xs font-extrabold text-ink">
                         {step.label}
                       </p>
                       <p className="mt-1 text-[11px] leading-5 text-ink-muted">
@@ -310,7 +310,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
 
           {/* Attachment Confirmation Badge */}
           {inquiry.hasAttachment && (
-            <div className="flex items-center gap-2.5 rounded-xl border border-border bg-surface-subtle px-4 py-3 text-xs text-ink">
+            <div className="flex items-center gap-2.5 border border-border bg-surface-subtle px-4 py-3 text-xs text-ink">
               <Paperclip className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
               <span>
                 فایل نقشه / تصویر پیوست‌شده در سیستم کارخانه ثبت شده است:{" "}
@@ -324,11 +324,11 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
           {/* Itemized Summary */}
           {inquiry.items.length > 0 && (
             <div>
-              <h3 className="text-sm font-bold text-ink sm:text-base">
+              <h3 className="text-sm font-extrabold text-ink sm:text-base">
                 جزئیات اقلام ثبت‌شده ({toPersianDigits(inquiry.items.length)}{" "}
                 ردیف)
               </h3>
-              <div className="mt-3 divide-y divide-border rounded-2xl border border-border bg-surface-subtle">
+              <div className="mt-3 divide-y divide-border border border-border bg-surface-subtle">
                 {inquiry.items.map((item, idx) => {
                   const sysLabel =
                     SYSTEM_RULES[item.system]?.shortLabel ?? item.system;

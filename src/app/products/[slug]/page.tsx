@@ -137,15 +137,18 @@ export default async function ProductDetailPage({
 
           <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
             <div className="lg:col-span-6">
-              <span className="inline-block rounded-full border border-amber-200 bg-accent-soft px-3.5 py-1 text-xs font-semibold text-accent-hover">
-                {product.category}
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="h-[2px] w-8 bg-accent" aria-hidden="true" />
+                <span className="text-xs font-bold text-brand">
+                  {product.category}
+                </span>
+              </div>
 
               <h1 className="mt-4 text-2xl font-extrabold leading-tight tracking-tight text-ink sm:text-4xl">
                 {product.name}
               </h1>
 
-              <p className="mt-3 text-sm font-semibold leading-7 text-accent-hover sm:text-base">
+              <p className="mt-3 text-sm font-bold leading-7 text-brand sm:text-base">
                 {product.tagline}
               </p>
 
@@ -153,14 +156,14 @@ export default async function ProductDetailPage({
                 {product.summary}
               </p>
 
-              <ul className="mt-6 space-y-2.5">
+              <ul className="mt-6 space-y-2.5 border-t border-border pt-5">
                 {product.highlights.map((highlight) => (
                   <li
                     key={highlight}
                     className="flex items-start gap-2.5 text-sm leading-7 text-ink"
                   >
                     <CheckCircle2
-                      className="mt-1.5 h-4 w-4 shrink-0 text-accent"
+                      className="mt-1.5 h-4 w-4 shrink-0 text-eco"
                       aria-hidden="true"
                     />
                     <span>{highlight}</span>
@@ -179,7 +182,7 @@ export default async function ProductDetailPage({
                   <>
                     <Link
                       href={`/configurator/?product=${product.configuratorKey}`}
-                      className="inline-flex items-center gap-2 rounded-xl bg-accent px-6 py-3.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-accent-hover"
+                      className="inline-flex items-center gap-2 rounded-[2px] bg-brand px-6 py-3.5 text-sm font-bold text-white transition-colors hover:bg-brand-hover"
                     >
                       <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
                       <span>برآورد هوشمند این سیستم</span>
@@ -187,7 +190,7 @@ export default async function ProductDetailPage({
 
                     <Link
                       href="/about/#contact"
-                      className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface px-5 py-3.5 text-sm font-semibold text-ink transition-colors hover:bg-surface-subtle"
+                      className="inline-flex items-center gap-2 rounded-[2px] border border-border bg-surface px-5 py-3.5 text-sm font-bold text-ink transition-colors hover:border-brand hover:text-brand"
                     >
                       <span>درخواست مشاوره کارخانه</span>
                     </Link>
@@ -196,7 +199,7 @@ export default async function ProductDetailPage({
                   <>
                     <Link
                       href="/about/#contact"
-                      className="inline-flex items-center gap-2 rounded-xl bg-accent px-6 py-3.5 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-accent-hover"
+                      className="inline-flex items-center gap-2 rounded-[2px] bg-brand px-6 py-3.5 text-sm font-bold text-white transition-colors hover:bg-brand-hover"
                     >
                       <span>استعلام قیمت و سفارش تولید</span>
                       <ArrowUpLeft className="h-4 w-4" aria-hidden="true" />
@@ -204,7 +207,7 @@ export default async function ProductDetailPage({
 
                     <a
                       href={SITE_CONFIG.contact.phoneHref}
-                      className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface px-5 py-3.5 text-sm font-semibold text-ink transition-colors hover:bg-surface-subtle"
+                      className="inline-flex items-center gap-2 rounded-[2px] border border-border bg-surface px-5 py-3.5 text-sm font-bold text-ink transition-colors hover:border-brand hover:text-brand"
                     >
                       <Phone className="h-4 w-4 text-accent" aria-hidden="true" />
                       <span>تماس با واحد فروش</span>
@@ -215,8 +218,8 @@ export default async function ProductDetailPage({
             </div>
 
             <div className="lg:col-span-6">
-              <div className="rounded-3xl border border-border bg-surface p-3 shadow-sm">
-                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-surface-subtle">
+              <div className="border border-border bg-surface p-2.5">
+                <div className="relative aspect-[16/10] w-full overflow-hidden border border-border bg-surface-subtle">
                   <PictureImage
                     imageKey={product.imageKey}
                     alt={product.name}
@@ -248,17 +251,17 @@ export default async function ProductDetailPage({
             کارخانه زنجان
           </p>
 
-          <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-surface">
+          <div className="mt-6 overflow-hidden border border-border bg-surface">
             <table className="w-full border-collapse text-start">
               <tbody className="divide-y divide-border text-sm">
                 {product.specs.map((spec) => (
                   <tr
                     key={spec.label}
-                    className="flex flex-col sm:table-row odd:bg-surface-subtle/50"
+                    className="flex flex-col sm:table-row odd:bg-surface-subtle/60"
                   >
                     <th
                       scope="row"
-                      className="px-4 pt-3 pb-1 text-start text-xs font-bold text-ink sm:w-[34%] sm:px-6 sm:py-4 sm:text-sm"
+                      className="border-e border-border px-4 pt-3 pb-1 text-start text-xs font-bold text-ink sm:w-[34%] sm:px-6 sm:py-4 sm:text-sm"
                     >
                       {toPersianDigits(spec.label)}
                     </th>
@@ -286,17 +289,17 @@ export default async function ProductDetailPage({
             بررسی صادقانه مهندسی و کاربردهای پیشنهادی
           </h2>
 
-          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="mt-6 grid grid-cols-1 border-t border-s border-border lg:grid-cols-3">
             {/* Pros */}
-            <div className="rounded-2xl border border-border bg-surface p-6">
-              <div className="flex items-center gap-2 text-sm font-bold text-ink">
-                <CheckCircle2 className="h-4 w-4 text-accent" aria-hidden="true" />
+            <div className="border-e border-b border-border bg-surface p-6">
+              <div className="flex items-center gap-2 text-sm font-extrabold text-ink">
+                <CheckCircle2 className="h-4 w-4 text-eco" aria-hidden="true" />
                 <h3>مزایا و نقاط قوت مهندسی</h3>
               </div>
               <ul className="mt-4 space-y-3 text-sm leading-7 text-ink-muted">
                 {product.pros.map((pro) => (
-                  <li key={pro} className="flex items-start gap-2">
-                    <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                  <li key={pro} className="flex items-start gap-2.5">
+                    <span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-eco" />
                     <span>{pro}</span>
                   </li>
                 ))}
@@ -304,18 +307,18 @@ export default async function ProductDetailPage({
             </div>
 
             {/* Cons */}
-            <div className="rounded-2xl border border-border bg-surface p-6">
-              <div className="flex items-center gap-2 text-sm font-bold text-ink">
+            <div className="border-e border-b border-border bg-surface p-6">
+              <div className="flex items-center gap-2 text-sm font-extrabold text-ink">
                 <AlertTriangle
-                  className="h-4 w-4 text-amber-600"
+                  className="h-4 w-4 text-accent"
                   aria-hidden="true"
                 />
                 <h3>محدودیت‌ها و نکات قابل توجه</h3>
               </div>
               <ul className="mt-4 space-y-3 text-sm leading-7 text-ink-muted">
                 {product.cons.map((con) => (
-                  <li key={con} className="flex items-start gap-2">
-                    <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+                  <li key={con} className="flex items-start gap-2.5">
+                    <span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-slate-400" />
                     <span>{con}</span>
                   </li>
                 ))}
@@ -323,15 +326,15 @@ export default async function ProductDetailPage({
             </div>
 
             {/* Ideal For */}
-            <div className="rounded-2xl border border-border bg-surface p-6">
-              <div className="flex items-center gap-2 text-sm font-bold text-ink">
-                <Target className="h-4 w-4 text-accent" aria-hidden="true" />
+            <div className="border-e border-b border-border bg-surface p-6">
+              <div className="flex items-center gap-2 text-sm font-extrabold text-ink">
+                <Target className="h-4 w-4 text-brand" aria-hidden="true" />
                 <h3>کاربردهای پیشنهادی</h3>
               </div>
               <ul className="mt-4 space-y-3 text-sm leading-7 text-ink-muted">
                 {product.idealFor.map((useCase) => (
-                  <li key={useCase} className="flex items-start gap-2">
-                    <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-surface-dark" />
+                  <li key={useCase} className="flex items-start gap-2.5">
+                    <span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-brand" />
                     <span>{useCase}</span>
                   </li>
                 ))}
@@ -368,11 +371,11 @@ export default async function ProductDetailPage({
               </Link>
             </div>
 
-            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-6 grid grid-cols-1 border-t border-s border-border md:grid-cols-2 lg:grid-cols-3">
               {relatedProjects.map((project) => (
                 <article
                   key={project.slug}
-                  className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-colors hover:border-accent"
+                  className="group flex flex-col border-e border-b border-border bg-surface"
                 >
                   <div className="relative aspect-[16/10] w-full overflow-hidden bg-surface-subtle">
                     <PictureImage
@@ -463,27 +466,27 @@ export default async function ProductDetailPage({
             </Link>
           </div>
 
-          <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="mt-6 grid grid-cols-1 border-t border-s border-border md:grid-cols-3">
             {relatedProducts.map((rel) => (
               <Link
                 key={rel.slug}
                 href={`/products/${rel.slug}/`}
-                className="group flex flex-col justify-between rounded-2xl border border-border bg-surface-subtle p-5 transition-colors hover:border-accent hover:bg-surface"
+                className="group flex flex-col justify-between border-e border-b border-border bg-surface-subtle p-5 transition-colors hover:bg-surface"
               >
                 <div>
-                  <span className="rounded-md bg-surface px-2.5 py-1 text-xs font-semibold text-ink-muted">
+                  <span className="border border-border bg-surface px-2 py-0.5 text-xs font-bold text-ink-muted">
                     {rel.category}
                   </span>
-                  <h3 className="mt-3 text-base font-bold text-ink group-hover:text-accent">
+                  <h3 className="mt-3 text-base font-extrabold text-ink group-hover:text-brand">
                     {rel.name}
                   </h3>
                   <p className="mt-2 text-xs leading-6 text-ink-muted">
                     {rel.tagline}
                   </p>
                 </div>
-                <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-accent">
+                <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-brand">
                   <span>مشاهده مشخصات فنی</span>
-                  <ArrowUpLeft className="h-3.5 w-3.5" aria-hidden="true" />
+                  <ArrowUpLeft className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
                 </span>
               </Link>
             ))}

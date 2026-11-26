@@ -43,6 +43,21 @@ export interface StaffTaskRow {
   updated_at: string;
 }
 
+export interface AuditLogRow {
+  id: number;
+  actor_user_id: string;
+  actor_username: string;
+  actor_full_name: string;
+  actor_role: StaffRole;
+  action: string;
+  entity_type: string;
+  entity_id: string | null;
+  summary: string;
+  details_json: string | null;
+  ip_address: string;
+  created_at: string;
+}
+
 export type { FxRateHistoryRow, FxSettingsRow, PricingRuleRow };
 
 const DB_PATH =
@@ -200,6 +215,25 @@ function initSchema(db: Database.Database): void {
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
       );
+
+      CREATE TABLE IF NOT EXISTS audit_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        actor_user_id TEXT NOT NULL,
+        actor_username TEXT NOT NULL,
+        actor_full_name TEXT NOT NULL,
+        actor_role TEXT NOT NULL,
+        action TEXT NOT NULL,
+        entity_type TEXT NOT NULL,
+        entity_id TEXT,
+        summary TEXT NOT NULL,
+        details_json TEXT,
+        ip_address TEXT NOT NULL,
+        created_at TEXT NOT NULL
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON audit_logs(created_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_audit_logs_actor ON audit_logs(actor_username, created_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_audit_logs_entity ON audit_logs(entity_type, created_at DESC);
     `);
 
     const nowIso = new Date().toISOString();

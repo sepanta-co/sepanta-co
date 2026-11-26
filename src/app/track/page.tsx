@@ -75,7 +75,7 @@ export default function TrackOrderPage() {
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <Suspense
             fallback={
-              <div className="rounded-2xl border border-border bg-surface-subtle p-8 text-sm text-ink-muted">
+              <div className="border border-border bg-surface-subtle p-8 text-sm text-ink-muted">
                 در حال آماده‌سازی سامانه پیگیری سفارش...
               </div>
             }

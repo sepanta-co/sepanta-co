@@ -4,6 +4,7 @@ import {
   requireAdminAccess,
   verifySameOrigin,
 } from "@/lib/admin-auth";
+import { recordAuditEvent } from "@/lib/audit-log";
 import { getDb, type StaffUserRow } from "@/lib/db";
 import {
   parsePermissionsJson,
@@ -152,6 +153,7 @@ export async function PATCH(
   }
 
   let nextPasswordHash = existing.password_hash;
+  let passwordChanged = false;
   if (typeof body.password === "string" && body.password.length > 0) {
     if (body.password.length < 8 || body.password.length > 128) {
       return NextResponse.json(
@@ -160,6 +162,7 @@ export async function PATCH(
       );
     }
     nextPasswordHash = hashPassword(body.password);
+    passwordChanged = true;
   }
 
   const nowIso = new Date().toISOString();
@@ -205,8 +208,37 @@ export async function PATCH(
     )
     .get(numericId) as StaffAggregateRow;
 
+  const serialized = serializeStaff(updated);
+  const oldPerms = parsePermissionsJson(existing.permissions_json);
+  recordAuditEvent({
+    session: auth.session,
+    action: "staff.update",
+    entityType: "staff",
+    entityId: existing.username,
+    summary: `ویرایش مشخصات و دسترسی‌های کارمند «${serialized.fullName}» (${existing.username})`,
+    details: {
+      staffUserId: numericId,
+      before: {
+        fullName: existing.full_name,
+        jobTitle: existing.job_title,
+        role: existing.role,
+        permissions: oldPerms,
+        isActive: existing.is_active === 1,
+      },
+      after: {
+        fullName: serialized.fullName,
+        jobTitle: serialized.jobTitle,
+        role: serialized.role,
+        permissions: serialized.permissions,
+        isActive: serialized.isActive,
+      },
+      ...(passwordChanged ? { passwordChanged: true } : {}),
+    },
+    request,
+  });
+
   return NextResponse.json(
-    { ok: true, staff: serializeStaff(updated) },
+    { ok: true, staff: serialized },
     { status: 200 }
   );
 }
@@ -242,16 +274,42 @@ export async function DELETE(
   }
 
   const db = getDb();
-  const result = db
-    .prepare("DELETE FROM staff_users WHERE id = ?")
-    .run(numericId);
+  const target = db
+    .prepare("SELECT id, username, full_name, job_title, role FROM staff_users WHERE id = ?")
+    .get(numericId) as
+    | {
+        id: number;
+        username: string;
+        full_name: string;
+        job_title: string;
+        role: string;
+      }
+    | undefined;
 
-  if (result.changes === 0) {
+  if (!target) {
     return NextResponse.json(
       { ok: false, error: "کارمند مورد نظر یافت نشد." },
       { status: 404 }
     );
   }
+
+  db.prepare("DELETE FROM staff_users WHERE id = ?").run(numericId);
+
+  recordAuditEvent({
+    session: auth.session,
+    action: "staff.delete",
+    entityType: "staff",
+    entityId: target.username,
+    summary: `حذف حساب کارمند «${target.full_name}» (${target.username})`,
+    details: {
+      staffUserId: target.id,
+      username: target.username,
+      fullName: target.full_name,
+      jobTitle: target.job_title,
+      role: target.role,
+    },
+    request,
+  });
 
   return NextResponse.json({ ok: true }, { status: 200 });
 }

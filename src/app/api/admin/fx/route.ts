@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdminAccess, verifySameOrigin } from "@/lib/admin-auth";
+import { recordAuditEvent } from "@/lib/audit-log";
 import {
   getFxSettings,
   getRecentFxHistory,
@@ -68,8 +69,29 @@ async function handleFxUpdate(request: Request) {
   }
 
   if (body.action === "sync_now") {
+    const beforeFx = getFxSettings();
     const { fx, rules } = await syncUsdRate({ force: true });
     const history = getRecentFxHistory(20);
+    recordAuditEvent({
+      session: auth.session,
+      action: "fx.sync",
+      entityType: "fx",
+      entityId: fx.source_used,
+      summary: `همگام‌سازی لحظه‌ای نرخ دلار (نرخ فعال: ${fx.active_usd_irr.toLocaleString("en-US")} ریال از ${fx.source_used})`,
+      details: {
+        before: {
+          mode: beforeFx.mode,
+          active_usd_irr: beforeFx.active_usd_irr,
+          source_used: beforeFx.source_used,
+        },
+        after: {
+          mode: fx.mode,
+          active_usd_irr: fx.active_usd_irr,
+          source_used: fx.source_used,
+        },
+      },
+      request,
+    });
     return NextResponse.json(
       { ok: true, fx, history, rules },
       {
@@ -137,6 +159,29 @@ async function handleFxUpdate(request: Request) {
   if (mode === "auto") {
     const synced = await syncUsdRate({ force: true });
     const history = getRecentFxHistory(20);
+    recordAuditEvent({
+      session: auth.session,
+      action: "fx.update",
+      entityType: "fx",
+      entityId: "auto",
+      summary: `تغییر تنظیمات نرخ دلار به حالت خودکار (نرخ فعال: ${synced.fx.active_usd_irr.toLocaleString("en-US")} ریال)`,
+      details: {
+        before: {
+          mode: current.mode,
+          active_usd_irr: current.active_usd_irr,
+          manual_usd_irr: current.manual_usd_irr,
+          sync_interval_minutes: current.sync_interval_minutes,
+        },
+        after: {
+          mode: synced.fx.mode,
+          active_usd_irr: synced.fx.active_usd_irr,
+          manual_usd_irr: synced.fx.manual_usd_irr,
+          source_used: synced.fx.source_used,
+          sync_interval_minutes: synced.fx.sync_interval_minutes,
+        },
+      },
+      request,
+    });
     return NextResponse.json(
       { ok: true, fx: synced.fx, history, rules: synced.rules },
       {
@@ -147,6 +192,29 @@ async function handleFxUpdate(request: Request) {
   }
 
   const history = getRecentFxHistory(20);
+  recordAuditEvent({
+    session: auth.session,
+    action: "fx.update",
+    entityType: "fx",
+    entityId: "manual",
+    summary: `تنظیم نرخ دلار دستی به ${updated.fx.active_usd_irr.toLocaleString("en-US")} ریال`,
+    details: {
+      before: {
+        mode: current.mode,
+        active_usd_irr: current.active_usd_irr,
+        manual_usd_irr: current.manual_usd_irr,
+        sync_interval_minutes: current.sync_interval_minutes,
+      },
+      after: {
+        mode: updated.fx.mode,
+        active_usd_irr: updated.fx.active_usd_irr,
+        manual_usd_irr: updated.fx.manual_usd_irr,
+        source_used: updated.fx.source_used,
+        sync_interval_minutes: updated.fx.sync_interval_minutes,
+      },
+    },
+    request,
+  });
   return NextResponse.json(
     { ok: true, fx: updated.fx, history, rules: updated.rules },
     {

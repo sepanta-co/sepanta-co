@@ -4,6 +4,7 @@ import {
   requireAdminAccess,
   verifySameOrigin,
 } from "@/lib/admin-auth";
+import { recordAuditEvent } from "@/lib/audit-log";
 import { getDb } from "@/lib/db";
 import {
   parsePermissionsJson,
@@ -212,8 +213,26 @@ export async function POST(request: Request) {
       )
       .get(info.lastInsertRowid) as StaffAggregateRow;
 
+    const serialized = serializeStaff(created);
+    recordAuditEvent({
+      session: auth.session,
+      action: "staff.create",
+      entityType: "staff",
+      entityId: serialized.username,
+      summary: `ایجاد حساب کارمند «${serialized.fullName}» (${serialized.username}) با نقش ${serialized.role}`,
+      details: {
+        staffUserId: serialized.id,
+        username: serialized.username,
+        fullName: serialized.fullName,
+        jobTitle: serialized.jobTitle,
+        role: serialized.role,
+        permissions: serialized.permissions,
+      },
+      request,
+    });
+
     return NextResponse.json(
-      { ok: true, staff: serializeStaff(created) },
+      { ok: true, staff: serialized },
       { status: 201 }
     );
   } catch (err) {

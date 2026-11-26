@@ -12,12 +12,12 @@ const FILTER_OPTIONS: readonly {
 }[] = [
   {
     id: "all",
-    label: "نمایش کامل",
+    label: "نمایش کامل دفتر مقایسه",
     highlightedMetrics: [],
   },
   {
     id: "upvc",
-    label: "اولویت: عایق صدا و بودجه اقتصادی",
+    label: "اولویت: عایق صدا، حرارت و بودجه اقتصادی",
     highlightedMetrics: [
       "عایق حرارتی (ضریب انتقال حرارت Uw)",
       "عایق صوتی (کاهش تراز صدا dB)",
@@ -26,7 +26,7 @@ const FILTER_OPTIONS: readonly {
   },
   {
     id: "thermal",
-    label: "اولویت: دهانه بزرگ و نمای مدرن",
+    label: "اولویت: دهانه بزرگ، شیشه سنگین و نمای مدرن",
     highlightedMetrics: [
       "تحمل ابعاد بزرگ و وزن شیشه‌های سنگین",
       "دوام و پایداری در اقلیم سرد و گرم ایران",
@@ -46,11 +46,11 @@ export function ComparisonTable() {
 
   return (
     <div className="space-y-6">
-      {/* Compact 3-button Decision Filter */}
+      {/* Priority Filter Buttons (max rounded-[4px]) */}
       <div
         role="group"
         aria-label="فیلتر اولویت تصمیم‌گیری فنی"
-        className="flex flex-wrap items-center gap-2.5"
+        className="flex flex-wrap items-center gap-2"
       >
         {FILTER_OPTIONS.map((option) => {
           const active = mode === option.id;
@@ -60,10 +60,10 @@ export function ComparisonTable() {
               type="button"
               onClick={() => setMode(option.id)}
               aria-pressed={active}
-              className={`rounded-xl px-4 py-2.5 text-xs font-semibold transition-colors sm:text-sm ${
+              className={`min-h-[40px] rounded-[4px] border px-4 py-2 text-xs font-bold transition-colors sm:text-sm ${
                 active
-                  ? "bg-surface-dark text-ink-inverse shadow-xs"
-                  : "border border-border bg-surface text-ink-muted hover:bg-surface-subtle hover:text-ink"
+                  ? "border-primary bg-primary text-white"
+                  : "border-border-strong bg-surface text-ink hover:border-primary hover:text-primary"
               }`}
             >
               {option.label}
@@ -72,26 +72,29 @@ export function ComparisonTable() {
         })}
       </div>
 
-      {/* Desktop Structured Table (md+) */}
-      <div className="hidden overflow-hidden rounded-2xl border border-border bg-surface md:block">
+      {/* Desktop Engineering Specification Ledger */}
+      <div className="hidden overflow-hidden border border-border bg-surface md:block">
         <table className="w-full border-collapse text-start">
           <thead>
-            <tr className="border-b border-border bg-surface-subtle text-xs font-bold text-ink sm:text-sm">
-              <th scope="col" className="w-[22%] px-5 py-4 text-start">
+            <tr className="border-b border-border bg-surface-warm text-xs font-bold text-anthracite sm:text-sm">
+              <th
+                scope="col"
+                className="w-[22%] border-e border-border px-5 py-4 text-start"
+              >
                 معیار مهندسی
               </th>
               <th
                 scope="col"
-                className={`w-[28%] px-5 py-4 text-start transition-colors ${
-                  mode === "upvc" ? "bg-accent-soft text-accent-hover" : ""
+                className={`w-[28%] border-e border-border px-5 py-4 text-start transition-colors ${
+                  mode === "upvc" ? "bg-primary text-white" : ""
                 }`}
               >
                 پنجره دوجداره uPVC
               </th>
               <th
                 scope="col"
-                className={`w-[28%] px-5 py-4 text-start transition-colors ${
-                  mode === "thermal" ? "bg-accent-soft text-accent-hover" : ""
+                className={`w-[28%] border-e border-border px-5 py-4 text-start transition-colors ${
+                  mode === "thermal" ? "bg-primary text-white" : ""
                 }`}
               >
                 آلومینیوم ترمال بریک
@@ -108,33 +111,33 @@ export function ComparisonTable() {
                 <tr
                   key={row.metric}
                   className={`transition-colors ${
-                    highlighted ? "bg-amber-50/40" : "hover:bg-surface-subtle/60"
+                    highlighted ? "bg-eco-soft/35" : "hover:bg-canvas/70"
                   }`}
                 >
                   <th
                     scope="row"
-                    className="px-5 py-4 align-top text-start font-bold text-ink"
+                    className="border-e border-border px-5 py-4 align-top text-start font-bold text-anthracite"
                   >
                     <span>{row.metric}</span>
                     {highlighted && (
-                      <span className="mt-1.5 inline-block rounded-md bg-accent-soft px-2 py-0.5 text-[11px] font-semibold text-accent-hover">
-                        معیار کلیدی اولویت شما
+                      <span className="mt-1.5 inline-block border border-eco/30 bg-eco-soft px-2 py-0.5 text-[11px] font-bold text-eco">
+                        شاخص کلیدی اولویت شما
                       </span>
                     )}
                   </th>
                   <td
-                    className={`px-5 py-4 align-top leading-7 text-ink-muted transition-colors ${
+                    className={`border-e border-border px-5 py-4 align-top leading-7 text-ink-muted transition-colors ${
                       mode === "upvc"
-                        ? "bg-accent-soft/35 font-medium text-ink"
+                        ? "bg-surface-warm/60 font-semibold text-anthracite"
                         : ""
                     }`}
                   >
                     {row.upvc}
                   </td>
                   <td
-                    className={`px-5 py-4 align-top leading-7 text-ink-muted transition-colors ${
+                    className={`border-e border-border px-5 py-4 align-top leading-7 text-ink-muted transition-colors ${
                       mode === "thermal"
-                        ? "bg-accent-soft/35 font-medium text-ink"
+                        ? "bg-surface-warm/60 font-semibold text-anthracite"
                         : ""
                     }`}
                   >
@@ -150,54 +153,58 @@ export function ComparisonTable() {
         </table>
       </div>
 
-      {/* Mobile Stacked Comparison Cards (< md) */}
+      {/* Mobile Stacked Ledger Cards */}
       <div className="space-y-4 md:hidden">
         {COMPARISON_ROWS.map((row) => {
           const highlighted = isRowHighlighted(row.metric);
           return (
             <article
               key={row.metric}
-              className={`rounded-2xl border p-4 transition-colors ${
+              className={`border p-4 transition-colors ${
                 highlighted
-                  ? "border-accent bg-amber-50/35"
+                  ? "border-eco bg-eco-soft/25"
                   : "border-border bg-surface"
               }`}
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="text-sm font-bold text-ink">{row.metric}</h3>
+                <h3 className="text-sm font-bold text-anthracite">
+                  {row.metric}
+                </h3>
                 {highlighted && (
-                  <span className="rounded-md bg-accent-soft px-2 py-0.5 text-[11px] font-semibold text-accent-hover">
-                    اولویت انتخاب‌شده
+                  <span className="border border-eco/30 bg-eco-soft px-2 py-0.5 text-[11px] font-bold text-eco">
+                    شاخص کلیدی شما
                   </span>
                 )}
               </div>
 
               <div className="mt-3 space-y-2.5 text-xs leading-6">
                 <div
-                  className={`rounded-xl border p-3 ${
+                  className={`border p-3 ${
                     mode === "upvc"
-                      ? "border-accent/40 bg-accent-soft/45"
-                      : "border-border bg-surface-subtle"
+                      ? "border-primary bg-surface-warm"
+                      : "border-border bg-canvas"
                   }`}
                 >
-                  <p className="font-bold text-ink">پنجره دوجداره uPVC</p>
+                  <p className="font-bold text-anthracite">پنجره دوجداره uPVC</p>
                   <p className="mt-1 text-ink-muted">{row.upvc}</p>
                 </div>
 
                 <div
-                  className={`rounded-xl border p-3 ${
+                  className={`border p-3 ${
                     mode === "thermal"
-                      ? "border-accent/40 bg-accent-soft/45"
-                      : "border-border bg-surface-subtle"
+                      ? "border-primary bg-surface-warm"
+                      : "border-border bg-canvas"
                   }`}
                 >
-                  <p className="font-bold text-ink">آلومینیوم ترمال بریک</p>
+                  <p className="font-bold text-anthracite">
+                    آلومینیوم ترمال بریک
+                  </p>
                   <p className="mt-1 text-ink-muted">{row.thermalBreak}</p>
                 </div>
               </div>
 
               <p className="mt-3 border-t border-border pt-2.5 text-xs leading-6 text-ink-muted">
-                <span className="font-semibold text-ink">جمع‌بندی: </span>
+                <span className="font-bold text-anthracite">جمع‌بندی: </span>
                 {row.winnerNote}
               </p>
             </article>

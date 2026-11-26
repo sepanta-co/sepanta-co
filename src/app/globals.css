@@ -1,23 +1,40 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-estedad), Tahoma, sans-serif;
+  --font-sans: var(--font-body), Tahoma, sans-serif;
+  --font-heading: var(--font-display), var(--font-body), sans-serif;
 
+  /* Warm Architectural Limestone & Craft Material Palette */
+  --color-canvas: #F5F4F0;
   --color-surface: #FFFFFF;
-  --color-surface-subtle: #F8F9FA;
-  --color-surface-dark: #0B0E11;
-  --color-surface-elevated: #141920;
+  --color-surface-warm: #EDEAE2;
+  --color-surface-subtle: #F5F4F0;
+  --color-surface-panel: #EDEAE2;
+  --color-surface-dark: #0F172A;
+  --color-surface-elevated: #172236;
 
-  --color-ink: #0F172A;
-  --color-ink-muted: #475569;
+  --color-primary: #1E3A5F;
+  --color-primary-hover: #162D4A;
+  --color-brand: #1E3A5F;
+  --color-brand-hover: #162D4A;
+
+  --color-anthracite: #0F172A;
+  --color-ink: #1E293B;
+  --color-ink-muted: #526071;
+  --color-ink-subtle: #64748B;
   --color-ink-inverse: #F8FAFC;
 
-  --color-accent: #B45309;
-  --color-accent-hover: #92400E;
+  --color-accent: #D97706;
+  --color-accent-deep: #B45309;
+  --color-accent-hover: #B45309;
   --color-accent-soft: #FEF3C7;
 
-  --color-border: #E2E8F0;
-  --color-border-dark: #1E293B;
+  --color-eco: #0F766E;
+  --color-eco-soft: #CCFBF1;
+
+  --color-border: #DCD7CC;
+  --color-border-strong: #B8B1A3;
+  --color-border-dark: #253349;
 }
 
 @layer base {
@@ -30,14 +47,33 @@
   }
 
   body {
-    background-color: var(--color-surface);
-    color: var(--color-ink);
+    background-color: var(--color-canvas);
+    color: #1C2430;
     font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.8;
     overflow-x: clip;
   }
 
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-display {
+    font-family: var(--font-heading);
+  }
+
+  h1 {
+    font-weight: 800;
+  }
+
+  h2,
+  h3 {
+    font-weight: 700;
+  }
+
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
   }
 }

@@ -3,7 +3,7 @@ interface BrandMarkProps {
 }
 
 /**
- * Minimal geometric architectural window-frame emblem (28x28).
+ * Precision architectural window-mullion emblem (28x28).
  */
 export function BrandMark({ className = "h-7 w-7" }: BrandMarkProps) {
   return (
@@ -15,31 +15,30 @@ export function BrandMark({ className = "h-7 w-7" }: BrandMarkProps) {
       className={className}
     >
       <rect
-        x="2.5"
-        y="2.5"
-        width="23"
-        height="23"
-        rx="2"
+        x="2"
+        y="2"
+        width="24"
+        height="24"
         stroke="currentColor"
         strokeWidth="2"
       />
       <line
         x1="14"
-        y1="2.5"
+        y1="2"
         x2="14"
-        y2="25.5"
+        y2="26"
         stroke="currentColor"
-        strokeWidth="1.75"
+        strokeWidth="1.5"
       />
       <line
-        x1="2.5"
+        x1="2"
         y1="14"
-        x2="25.5"
+        x2="26"
         y2="14"
         stroke="currentColor"
-        strokeWidth="1.75"
+        strokeWidth="1.5"
       />
-      <rect x="16.5" y="5.5" width="6" height="6" fill="#B45309" />
+      <rect x="16.5" y="4.5" width="7" height="7" fill="#B45309" />
     </svg>
   );
 }

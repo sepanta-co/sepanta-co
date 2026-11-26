@@ -83,15 +83,15 @@ export function ProductCatalogGrid({ products }: ProductCatalogGridProps) {
     <div className="space-y-8">
       {/* Live FX Status Strip */}
       {fx && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-accent-soft/60 px-4 py-3 text-xs text-accent-hover sm:px-5">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-s-2 border-s-brand border border-border bg-surface-panel px-4 py-3 text-xs text-ink sm:px-5">
           <div className="flex flex-wrap items-center gap-2.5">
-            <RefreshCw className="h-4 w-4 shrink-0" aria-hidden="true" />
+            <RefreshCw className="h-4 w-4 shrink-0 text-eco" aria-hidden="true" />
             <span className="font-bold">
               تعرفه‌های پایه بر اساس نرخ روز دلار ({formatToman(fx.activeUsdIrr)})
               محاسبه شده‌اند
             </span>
           </div>
-          <div className="flex flex-wrap items-center gap-3 text-[11px]">
+          <div className="flex flex-wrap items-center gap-3 text-[11px] text-ink-muted">
             <span>منبع: {getFxSourceLabel(fx.sourceUsed)}</span>
             <span>آخرین همگام‌سازی: {formatFxTimestamp(fx.lastSyncedAt)}</span>
           </div>
@@ -102,7 +102,7 @@ export function ProductCatalogGrid({ products }: ProductCatalogGridProps) {
       <div
         role="group"
         aria-label="فیلتر دسته‌بندی خطوط تولید"
-        className="flex flex-wrap items-center gap-2.5"
+        className="inline-flex flex-wrap border-t border-s border-border bg-surface"
       >
         {CATEGORY_TABS.map((tab) => {
           const active = selectedCategory === tab.id;
@@ -112,17 +112,17 @@ export function ProductCatalogGrid({ products }: ProductCatalogGridProps) {
               type="button"
               onClick={() => setSelectedCategory(tab.id)}
               aria-pressed={active}
-              className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-semibold transition-colors sm:text-sm ${
+              className={`inline-flex items-center gap-2 border-e border-b border-border px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
                 active
-                  ? "bg-surface-dark text-ink-inverse shadow-xs"
-                  : "border border-border bg-surface text-ink-muted hover:bg-surface-subtle hover:text-ink"
+                  ? "bg-brand text-white"
+                  : "bg-surface text-ink-muted hover:bg-surface-panel hover:text-ink"
               }`}
             >
               <span>{tab.label}</span>
               <span
-                className={`tabular-nums rounded-md px-1.5 py-0.5 text-[11px] ${
+                className={`tabular-nums px-1.5 py-0.5 text-[11px] ${
                   active
-                    ? "bg-surface-elevated text-amber-400"
+                    ? "bg-brand-hover text-amber-300"
                     : "bg-surface-subtle text-ink-muted"
                 }`}
               >
@@ -134,7 +134,7 @@ export function ProductCatalogGrid({ products }: ProductCatalogGridProps) {
       </div>
 
       {/* Product Cards Grid */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 border-t border-s border-border md:grid-cols-2 lg:grid-cols-3">
         {filteredProducts.map((product) => {
           const pricingKey = resolveProductPricingKey(product.slug);
           const rule = rulesMap[pricingKey];
@@ -146,9 +146,9 @@ export function ProductCatalogGrid({ products }: ProductCatalogGridProps) {
           return (
             <article
               key={product.slug}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-colors hover:border-accent"
+              className="group flex flex-col border-e border-b border-border bg-surface transition-colors hover:bg-surface-panel/50"
             >
-              <div className="relative aspect-[16/10] w-full overflow-hidden bg-surface-subtle">
+              <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-border bg-surface-subtle">
                 <PictureImage
                   imageKey={product.imageKey}
                   alt={product.name}
@@ -161,17 +161,17 @@ export function ProductCatalogGrid({ products }: ProductCatalogGridProps) {
               <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
                 <div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="rounded-md bg-surface-subtle px-2.5 py-1 text-xs font-semibold text-ink-muted">
+                    <span className="text-xs font-bold text-ink-muted">
                       {product.category}
                     </span>
                     {product.configuratorEligible && (
-                      <span className="rounded-md bg-accent-soft px-2.5 py-1 text-[11px] font-semibold text-accent-hover">
+                      <span className="border border-brand/20 bg-surface-panel px-2 py-0.5 text-[11px] font-bold text-brand">
                         محاسبه آنلاین
                       </span>
                     )}
                   </div>
 
-                  <h2 className="mt-3 text-lg font-bold text-ink">
+                  <h2 className="mt-2.5 text-lg font-extrabold text-ink">
                     {product.name}
                   </h2>
                   <p className="mt-2 line-clamp-2 text-xs leading-6 text-ink-muted sm:text-sm">
@@ -179,11 +179,11 @@ export function ProductCatalogGrid({ products }: ProductCatalogGridProps) {
                   </p>
 
                   {livePriceIrr !== null && livePriceIrr > 0 && (
-                    <div className="mt-4 flex items-center justify-between rounded-xl border border-amber-200 bg-accent-soft/50 px-3.5 py-2.5 text-xs">
-                      <span className="font-medium text-accent-hover">
+                    <div className="mt-4 flex items-center justify-between border border-border bg-surface-subtle px-3.5 py-2.5 text-xs">
+                      <span className="font-semibold text-ink-muted">
                         تعرفه پایه ({unitLabel}):
                       </span>
-                      <strong className="tabular-nums text-sm font-extrabold text-ink">
+                      <strong className="tabular-nums text-sm font-extrabold text-brand">
                         {formatToman(livePriceIrr)}
                       </strong>
                     </div>
@@ -209,7 +209,7 @@ export function ProductCatalogGrid({ products }: ProductCatalogGridProps) {
                 <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
                   <Link
                     href={`/products/${product.slug}/`}
-                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-accent"
+                    className="inline-flex items-center gap-1.5 text-sm font-bold text-brand transition-colors hover:text-accent"
                   >
                     <span>مشاهده مشخصات فنی</span>
                     <ArrowUpLeft
@@ -221,10 +221,10 @@ export function ProductCatalogGrid({ products }: ProductCatalogGridProps) {
                   {product.configuratorEligible && product.configuratorKey && (
                     <Link
                       href={`/configurator/?product=${product.configuratorKey}`}
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-accent-soft px-3 py-1.5 text-xs font-semibold text-accent-hover transition-colors hover:bg-amber-200/70"
+                      className="inline-flex items-center gap-1.5 rounded-[2px] border border-border bg-surface-subtle px-3 py-1.5 text-xs font-bold text-ink transition-colors hover:border-brand hover:text-brand"
                     >
                       <SlidersHorizontal
-                        className="h-3.5 w-3.5"
+                        className="h-3.5 w-3.5 text-accent"
                         aria-hidden="true"
                       />
                       <span>محاسبه و برآورد</span>

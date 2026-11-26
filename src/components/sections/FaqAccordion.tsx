@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import type { FaqItem } from "@/data/types";
+import { toPersianDigits } from "@/lib/persian-seo";
 
 export interface FaqAccordionProps {
   items: FaqItem[];
@@ -13,7 +14,7 @@ export function FaqAccordion({ items }: FaqAccordionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <div className="divide-y divide-border rounded-2xl border border-border bg-surface">
+    <div className="divide-y divide-border border border-border bg-surface">
       {items.map((item, index) => {
         const isOpen = openIndex === index;
         const buttonId = `${baseId}-btn-${index}`;
@@ -28,13 +29,19 @@ export function FaqAccordion({ items }: FaqAccordionProps) {
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 onClick={() => setOpenIndex(isOpen ? null : index)}
-                className="flex w-full items-center justify-between gap-4 px-5 py-4 text-start text-sm font-bold text-ink transition-colors hover:bg-surface-subtle sm:px-6 sm:py-5 sm:text-base"
+                className="flex w-full items-center justify-between gap-4 px-5 py-4 text-start text-sm font-bold text-anthracite transition-colors hover:bg-surface-warm/45 sm:px-6 sm:py-5 sm:text-base"
               >
-                <span>{item.question}</span>
+                <span className="flex items-start gap-3">
+                  <span className="font-display tabular-nums mt-0.5 text-xs font-extrabold text-accent-deep">
+                    {toPersianDigits(index + 1).padStart(2, "۰")}
+                  </span>
+                  <span>{item.question}</span>
+                </span>
                 <ChevronDown
                   className={`h-5 w-5 shrink-0 text-ink-muted transition-transform duration-200 ${
-                    isOpen ? "rotate-180 text-accent" : ""
+                    isOpen ? "rotate-180 text-primary" : ""
                   }`}
+                  strokeWidth={1.6}
                   aria-hidden="true"
                 />
               </button>
@@ -45,7 +52,7 @@ export function FaqAccordion({ items }: FaqAccordionProps) {
               role="region"
               aria-labelledby={buttonId}
               hidden={!isOpen}
-              className="px-5 pb-5 text-sm leading-7 text-ink-muted sm:px-6 sm:pb-6"
+              className="border-t border-border/70 bg-canvas/70 px-5 py-4 text-sm leading-7 text-ink-muted sm:px-6 sm:py-5"
             >
               {item.answer}
             </div>

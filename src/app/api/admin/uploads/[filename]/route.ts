@@ -2,6 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { NextResponse } from "next/server";
 import { requireAdminAccess } from "@/lib/admin-auth";
+import { recordAuditEvent } from "@/lib/audit-log";
+import { getDb } from "@/lib/db";
 import { getUploadsDir } from "@/lib/uploads";
 
 export const dynamic = "force-dynamic";
@@ -17,7 +19,7 @@ const MIME_BY_EXT: Record<string, string> = {
 };
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ filename: string }> }
 ) {
   const auth = await requireAdminAccess("uploads:download");
@@ -44,6 +46,30 @@ export async function GET(
   const ext = filename.split(".").pop()?.toLowerCase() || "";
   const contentType = MIME_BY_EXT[ext] || "application/octet-stream";
   const fileBuffer = fs.readFileSync(/*turbopackIgnore: true*/ fullPath);
+
+  const linkedInquiry = getDb()
+    .prepare(
+      "SELECT tracking_code, attachment_original_name FROM inquiries WHERE attachment_path = ? LIMIT 1"
+    )
+    .get(filename) as
+    | { tracking_code: string; attachment_original_name: string | null }
+    | undefined;
+
+  recordAuditEvent({
+    session: auth.session,
+    action: "upload.download",
+    entityType: "upload",
+    entityId: linkedInquiry?.tracking_code || filename,
+    summary: linkedInquiry
+      ? `دانلود فایل پیوست استعلام ${linkedInquiry.tracking_code}`
+      : `دانلود فایل پیوست ${filename}`,
+    details: {
+      filename,
+      trackingCode: linkedInquiry?.tracking_code ?? null,
+      originalName: linkedInquiry?.attachment_original_name ?? null,
+    },
+    request,
+  });
 
   return new NextResponse(fileBuffer, {
     status: 200,

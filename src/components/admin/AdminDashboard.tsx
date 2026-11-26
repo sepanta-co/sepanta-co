@@ -7,6 +7,7 @@ import {
   ChevronDown,
   DollarSign,
   Download,
+  FileText,
   History,
   ListChecks,
   Lock,
@@ -33,6 +34,7 @@ import {
   TasksChecklistPanel,
   type StaffTaskItem,
 } from "./TasksChecklistPanel";
+import { AuditLogPanel } from "./AuditLogPanel";
 import {
   FRAME_FINISHES,
   GLASS_OPTIONS,
@@ -125,7 +127,7 @@ interface AdminServiceRequest {
   city: string;
 }
 
-type AdminTab = "tasks" | "inquiries" | "pricing" | "warranties" | "staff";
+type AdminTab = "tasks" | "inquiries" | "pricing" | "warranties" | "staff" | "audit";
 
 function resolveDefaultTab(user?: AdminUserProfile): AdminTab {
   if (!user) return "tasks";
@@ -134,6 +136,7 @@ function resolveDefaultTab(user?: AdminUserProfile): AdminTab {
   if (user.permissions.includes("pricing:view")) return "pricing";
   if (user.permissions.includes("warranties:manage")) return "warranties";
   if (user.permissions.includes("staff:manage")) return "staff";
+  if (user.permissions.includes("audit:view")) return "audit";
   return "tasks";
 }
 
@@ -806,9 +809,9 @@ export function AdminDashboard({
 
   if (!session.authenticated) {
     return (
-      <div className="mx-auto max-w-md rounded-2xl border border-border bg-surface p-8 shadow-sm">
+      <div className="mx-auto max-w-md border border-border bg-surface p-8">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-surface-dark text-amber-400">
+          <div className="flex h-11 w-11 items-center justify-center rounded-[2px] bg-surface-dark text-amber-400">
             <Lock className="h-5 w-5" aria-hidden="true" />
           </div>
           <div>
@@ -836,7 +839,7 @@ export function AdminDashboard({
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-end text-sm text-ink focus:border-accent focus:outline-none"
+              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-end text-sm text-ink focus:border-brand focus:outline-none"
             />
           </div>
 
@@ -854,14 +857,14 @@ export function AdminDashboard({
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-end text-sm text-ink focus:border-accent focus:outline-none"
+              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-end text-sm text-ink focus:border-brand focus:outline-none"
             />
           </div>
 
           {loginError && (
             <div
               role="alert"
-              className="rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-xs font-medium text-red-700"
+              className="rounded-[2px] border border-red-200 bg-red-50 px-3.5 py-2.5 text-xs font-medium text-red-700"
             >
               {loginError}
             </div>
@@ -870,7 +873,7 @@ export function AdminDashboard({
           <button
             type="submit"
             disabled={loginLoading}
-            className="w-full rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-hover disabled:opacity-60"
+            className="w-full rounded-[2px] bg-brand px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-hover disabled:opacity-60"
           >
             {loginLoading ? "در حال بررسی..." : "ورود امن به داشبورد"}
           </button>
@@ -887,6 +890,7 @@ export function AdminDashboard({
   const canEditPricing = hasPerm("pricing:edit");
   const canManageWarranties = hasPerm("warranties:manage");
   const canManageStaff = hasPerm("staff:manage");
+  const canViewAudit = hasPerm("audit:view");
 
   const handleRefreshAll = () => {
     loadTasks();
@@ -902,7 +906,7 @@ export function AdminDashboard({
   return (
     <div className="space-y-6">
       {/* Top Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-surface p-5 shadow-xs">
+      <div className="flex flex-wrap items-center justify-between gap-4 border border-border bg-surface p-5">
         <div>
           <h1 className="text-xl font-extrabold text-ink sm:text-2xl">
             پنل مدیریت و CRM کارخانه سپنتا
@@ -917,7 +921,7 @@ export function AdminDashboard({
             <span dir="ltr" className="font-mono text-ink-muted">
               (@{currentUser?.username})
             </span>
-            <span className="rounded-md bg-accent-soft px-2 py-0.5 text-[11px] font-bold text-accent-hover">
+            <span className="rounded-[2px] bg-accent-soft px-2 py-0.5 text-[11px] font-bold text-accent-hover">
               {currentUser?.userId === "root"
                 ? "مدیر ارشد"
                 : currentUser
@@ -931,7 +935,7 @@ export function AdminDashboard({
           <button
             type="button"
             onClick={handleRefreshAll}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-surface-subtle px-3.5 py-2 text-xs font-semibold text-ink hover:border-accent"
+            className="inline-flex items-center gap-1.5 rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2 text-xs font-semibold text-ink hover:border-brand"
           >
             <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
             <span>بروزرسانی</span>
@@ -940,7 +944,7 @@ export function AdminDashboard({
           <button
             type="button"
             onClick={handleLogout}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-surface-dark px-4 py-2 text-xs font-semibold text-ink-inverse hover:bg-surface-elevated"
+            className="inline-flex items-center gap-1.5 rounded-[2px] bg-surface-dark px-4 py-2 text-xs font-semibold text-ink-inverse hover:bg-surface-elevated"
           >
             <LogOut className="h-3.5 w-3.5 text-amber-400" aria-hidden="true" />
             <span>خروج امن</span>
@@ -952,7 +956,7 @@ export function AdminDashboard({
       {feedback && (
         <div
           role={feedback.type === "error" ? "alert" : "status"}
-          className={`flex items-center gap-2 rounded-xl border px-4 py-3 text-xs font-semibold sm:text-sm ${
+          className={`flex items-center gap-2 rounded-[2px] border px-4 py-3 text-xs font-semibold sm:text-sm ${
             feedback.type === "success"
               ? "border-emerald-200 bg-emerald-50 text-emerald-900"
               : "border-red-200 bg-red-50 text-red-700"
@@ -974,9 +978,9 @@ export function AdminDashboard({
           role="tab"
           aria-selected={activeTab === "tasks"}
           onClick={() => setActiveTab("tasks")}
-          className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+          className={`inline-flex items-center gap-2 rounded-[2px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
             activeTab === "tasks"
-              ? "bg-accent text-white shadow-xs"
+              ? "bg-accent text-white"
               : "border border-border bg-surface text-ink-muted hover:text-ink"
           }`}
         >
@@ -992,9 +996,9 @@ export function AdminDashboard({
             role="tab"
             aria-selected={activeTab === "inquiries"}
             onClick={() => setActiveTab("inquiries")}
-            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+            className={`inline-flex items-center gap-2 rounded-[2px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
               activeTab === "inquiries"
-                ? "bg-accent text-white shadow-xs"
+                ? "bg-accent text-white"
                 : "border border-border bg-surface text-ink-muted hover:text-ink"
             }`}
           >
@@ -1009,9 +1013,9 @@ export function AdminDashboard({
             role="tab"
             aria-selected={activeTab === "pricing"}
             onClick={() => setActiveTab("pricing")}
-            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+            className={`inline-flex items-center gap-2 rounded-[2px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
               activeTab === "pricing"
-                ? "bg-accent text-white shadow-xs"
+                ? "bg-accent text-white"
                 : "border border-border bg-surface text-ink-muted hover:text-ink"
             }`}
           >
@@ -1026,9 +1030,9 @@ export function AdminDashboard({
             role="tab"
             aria-selected={activeTab === "warranties"}
             onClick={() => setActiveTab("warranties")}
-            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+            className={`inline-flex items-center gap-2 rounded-[2px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
               activeTab === "warranties"
-                ? "bg-accent text-white shadow-xs"
+                ? "bg-accent text-white"
                 : "border border-border bg-surface text-ink-muted hover:text-ink"
             }`}
           >
@@ -1043,9 +1047,9 @@ export function AdminDashboard({
             role="tab"
             aria-selected={activeTab === "staff"}
             onClick={() => setActiveTab("staff")}
-            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+            className={`inline-flex items-center gap-2 rounded-[2px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
               activeTab === "staff"
-                ? "bg-accent text-white shadow-xs"
+                ? "bg-accent text-white"
                 : "border border-border bg-surface text-ink-muted hover:text-ink"
             }`}
           >
@@ -1053,7 +1057,32 @@ export function AdminDashboard({
             <span>کارکنان و دسترسی‌ها</span>
           </button>
         )}
+
+        {canViewAudit && (
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "audit"}
+            onClick={() => setActiveTab("audit")}
+            className={`inline-flex items-center gap-2 rounded-[2px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+              activeTab === "audit"
+                ? "bg-accent text-white"
+                : "border border-border bg-surface text-ink-muted hover:text-ink"
+            }`}
+          >
+            <FileText className="h-4 w-4" aria-hidden="true" />
+            <span>گزارش وقایع</span>
+          </button>
+        )}
       </div>
+
+      {/* TAB: Audit Logs */}
+      {activeTab === "audit" && canViewAudit && (
+        <AuditLogPanel
+          onUnauthorized={() => setSession({ authenticated: false })}
+          onFeedback={setFeedback}
+        />
+      )}
 
       {/* TAB: Tasks Checklist */}
       {activeTab === "tasks" && (
@@ -1095,19 +1124,19 @@ export function AdminDashboard({
         <div className="space-y-6">
           {/* KPIs */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="rounded-2xl border border-border bg-surface p-5">
+            <div className="border border-border bg-surface p-5">
               <p className="text-xs text-ink-muted">کل درخواست‌های ثبت‌شده</p>
               <p className="tabular-nums mt-2 text-2xl font-extrabold text-ink">
                 {toPersianDigits(kpis.total)} پرونده
               </p>
             </div>
-            <div className="rounded-2xl border border-amber-200 bg-accent-soft/50 p-5">
+            <div className="border border-amber-200 bg-accent-soft/50 p-5">
               <p className="text-xs text-accent-hover">درخواست‌های جدید (پاسخ‌داده‌نشده)</p>
               <p className="tabular-nums mt-2 text-2xl font-extrabold text-accent-hover">
                 {toPersianDigits(kpis.newCount)} مورد
               </p>
             </div>
-            <div className="rounded-2xl border border-border bg-surface p-5">
+            <div className="border border-border bg-surface p-5">
               <p className="text-xs text-ink-muted">مجموع برآورد فروش فعال</p>
               <p className="tabular-nums mt-2 text-xl font-extrabold text-ink sm:text-2xl">
                 {formatToman(kpis.pipelineIrr)}
@@ -1116,7 +1145,7 @@ export function AdminDashboard({
           </div>
 
           {/* Search & Filter */}
-          <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-border bg-surface p-4">
+          <div className="flex flex-wrap items-center gap-3 border border-border bg-surface p-4">
             <div className="relative flex-1 min-w-[220px]">
               <Search
                 className="pointer-events-none absolute top-1/2 start-3.5 h-4 w-4 -translate-y-1/2 text-ink-muted"
@@ -1127,7 +1156,7 @@ export function AdminDashboard({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="جستجو با کد رهگیری، نام، شماره تماس یا شهر..."
-                className="w-full rounded-xl border border-border bg-surface-subtle py-2.5 ps-10 pe-3.5 text-sm text-ink focus:border-accent focus:outline-none"
+                className="w-full rounded-[2px] border border-border bg-surface-subtle py-2.5 ps-10 pe-3.5 text-sm text-ink focus:border-brand focus:outline-none"
               />
             </div>
 
@@ -1138,7 +1167,7 @@ export function AdminDashboard({
                 loadInquiries(e.target.value, searchQuery);
               }}
               aria-label="فیلتر وضعیت"
-              className="rounded-xl border border-border bg-surface-subtle px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
+              className="rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
             >
               <option value="all">همه وضعیت‌ها</option>
               {Object.entries(INQUIRY_STATUS_LABELS).map(([key, label]) => (
@@ -1151,7 +1180,7 @@ export function AdminDashboard({
             <button
               type="button"
               onClick={() => loadInquiries(statusFilter, searchQuery)}
-              className="rounded-xl bg-surface-dark px-4 py-2.5 text-xs font-semibold text-ink-inverse hover:bg-surface-elevated"
+              className="rounded-[2px] bg-surface-dark px-4 py-2.5 text-xs font-semibold text-ink-inverse hover:bg-surface-elevated"
             >
               اعمال فیلتر
             </button>
@@ -1160,7 +1189,7 @@ export function AdminDashboard({
           {/* Inquiry List */}
           <div className="space-y-3">
             {inquiries.length === 0 ? (
-              <div className="rounded-2xl border border-border bg-surface p-8 text-center text-sm text-ink-muted">
+              <div className="border border-border bg-surface p-8 text-center text-sm text-ink-muted">
                 درخواستی مطابق فیلتر فعلی یافت نشد.
               </div>
             ) : (
@@ -1169,7 +1198,7 @@ export function AdminDashboard({
                 return (
                   <div
                     key={inq.id}
-                    className="overflow-hidden rounded-2xl border border-border bg-surface"
+                    className="overflow-hidden border border-border bg-surface"
                   >
                     <button
                       type="button"
@@ -1180,7 +1209,7 @@ export function AdminDashboard({
                       <div className="flex flex-wrap items-center gap-3">
                         <span
                           dir="ltr"
-                          className="rounded-lg bg-surface-dark px-2.5 py-1 font-mono text-xs font-bold text-amber-400"
+                          className="rounded-[2px] bg-surface-dark px-2.5 py-1 font-mono text-xs font-bold text-amber-400"
                         >
                           {inq.trackingCode}
                         </span>
@@ -1204,7 +1233,7 @@ export function AdminDashboard({
                             {formatToman(inq.estimatedTotalIrr)}
                           </span>
                         )}
-                        <span className="rounded-lg bg-accent-soft px-2.5 py-1 text-xs font-bold text-accent-hover">
+                        <span className="rounded-[2px] bg-accent-soft px-2.5 py-1 text-xs font-bold text-accent-hover">
                           {INQUIRY_STATUS_LABELS[inq.status] ?? inq.status}
                         </span>
                         <ChevronDown
@@ -1219,7 +1248,7 @@ export function AdminDashboard({
                     {isExpanded && (
                       <div className="space-y-4 border-t border-border bg-surface-subtle p-4 sm:p-6">
                         {inq.notes && (
-                          <div className="rounded-xl border border-border bg-surface p-3.5 text-xs leading-6 text-ink">
+                          <div className="rounded-[2px] border border-border bg-surface p-3.5 text-xs leading-6 text-ink">
                             <strong>توضیحات مشتری:</strong> {inq.notes}
                           </div>
                         )}
@@ -1227,8 +1256,8 @@ export function AdminDashboard({
                         {inq.attachmentPath && canDownloadUploads && (
                           <div>
                             <a
-                              href={`/api/admin/uploads/${inq.attachmentPath}`}
-                              className="inline-flex items-center gap-2 rounded-xl border border-amber-300 bg-accent-soft px-4 py-2 text-xs font-bold text-accent-hover hover:bg-amber-200/70"
+                              href={`/api/admin/uploads/${encodeURIComponent(inq.attachmentPath)}/`}
+                              className="inline-flex items-center gap-2 rounded-[2px] border border-amber-300 bg-accent-soft px-4 py-2 text-xs font-bold text-accent-hover hover:bg-amber-200/70"
                             >
                               <Download className="h-4 w-4" aria-hidden="true" />
                               <span>
@@ -1240,7 +1269,7 @@ export function AdminDashboard({
                         )}
 
                         {inq.items.length > 0 && (
-                          <div className="divide-y divide-border rounded-xl border border-border bg-surface">
+                          <div className="divide-y divide-border rounded-[2px] border border-border bg-surface">
                             {inq.items.map((item, idx) => (
                               <div
                                 key={`${inq.id}-item-${idx}`}
@@ -1285,7 +1314,7 @@ export function AdminDashboard({
                                     [inq.id]: e.target.value,
                                   }))
                                 }
-                                className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
+                                className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
                               >
                                 {Object.entries(INQUIRY_STATUS_LABELS).map(
                                   ([key, label]) => (
@@ -1311,7 +1340,7 @@ export function AdminDashboard({
                                   }))
                                 }
                                 placeholder="مثلاً: تاریخ بازدید هماهنگ شد..."
-                                className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
+                                className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
                               />
                             </div>
 
@@ -1320,7 +1349,7 @@ export function AdminDashboard({
                                 type="button"
                                 disabled={savingInquiryId === inq.id}
                                 onClick={() => handleSaveInquiry(inq.id)}
-                                className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-accent px-4 py-2.5 text-xs font-semibold text-white hover:bg-accent-hover disabled:opacity-60"
+                                className="inline-flex w-full items-center justify-center gap-1.5 rounded-[2px] bg-brand px-4 py-2.5 text-xs font-semibold text-white hover:bg-brand-hover disabled:opacity-60"
                               >
                                 <Save className="h-4 w-4" aria-hidden="true" />
                                 <span>
@@ -1331,7 +1360,7 @@ export function AdminDashboard({
                           </div>
                         ) : (
                           inq.adminNotes && (
-                            <div className="rounded-xl border border-border bg-surface p-3.5 text-xs text-ink-muted">
+                            <div className="rounded-[2px] border border-border bg-surface p-3.5 text-xs text-ink-muted">
                               <strong>یادداشت کارشناس:</strong> {inq.adminNotes}
                             </div>
                           )
@@ -1350,13 +1379,13 @@ export function AdminDashboard({
       {activeTab === "pricing" && canViewPricing && (
         <div className="space-y-6">
           {!canEditPricing && (
-            <div className="rounded-xl border border-border bg-surface px-4 py-3 text-xs font-semibold text-ink-muted">
+            <div className="rounded-[2px] border border-border bg-surface px-4 py-3 text-xs font-semibold text-ink-muted">
               دسترسی شما به این بخش فقط‌خواندنی است؛ برای ویرایش نرخ دلار یا
               فرمول کالاها مجوز «ویرایش تعرفه و فرمول کالاها» لازم است.
             </div>
           )}
           {/* FX Control Panel */}
-          <section className="rounded-2xl border border-amber-200 bg-surface p-5 shadow-xs sm:p-6">
+          <section className="border border-amber-200 bg-surface p-5 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-4">
               <div>
                 <div className="flex items-center gap-2">
@@ -1381,7 +1410,7 @@ export function AdminDashboard({
                   type="button"
                   disabled={syncingFx}
                   onClick={handleSyncFxNow}
-                  className="inline-flex items-center gap-2 rounded-xl bg-surface-dark px-4 py-2.5 text-xs font-semibold text-ink-inverse transition-colors hover:bg-surface-elevated disabled:opacity-60"
+                  className="inline-flex items-center gap-2 rounded-[2px] bg-surface-dark px-4 py-2.5 text-xs font-semibold text-ink-inverse transition-colors hover:bg-surface-elevated disabled:opacity-60"
                 >
                   <RefreshCw
                     className={`h-4 w-4 text-amber-400 ${
@@ -1402,7 +1431,7 @@ export function AdminDashboard({
               <div className="mt-5 space-y-5">
                 {/* Active Rate Summary */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                  <div className="rounded-xl border border-amber-200 bg-accent-soft/60 p-4">
+                  <div className="rounded-[2px] border border-amber-200 bg-accent-soft/60 p-4">
                     <p className="text-xs font-semibold text-accent-hover">
                       نرخ فعال مبنای محاسبه
                     </p>
@@ -1414,15 +1443,15 @@ export function AdminDashboard({
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-border bg-surface-subtle p-4">
+                  <div className="rounded-[2px] border border-border bg-surface-subtle p-4">
                     <p className="text-xs font-semibold text-ink-muted">
                       منبع و وضعیت فعلی
                     </p>
                     <div className="mt-2 flex flex-wrap items-center gap-2">
-                      <span className="rounded-lg bg-surface-dark px-2.5 py-1 text-xs font-bold text-amber-400">
+                      <span className="rounded-[2px] bg-surface-dark px-2.5 py-1 text-xs font-bold text-amber-400">
                         {getFxSourceLabel(fxSettings.source_used)}
                       </span>
-                      <span className="rounded-lg border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-ink">
+                      <span className="rounded-[2px] border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-ink">
                         {fxSettings.mode === "auto"
                           ? "حالت خودکار"
                           : "حالت دستی"}
@@ -1430,7 +1459,7 @@ export function AdminDashboard({
                     </div>
                   </div>
 
-                  <div className="rounded-xl border border-border bg-surface-subtle p-4">
+                  <div className="rounded-[2px] border border-border bg-surface-subtle p-4">
                     <p className="text-xs font-semibold text-ink-muted">
                       آخرین همگام‌سازی موفق
                     </p>
@@ -1445,7 +1474,7 @@ export function AdminDashboard({
                 </div>
 
                 {fxSettings.last_error && (
-                  <div className="flex items-start gap-2 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs text-amber-900">
+                  <div className="flex items-start gap-2 rounded-[2px] border border-amber-300 bg-amber-50 px-4 py-3 text-xs text-amber-900">
                     <AlertTriangle
                       className="mt-0.5 h-4 w-4 shrink-0 text-amber-700"
                       aria-hidden="true"
@@ -1461,7 +1490,7 @@ export function AdminDashboard({
 
                 {/* Mode & Manual Override Form */}
                 {canEditPricing && (
-                  <div className="grid grid-cols-1 gap-4 rounded-xl border border-border bg-surface-subtle p-4 md:grid-cols-12">
+                  <div className="grid grid-cols-1 gap-4 rounded-[2px] border border-border bg-surface-subtle p-4 md:grid-cols-12">
                   <div className="md:col-span-4">
                     <p className="text-xs font-semibold text-ink">
                       حالت دریافت نرخ دلار
@@ -1471,9 +1500,9 @@ export function AdminDashboard({
                         type="button"
                         onClick={() => setFxModeDraft("auto")}
                         aria-pressed={fxModeDraft === "auto"}
-                        className={`rounded-xl px-3 py-2 text-xs font-bold transition-colors ${
+                        className={`rounded-[2px] px-3 py-2 text-xs font-bold transition-colors ${
                           fxModeDraft === "auto"
-                            ? "bg-accent text-white shadow-xs"
+                            ? "bg-accent text-white"
                             : "border border-border bg-surface text-ink-muted hover:text-ink"
                         }`}
                       >
@@ -1483,9 +1512,9 @@ export function AdminDashboard({
                         type="button"
                         onClick={() => setFxModeDraft("manual")}
                         aria-pressed={fxModeDraft === "manual"}
-                        className={`rounded-xl px-3 py-2 text-xs font-bold transition-colors ${
+                        className={`rounded-[2px] px-3 py-2 text-xs font-bold transition-colors ${
                           fxModeDraft === "manual"
-                            ? "bg-accent text-white shadow-xs"
+                            ? "bg-accent text-white"
                             : "border border-border bg-surface text-ink-muted hover:text-ink"
                         }`}
                       >
@@ -1509,7 +1538,7 @@ export function AdminDashboard({
                       dir="ltr"
                       value={manualUsdDraft}
                       onChange={(e) => setManualUsdDraft(e.target.value)}
-                      className="tabular-nums mt-2 w-full rounded-xl border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink focus:border-accent focus:outline-none"
+                      className="tabular-nums mt-2 w-full rounded-[2px] border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink focus:border-brand focus:outline-none"
                     />
                     <p className="tabular-nums mt-1 text-[11px] text-ink-muted">
                       معادل:{" "}
@@ -1535,7 +1564,7 @@ export function AdminDashboard({
                       dir="ltr"
                       value={syncIntervalDraft}
                       onChange={(e) => setSyncIntervalDraft(e.target.value)}
-                      className="tabular-nums mt-2 w-full rounded-xl border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink focus:border-accent focus:outline-none"
+                      className="tabular-nums mt-2 w-full rounded-[2px] border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink focus:border-brand focus:outline-none"
                     />
                   </div>
 
@@ -1544,7 +1573,7 @@ export function AdminDashboard({
                       type="button"
                       disabled={savingFx}
                       onClick={handleSaveFxSettings}
-                      className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-accent px-4 py-2.5 text-xs font-semibold text-white hover:bg-accent-hover disabled:opacity-60"
+                      className="inline-flex w-full items-center justify-center gap-1.5 rounded-[2px] bg-brand px-4 py-2.5 text-xs font-semibold text-white hover:bg-brand-hover disabled:opacity-60"
                     >
                       <Save className="h-4 w-4" aria-hidden="true" />
                       <span>
@@ -1559,7 +1588,7 @@ export function AdminDashboard({
 
                 {/* Recent FX Rate History */}
                 {fxHistory.length > 0 && (
-                  <div className="rounded-xl border border-border bg-surface-subtle p-4">
+                  <div className="rounded-[2px] border border-border bg-surface-subtle p-4">
                     <div className="flex items-center gap-2 text-xs font-bold text-ink">
                       <History
                         className="h-4 w-4 text-accent"
@@ -1570,14 +1599,14 @@ export function AdminDashboard({
                         {toPersianDigits(fxHistory.length)} مورد اخیر)
                       </span>
                     </div>
-                    <div className="mt-3 max-h-44 divide-y divide-border overflow-y-auto rounded-xl border border-border bg-surface text-xs">
+                    <div className="mt-3 max-h-44 divide-y divide-border overflow-y-auto rounded-[2px] border border-border bg-surface text-xs">
                       {fxHistory.map((item) => (
                         <div
                           key={item.id}
                           className="flex flex-wrap items-center justify-between gap-2 px-3 py-2"
                         >
                           <div className="flex items-center gap-2">
-                            <span className="rounded-md bg-surface-subtle px-2 py-0.5 font-semibold text-ink">
+                            <span className="rounded-[2px] bg-surface-subtle px-2 py-0.5 font-semibold text-ink">
                               {getFxSourceLabel(item.source)}
                             </span>
                             <span className="text-ink-muted">
@@ -1626,7 +1655,7 @@ export function AdminDashboard({
               return (
                 <div
                   key={rule.system_key}
-                  className="rounded-2xl border border-border bg-surface p-5 sm:p-6"
+                  className="border border-border bg-surface p-5 sm:p-6"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
                     <div>
@@ -1634,7 +1663,7 @@ export function AdminDashboard({
                         <h2 className="text-base font-bold text-ink">
                           {rule.label}
                         </h2>
-                        <span className="rounded-md bg-surface-subtle px-2 py-0.5 text-[11px] font-semibold text-ink-muted">
+                        <span className="rounded-[2px] bg-surface-subtle px-2 py-0.5 text-[11px] font-semibold text-ink-muted">
                           {unitLabel}
                         </span>
                       </div>
@@ -1644,7 +1673,7 @@ export function AdminDashboard({
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3">
-                      <div className="rounded-xl border border-amber-200 bg-accent-soft/60 px-3.5 py-2 text-end text-xs">
+                      <div className="rounded-[2px] border border-amber-200 bg-accent-soft/60 px-3.5 py-2 text-end text-xs">
                         <p className="text-[11px] text-accent-hover">
                           پیش‌نمایش قیمت فرمول ({unitLabel})
                         </p>
@@ -1658,7 +1687,7 @@ export function AdminDashboard({
                           type="button"
                           disabled={savingPricingKey === rule.system_key}
                           onClick={() => handleSavePricingRule(rule)}
-                          className="inline-flex items-center gap-1.5 rounded-xl bg-accent px-4 py-2.5 text-xs font-semibold text-white hover:bg-accent-hover disabled:opacity-60"
+                          className="inline-flex items-center gap-1.5 rounded-[2px] bg-brand px-4 py-2.5 text-xs font-semibold text-white hover:bg-brand-hover disabled:opacity-60"
                         >
                           <Save className="h-4 w-4" aria-hidden="true" />
                           <span>
@@ -1672,7 +1701,7 @@ export function AdminDashboard({
                   </div>
 
                   {/* Formula Parameters */}
-                  <div className="mt-4 rounded-xl border border-border bg-surface-subtle/70 p-4">
+                  <div className="mt-4 rounded-[2px] border border-border bg-surface-subtle/70 p-4">
                     <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
                       <span className="font-bold text-ink">
                         پارامترهای فرمول متصل به دلار
@@ -1703,7 +1732,7 @@ export function AdminDashboard({
                               e.target.value
                             )
                           }
-                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink"
+                          className="tabular-nums mt-1 w-full rounded-[2px] border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink"
                         />
                       </div>
 
@@ -1724,7 +1753,7 @@ export function AdminDashboard({
                               e.target.value
                             )
                           }
-                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink"
+                          className="tabular-nums mt-1 w-full rounded-[2px] border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink"
                         />
                       </div>
 
@@ -1744,7 +1773,7 @@ export function AdminDashboard({
                               e.target.value
                             )
                           }
-                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink"
+                          className="tabular-nums mt-1 w-full rounded-[2px] border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink"
                         />
                       </div>
 
@@ -1765,7 +1794,7 @@ export function AdminDashboard({
                               e.target.value
                             )
                           }
-                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink"
+                          className="tabular-nums mt-1 w-full rounded-[2px] border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink"
                         />
                       </div>
 
@@ -1785,7 +1814,7 @@ export function AdminDashboard({
                               e.target.value
                             )
                           }
-                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink"
+                          className="tabular-nums mt-1 w-full rounded-[2px] border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink"
                         />
                       </div>
                     </div>
@@ -1810,7 +1839,7 @@ export function AdminDashboard({
                               e.target.value
                             )
                           }
-                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                          className="tabular-nums mt-1 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
                         />
                       </div>
 
@@ -1829,7 +1858,7 @@ export function AdminDashboard({
                               e.target.value
                             )
                           }
-                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                          className="tabular-nums mt-1 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
                         />
                       </div>
 
@@ -1848,7 +1877,7 @@ export function AdminDashboard({
                               e.target.value
                             )
                           }
-                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                          className="tabular-nums mt-1 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
                         />
                       </div>
 
@@ -1867,7 +1896,7 @@ export function AdminDashboard({
                               e.target.value
                             )
                           }
-                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                          className="tabular-nums mt-1 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
                         />
                       </div>
 
@@ -1886,7 +1915,7 @@ export function AdminDashboard({
                               e.target.value
                             )
                           }
-                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                          className="tabular-nums mt-1 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
                         />
                       </div>
 
@@ -1905,7 +1934,7 @@ export function AdminDashboard({
                               e.target.value
                             )
                           }
-                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                          className="tabular-nums mt-1 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
                         />
                       </div>
 
@@ -1925,7 +1954,7 @@ export function AdminDashboard({
                               e.target.value
                             )
                           }
-                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                          className="tabular-nums mt-1 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
                         />
                       </div>
 
@@ -1945,7 +1974,7 @@ export function AdminDashboard({
                               e.target.value
                             )
                           }
-                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                          className="tabular-nums mt-1 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
                         />
                       </div>
                     </div>
@@ -1963,7 +1992,7 @@ export function AdminDashboard({
           {/* Issue New Warranty */}
           <form
             onSubmit={handleCreateWarranty}
-            className="rounded-2xl border border-border bg-surface p-5 sm:p-6"
+            className="border border-border bg-surface p-5 sm:p-6"
           >
             <div className="flex items-center gap-2">
               <Plus className="h-4 w-4 text-accent" aria-hidden="true" />
@@ -1981,7 +2010,7 @@ export function AdminDashboard({
                 onChange={(e) =>
                   setNewWarranty({ ...newWarranty, customerName: e.target.value })
                 }
-                className="rounded-xl border border-border bg-surface-subtle px-3.5 py-2.5 text-sm text-ink"
+                className="rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2.5 text-sm text-ink"
               />
               <input
                 type="tel"
@@ -1992,7 +2021,7 @@ export function AdminDashboard({
                 onChange={(e) =>
                   setNewWarranty({ ...newWarranty, phone: e.target.value })
                 }
-                className="tabular-nums rounded-xl border border-border bg-surface-subtle px-3.5 py-2.5 text-end text-sm text-ink"
+                className="tabular-nums rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2.5 text-end text-sm text-ink"
               />
               <input
                 type="text"
@@ -2002,7 +2031,7 @@ export function AdminDashboard({
                 onChange={(e) =>
                   setNewWarranty({ ...newWarranty, city: e.target.value })
                 }
-                className="rounded-xl border border-border bg-surface-subtle px-3.5 py-2.5 text-sm text-ink"
+                className="rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2.5 text-sm text-ink"
               />
               <input
                 type="text"
@@ -2012,7 +2041,7 @@ export function AdminDashboard({
                 onChange={(e) =>
                   setNewWarranty({ ...newWarranty, systemName: e.target.value })
                 }
-                className="rounded-xl border border-border bg-surface-subtle px-3.5 py-2.5 text-sm text-ink"
+                className="rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2.5 text-sm text-ink"
               />
               <input
                 type="number"
@@ -2028,7 +2057,7 @@ export function AdminDashboard({
                     warrantyYears: e.target.value,
                   })
                 }
-                className="tabular-nums rounded-xl border border-border bg-surface-subtle px-3.5 py-2.5 text-end text-sm text-ink"
+                className="tabular-nums rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2.5 text-end text-sm text-ink"
               />
               <input
                 type="text"
@@ -2039,7 +2068,7 @@ export function AdminDashboard({
                 onChange={(e) =>
                   setNewWarranty({ ...newWarranty, issuedDate: e.target.value })
                 }
-                className="tabular-nums rounded-xl border border-border bg-surface-subtle px-3.5 py-2.5 text-end text-sm text-ink"
+                className="tabular-nums rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2.5 text-end text-sm text-ink"
               />
               <input
                 type="text"
@@ -2050,7 +2079,7 @@ export function AdminDashboard({
                 onChange={(e) =>
                   setNewWarranty({ ...newWarranty, expiresDate: e.target.value })
                 }
-                className="tabular-nums rounded-xl border border-border bg-surface-subtle px-3.5 py-2.5 text-end text-sm text-ink"
+                className="tabular-nums rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2.5 text-end text-sm text-ink"
               />
               <input
                 type="text"
@@ -2060,14 +2089,14 @@ export function AdminDashboard({
                 onChange={(e) =>
                   setNewWarranty({ ...newWarranty, serialCode: e.target.value })
                 }
-                className="font-mono rounded-xl border border-border bg-surface-subtle px-3.5 py-2.5 text-end text-sm text-ink"
+                className="font-mono rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2.5 text-end text-sm text-ink"
               />
             </div>
 
             <button
               type="submit"
               disabled={creatingWarranty}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-xs font-semibold text-white hover:bg-accent-hover disabled:opacity-60"
+              className="mt-4 inline-flex items-center gap-2 rounded-[2px] bg-brand px-5 py-2.5 text-xs font-semibold text-white hover:bg-brand-hover disabled:opacity-60"
             >
               <Plus className="h-4 w-4" aria-hidden="true" />
               <span>
@@ -2077,7 +2106,7 @@ export function AdminDashboard({
           </form>
 
           {/* Warranties Table */}
-          <div className="overflow-hidden rounded-2xl border border-border bg-surface">
+          <div className="overflow-hidden border border-border bg-surface">
             <div className="border-b border-border bg-surface-subtle px-5 py-3.5">
               <h2 className="text-sm font-bold text-ink">
                 فهرست ضمانت‌نامه‌های صادرشده ({toPersianDigits(warranties.length)})
@@ -2094,7 +2123,7 @@ export function AdminDashboard({
                     <div className="flex flex-wrap items-center gap-2">
                       <span
                         dir="ltr"
-                        className="rounded-md bg-surface-dark px-2.5 py-1 font-mono font-bold text-amber-400"
+                        className="rounded-[2px] bg-surface-dark px-2.5 py-1 font-mono font-bold text-amber-400"
                       >
                         {w.serial_code}
                       </span>
@@ -2112,7 +2141,7 @@ export function AdminDashboard({
                     </p>
                   </div>
 
-                  <span className="rounded-md bg-emerald-50 px-2.5 py-1 font-semibold text-emerald-800">
+                  <span className="rounded-[2px] bg-emerald-50 px-2.5 py-1 font-semibold text-emerald-800">
                     {WARRANTY_STATUS_LABELS[w.status] ?? w.status} (
                     {toPersianDigits(w.warranty_years)} سال)
                   </span>
@@ -2122,7 +2151,7 @@ export function AdminDashboard({
           </div>
 
           {/* Service Requests Table */}
-          <div className="overflow-hidden rounded-2xl border border-border bg-surface">
+          <div className="overflow-hidden border border-border bg-surface">
             <div className="border-b border-border bg-surface-subtle px-5 py-3.5">
               <h2 className="text-sm font-bold text-ink">
                 درخواست‌های خدمات و رگلاژ مشتریان (
@@ -2171,7 +2200,7 @@ export function AdminDashboard({
                           handleUpdateServiceStatus(req.id, e.target.value)
                         }
                         aria-label={`وضعیت درخواست ${req.tracking_code}`}
-                        className="rounded-xl border border-border bg-surface-subtle px-3 py-2 text-xs font-semibold text-ink"
+                        className="rounded-[2px] border border-border bg-surface-subtle px-3 py-2 text-xs font-semibold text-ink"
                       >
                         <option value="open">باز (در انتظار بررسی)</option>
                         <option value="in_progress">در حال پیگیری</option>

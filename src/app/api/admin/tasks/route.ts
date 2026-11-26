@@ -4,6 +4,7 @@ import {
   requireAdminAccess,
   verifySameOrigin,
 } from "@/lib/admin-auth";
+import { recordAuditEvent } from "@/lib/audit-log";
 import { getDb } from "@/lib/db";
 import type { TaskCategory, TaskPriority } from "@/lib/permissions";
 
@@ -330,6 +331,26 @@ export async function POST(request: Request) {
     }
     return out;
   })();
+
+  for (const task of createdTasks) {
+    recordAuditEvent({
+      session: auth.session,
+      action: "task.create",
+      entityType: "task",
+      entityId: String(task.id),
+      summary: `تعریف وظیفه «${task.title}» برای ${task.staffFullName} (${task.staffUsername})`,
+      details: {
+        taskId: task.id,
+        staffUserId: task.staffUserId,
+        staffUsername: task.staffUsername,
+        title: task.title,
+        category: task.category,
+        priority: task.priority,
+        dueLabel: task.dueLabel,
+      },
+      request,
+    });
+  }
 
   return NextResponse.json(
     {

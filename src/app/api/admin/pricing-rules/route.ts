@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdminAccess, verifySameOrigin } from "@/lib/admin-auth";
+import { recordAuditEvent } from "@/lib/audit-log";
 import { getDb, type PricingRuleRow } from "@/lib/db";
 import { getFxSettings } from "@/lib/fx-sync";
 import { toLatinDigits } from "@/lib/persian-seo";
@@ -258,6 +259,31 @@ export async function PUT(request: Request) {
   const rules = db
     .prepare("SELECT * FROM pricing_rules ORDER BY id ASC")
     .all() as PricingRuleRow[];
+
+  recordAuditEvent({
+    session: auth.session,
+    action: "pricing.update",
+    entityType: "pricing",
+    entityId: systemKey,
+    summary: `ویرایش فرمول و تعرفه «${updated.label}» (نرخ مبنا: ${updated.computed_price_per_sqm.toLocaleString("en-US")} ریال)`,
+    details: {
+      before: {
+        computed_price_per_sqm: existing.computed_price_per_sqm,
+        usd_units_per_sqm: existing.usd_units_per_sqm,
+        formula_multiplier: existing.formula_multiplier,
+        fixed_surcharge_irr: existing.fixed_surcharge_irr,
+        rounding_step_irr: existing.rounding_step_irr,
+      },
+      after: {
+        computed_price_per_sqm: updated.computed_price_per_sqm,
+        usd_units_per_sqm: updated.usd_units_per_sqm,
+        formula_multiplier: updated.formula_multiplier,
+        fixed_surcharge_irr: updated.fixed_surcharge_irr,
+        rounding_step_irr: updated.rounding_step_irr,
+      },
+    },
+    request,
+  });
 
   return NextResponse.json(
     { ok: true, rule: updated, rules },

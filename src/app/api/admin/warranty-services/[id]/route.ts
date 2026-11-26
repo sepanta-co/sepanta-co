@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdminAccess, verifySameOrigin } from "@/lib/admin-auth";
+import { recordAuditEvent } from "@/lib/audit-log";
 import { getDb } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -55,22 +56,39 @@ export async function PATCH(
   }
 
   const db = getDb();
-  const result = db
-    .prepare(
-      "UPDATE warranty_service_requests SET status = ? WHERE id = ?"
-    )
-    .run(status, numericId);
+  const existing = db
+    .prepare("SELECT id, tracking_code, status FROM warranty_service_requests WHERE id = ?")
+    .get(numericId) as { id: number; tracking_code: string; status: string } | undefined;
 
-  if (result.changes === 0) {
+  if (!existing) {
     return NextResponse.json(
       { ok: false, error: "درخواست خدمات مورد نظر یافت نشد." },
       { status: 404 }
     );
   }
 
+  db.prepare("UPDATE warranty_service_requests SET status = ? WHERE id = ?").run(
+    status,
+    numericId
+  );
+
   const updated = db
     .prepare("SELECT * FROM warranty_service_requests WHERE id = ?")
     .get(numericId);
+
+  recordAuditEvent({
+    session: auth.session,
+    action: "warranty_service.update",
+    entityType: "warranty_service",
+    entityId: existing.tracking_code,
+    summary: `تغییر وضعیت درخواست خدمات ${existing.tracking_code} از «${existing.status}» به «${status}»`,
+    details: {
+      serviceRequestId: numericId,
+      before: { status: existing.status },
+      after: { status },
+    },
+    request,
+  });
 
   return NextResponse.json(
     { ok: true, serviceRequest: updated },

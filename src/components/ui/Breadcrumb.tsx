@@ -13,7 +13,7 @@ export interface BreadcrumbProps {
 export function Breadcrumb({ items }: BreadcrumbProps) {
   return (
     <nav aria-label="مسیر صفحه" className="mb-6">
-      <ol className="flex flex-wrap items-center gap-1.5 text-xs text-ink-muted sm:gap-2 sm:text-sm">
+      <ol className="flex flex-wrap items-center gap-1.5 text-xs text-ink-muted sm:gap-2">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
           return (
@@ -23,7 +23,7 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
             >
               {index > 0 && (
                 <ChevronLeft
-                  className="h-3.5 w-3.5 shrink-0 text-slate-400"
+                  className="h-3.5 w-3.5 shrink-0 text-ink-muted/60"
                   aria-hidden="true"
                 />
               )}
@@ -31,14 +31,14 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
               {item.href && !isLast ? (
                 <Link
                   href={item.href}
-                  className="transition-colors hover:text-accent"
+                  className="transition-colors hover:text-brand"
                 >
                   {item.label}
                 </Link>
               ) : (
                 <span
                   aria-current={isLast ? "page" : undefined}
-                  className="font-semibold text-ink"
+                  className="font-bold text-ink"
                 >
                   {item.label}
                 </span>

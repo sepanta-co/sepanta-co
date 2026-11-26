@@ -1,20 +1,29 @@
 import Link from "next/link";
-import { Factory, LayoutGrid, ShieldCheck, SlidersHorizontal } from "lucide-react";
+import { ArrowUpLeft, PhoneCall, SlidersHorizontal } from "lucide-react";
 import { PictureImage } from "@/components/ui/PictureImage";
 import { toPersianDigits } from "@/lib/persian-seo";
 
-const HERO_STATS = [
+const PERSONA_PATHS = [
   {
-    value: `${toPersianDigits(7)} خط تولید`,
-    label: "از پروفیل uPVC تا چهارچوب فلزی",
+    index: "۰۱",
+    title: "تعویض پنجره قدیمی بدون تخریب",
+    description:
+      "اجرای پروفیل بازسازی روی چهارچوب فعلی در یک روز کاری بدون آسیب به نما و گچ‌کاری",
+    href: "/#renovation",
   },
   {
-    value: `${toPersianDigits(1)} روز کاری`,
-    label: "تعویض پنجره بدون تخریب نما",
+    index: "۰۲",
+    title: "ساختمان نوساز و ویلا",
+    description:
+      "انتخاب مهندسی بین uPVC چندمحفظه و آلومینیوم ترمال بریک متناسب با دهانه و اقلیم پروژه",
+    href: "/configurator/?product=thermal-break",
   },
   {
-    value: "تامین سراسری",
-    label: "کارخانه زنجان و نصب در کل کشور",
+    index: "۰۳",
+    title: "معماران، سازندگان و پروژه B2B",
+    description:
+      "تامین یکپارچه خطوط تولید کارخانه، ارسال فایل جدول بازشوها و مشاوره مستقیم دفتر فنی زنجان",
+    href: "/about/#contact",
   },
 ] as const;
 
@@ -22,87 +31,151 @@ export function HeroSection() {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="relative overflow-hidden border-b border-border bg-surface bg-[linear-gradient(to_right,#e2e8f040_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f040_1px,transparent_1px)] bg-[size:48px_48px]"
+      className="border-b border-border bg-canvas"
     >
-      <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-12 lg:gap-12 lg:px-8">
-        {/* Text Column */}
-        <div className="lg:col-span-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-accent-soft px-3.5 py-1.5 text-xs font-semibold text-accent-hover">
-            <Factory className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-            <span>کارخانه صنعتی سپنتا — زنجان، ارسال و نصب سراسری</span>
+      <div className="mx-auto max-w-[1280px] px-4 py-12 sm:px-6 md:py-20 lg:px-8">
+        {/* Asymmetric Split Architectural Hero (Start 7 cols / End 5 cols) */}
+        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-12">
+          {/* Specification & Editorial Column */}
+          <div className="lg:col-span-7">
+            <div className="flex items-center gap-3">
+              <span className="h-[2px] w-8 bg-accent-deep" aria-hidden="true" />
+              <p className="text-xs font-bold tracking-wide text-primary">
+                کارخانه مستقیم زنجان · اجرای سراسری ایران
+              </p>
+            </div>
+
+            <h1
+              id="hero-heading"
+              className="mt-5 text-3xl font-extrabold leading-[1.28] tracking-tight text-anthracite sm:text-4xl lg:text-[2.75rem]"
+            >
+              تولید مهندسی درب و پنجره دوجداره uPVC و آلومینیوم ترمال بریک
+            </h1>
+
+            <p className="mt-5 max-w-2xl text-[15px] leading-8 text-ink-muted sm:text-base">
+              از برش و جوش حرارتی CNC در کارخانه زنجان تا اندازه‌گیری لیزری در
+              محل، آب‌بندی اصولی و تحویل ضمانت‌نامه مکتوب{" "}
+              <span className="tabular-nums font-bold text-anthracite">
+                {toPersianDigits(10)} تا {toPersianDigits(25)} ساله
+              </span>
+              ؛ ساخته‌شده برای سکوت بیشتر، اتلاف انرژی کمتر و دوام سال‌های طولانی.
+            </p>
+
+            {/* Dual Architectural CTAs */}
+            <div className="mt-8 flex flex-wrap items-center gap-3.5">
+              <Link
+                href="/configurator/"
+                className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[4px] bg-accent px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-accent-deep"
+              >
+                <SlidersHorizontal
+                  className="h-4 w-4 shrink-0"
+                  strokeWidth={1.6}
+                  aria-hidden="true"
+                />
+                <span>شروع پیکربندی و برآورد آنلاین</span>
+              </Link>
+
+              <Link
+                href="/about/#contact"
+                className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[4px] border border-primary bg-surface px-6 py-3 text-sm font-bold text-primary transition-colors hover:bg-primary hover:text-white"
+              >
+                <PhoneCall
+                  className="h-4 w-4 shrink-0"
+                  strokeWidth={1.6}
+                  aria-hidden="true"
+                />
+                <span>درخواست بازدید و مشاوره</span>
+              </Link>
+            </div>
+
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-border pt-5 text-xs text-ink-muted">
+              <span className="tabular-nums font-bold text-eco">
+                کاهش تراز صدا تا {toPersianDigits(40)} دسی‌بل
+              </span>
+              <span className="tabular-nums font-medium text-ink">
+                ۷ خط تولید یکپارچه در شهرک صنعتی زنجان
+              </span>
+              <span className="tabular-nums font-medium text-ink">
+                تحویل پروژه‌ای {toPersianDigits(10)} تا {toPersianDigits(25)} روز کاری
+              </span>
+            </div>
           </div>
 
-          <h1
-            id="hero-heading"
-            className="mt-5 text-3xl font-extrabold leading-tight tracking-tight text-ink sm:text-4xl lg:text-[2.65rem] lg:leading-[1.25]"
-          >
-            تولید مستقیم درب و پنجره دوجداره uPVC و آلومینیوم ترمال بریک
-          </h1>
+          {/* Framed Architectural Visual Plate (5 cols) */}
+          <div className="lg:col-span-5">
+            <div className="relative border border-border-strong bg-surface p-2.5">
+              {/* Architectural Corner Dimension Ticks */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -top-1 -start-1 h-2.5 w-2.5 border-t-2 border-s-2 border-primary"
+              />
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -top-1 -end-1 h-2.5 w-2.5 border-t-2 border-e-2 border-primary"
+              />
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-1 -start-1 h-2.5 w-2.5 border-b-2 border-s-2 border-primary"
+              />
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-1 -end-1 h-2.5 w-2.5 border-b-2 border-e-2 border-primary"
+              />
 
-          <p className="mt-5 max-w-xl text-sm leading-8 text-ink-muted sm:text-base">
-            تولید دقیق با خطوط برش و جوش CNC در کارخانه زنجان، اندازه‌گیری لیزری
-            و نصب استاندارد در سراسر کشور همراه با ضمانت مکتوب{" "}
-            <span className="tabular-nums font-semibold text-ink">
-              {toPersianDigits(10)} تا {toPersianDigits(25)}
-            </span>{" "}
-            ساله اصالت پروفیل و عملکرد فنی.
-          </p>
+              <div className="relative aspect-[4/3] w-full overflow-hidden border border-border bg-anthracite lg:aspect-[4/4.3]">
+                <PictureImage
+                  imageKey="hero-architecture"
+                  alt="نمای معماری مدرن مجهز به درب و پنجره دوجداره uPVC و آلومینیوم ترمال بریک گروه صنعتی سپنتا"
+                  sizes="(max-width: 1024px) 100vw, 42vw"
+                  priority
+                  fill
+                />
+              </div>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3.5">
-            <Link
-              href="/configurator/"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-accent-hover"
-            >
-              <SlidersHorizontal className="h-4 w-4 shrink-0" aria-hidden="true" />
-              <span>برآورد و پیکربندی هوشمند</span>
-            </Link>
-
-            <Link
-              href="/products/"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-surface px-6 py-3.5 text-sm font-semibold text-ink transition-colors hover:bg-surface-subtle"
-            >
-              <LayoutGrid className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
-              <span>مشاهده ۷ خط تولید</span>
-            </Link>
-          </div>
-
-          <div className="mt-6 flex items-center gap-2 text-xs text-ink-muted">
-            <ShieldCheck className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
-            <span>
-              فروش مستقیم از کارخانه بدون واسطه • مناسب پروژه‌های ساختمانی و بازسازی
-            </span>
+              <div className="mt-2.5 flex items-center justify-between gap-2 border-t border-border px-1 pt-2.5 text-xs">
+                <span className="font-bold text-primary">
+                  خط برش و جوش CNC · کنترل کیفیت زنجان
+                </span>
+                <span
+                  dir="ltr"
+                  className="tabular-nums font-mono text-[11px] font-bold text-eco"
+                >
+                  Uw 1.1 – 1.8 W/m²K
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Framed Obsidian Visual Column */}
-        <div className="lg:col-span-6">
-          <div className="rounded-3xl border border-border-dark bg-surface-dark p-3 shadow-xl sm:p-4">
-            <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-surface-elevated">
-              <PictureImage
-                imageKey="hero-architecture"
-                alt="نمای معماری مدرن مجهز به درب و پنجره دوجداره uPVC و آلومینیوم ترمال بریک گروه صنعتی سپنتا"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                priority
-                fill
+        {/* Lower Hero: 3 Tactile Architectural Persona Paths */}
+        <div
+          aria-label="مسیر سریع انتخاب سیستم بر اساس نوع نیاز"
+          className="mt-12 grid grid-cols-1 border-t border-s border-border bg-surface md:grid-cols-3"
+        >
+          {PERSONA_PATHS.map((item) => (
+            <Link
+              key={item.index}
+              href={item.href}
+              className="group flex items-start justify-between gap-4 border-e border-b border-border p-5 transition-colors hover:bg-surface-warm/60 sm:p-6"
+            >
+              <div className="min-w-0">
+                <span className="font-display tabular-nums inline-block text-xs font-extrabold text-accent-deep">
+                  {item.index}
+                </span>
+                <h2 className="mt-1.5 text-sm font-bold text-anthracite transition-colors group-hover:text-primary sm:text-base">
+                  {item.title}
+                </h2>
+                <p className="mt-1.5 text-xs leading-6 text-ink-muted">
+                  {item.description}
+                </p>
+              </div>
+              <ArrowUpLeft
+                className="mt-1 h-4 w-4 shrink-0 text-border-strong transition-transform group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary"
+                strokeWidth={1.6}
+                aria-hidden="true"
               />
-            </div>
-
-            <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-              {HERO_STATS.map((stat) => (
-                <div
-                  key={stat.value}
-                  className="rounded-xl border border-border-dark bg-surface-elevated px-3.5 py-3 text-start"
-                >
-                  <p className="tabular-nums text-sm font-bold text-amber-400">
-                    {stat.value}
-                  </p>
-                  <p className="mt-1 text-[11px] leading-5 text-slate-300">
-                    {stat.label}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
+            </Link>
+          ))}
         </div>
       </div>
     </section>

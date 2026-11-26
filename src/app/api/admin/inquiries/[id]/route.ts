@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdminAccess, verifySameOrigin } from "@/lib/admin-auth";
+import { recordAuditEvent } from "@/lib/audit-log";
 import { getDb } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -73,29 +74,54 @@ export async function PATCH(
 
   const nowIso = new Date().toISOString();
   const db = getDb();
-  const result = db
-    .prepare(
-      `UPDATE inquiries
-       SET status = @status, admin_notes = @admin_notes, updated_at = @updated_at
-       WHERE id = @id`
-    )
-    .run({
-      id: numericId,
-      status,
-      admin_notes: adminNotes || null,
-      updated_at: nowIso,
-    });
+  const existing = db
+    .prepare("SELECT id, tracking_code, status, admin_notes FROM inquiries WHERE id = ?")
+    .get(numericId) as
+    | {
+        id: number;
+        tracking_code: string;
+        status: string;
+        admin_notes: string | null;
+      }
+    | undefined;
 
-  if (result.changes === 0) {
+  if (!existing) {
     return NextResponse.json(
       { ok: false, error: "پرونده مورد نظر یافت نشد." },
       { status: 404 }
     );
   }
 
+  db.prepare(
+    `UPDATE inquiries
+     SET status = @status, admin_notes = @admin_notes, updated_at = @updated_at
+     WHERE id = @id`
+  ).run({
+    id: numericId,
+    status,
+    admin_notes: adminNotes || null,
+    updated_at: nowIso,
+  });
+
   const updated = db
     .prepare("SELECT * FROM inquiries WHERE id = ?")
     .get(numericId);
+
+  const notesChanged = (existing.admin_notes ?? "") !== adminNotes;
+  recordAuditEvent({
+    session: auth.session,
+    action: "inquiry.update",
+    entityType: "inquiry",
+    entityId: existing.tracking_code,
+    summary: `تغییر وضعیت استعلام ${existing.tracking_code} از «${existing.status}» به «${status}»`,
+    details: {
+      inquiryId: numericId,
+      before: { status: existing.status },
+      after: { status },
+      adminNotesChanged: notesChanged,
+    },
+    request,
+  });
 
   return NextResponse.json({ ok: true, inquiry: updated }, { status: 200 });
 }

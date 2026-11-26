@@ -71,9 +71,12 @@ export default function ProductsCatalogPage() {
             ]}
           />
 
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-accent-soft px-3.5 py-1 text-xs font-semibold text-accent-hover">
-            <Factory className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>تولید CNC کارخانه زنجان • اندازه‌گیری و نصب سراسری</span>
+          <div className="flex items-center gap-3">
+            <span className="h-[2px] w-8 bg-accent" aria-hidden="true" />
+            <p className="inline-flex items-center gap-2 text-xs font-bold text-brand">
+              <Factory className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+              <span>تولید CNC کارخانه زنجان • اندازه‌گیری و نصب سراسری</span>
+            </p>
           </div>
 
           <h1 className="mt-4 max-w-3xl text-2xl font-extrabold leading-tight tracking-tight text-ink sm:text-4xl">
@@ -102,13 +105,13 @@ export default function ProductsCatalogPage() {
       {/* Decision Guidance Band */}
       <section className="bg-surface-subtle py-12 md:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col justify-between gap-6 rounded-2xl border border-border bg-surface p-6 sm:p-8 lg:flex-row lg:items-center">
+          <div className="flex flex-col justify-between gap-6 border border-border bg-surface p-6 sm:p-8 lg:flex-row lg:items-center">
             <div className="max-w-2xl space-y-2">
               <div className="inline-flex items-center gap-2 text-xs font-bold text-accent">
                 <Scale className="h-4 w-4" aria-hidden="true" />
                 <span>راهنمای انتخاب سیستم مناسب پروژه</span>
               </div>
-              <h2 className="text-xl font-bold text-ink sm:text-2xl">
+              <h2 className="text-xl font-extrabold text-ink sm:text-2xl">
                 بین پنجره دوجداره uPVC و آلومینیوم ترمال بریک تردید دارید؟
               </h2>
               <p className="text-sm leading-7 text-ink-muted">
@@ -121,15 +124,15 @@ export default function ProductsCatalogPage() {
             <div className="flex flex-wrap items-center gap-3 lg:shrink-0">
               <Link
                 href="/#comparison"
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface-subtle px-5 py-3 text-sm font-semibold text-ink transition-colors hover:border-accent hover:text-accent"
+                className="inline-flex items-center gap-2 rounded-[2px] border border-border bg-surface-subtle px-5 py-3 text-sm font-bold text-ink transition-colors hover:border-brand hover:text-brand"
               >
                 <span>مقایسه فنی uPVC و ترمال بریک</span>
-                <ArrowUpLeft className="h-4 w-4" aria-hidden="true" />
+                <ArrowUpLeft className="h-4 w-4 text-accent" aria-hidden="true" />
               </Link>
 
               <Link
                 href="/configurator/"
-                className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
+                className="inline-flex items-center gap-2 rounded-[2px] bg-brand px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-hover"
               >
                 <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
                 <span>شروع کانفیگوریتور هوشمند</span>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpLeft, CheckCircle2 } from "lucide-react";
+import { ArrowUpLeft } from "lucide-react";
 import { BeforeAfterSlider } from "@/components/sections/BeforeAfterSlider";
 import { ClosingCtaSection } from "@/components/sections/ClosingCtaSection";
 import { ComparisonTable } from "@/components/sections/ComparisonTable";
@@ -9,10 +9,11 @@ import { FaqAccordion } from "@/components/sections/FaqAccordion";
 import { FeaturedProjectsSection } from "@/components/sections/FeaturedProjectsSection";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { ProductsGridSection } from "@/components/sections/ProductsGridSection";
+import { WindowSelectorQuiz } from "@/components/sections/WindowSelectorQuiz";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PictureImage } from "@/components/ui/PictureImage";
 import { GENERAL_FAQS } from "@/data/faqs";
-import { buildCanonicalUrl, toPersianDigits } from "@/lib/persian-seo";
+import { buildCanonicalUrl } from "@/lib/persian-seo";
 import {
   buildFaqSchema,
   buildOrganizationSchema,
@@ -32,10 +33,19 @@ export const metadata: Metadata = {
   },
 };
 
-const RETROFIT_BENEFITS = [
-  "نصب مستقیم فریم بازسازی روی چهارچوب فلزی قبلی بدون تخریب سنگ نما، کاغذدیواری یا گچ‌کاری",
-  `تکمیل تعویض کل پنجره‌های یک واحد مسکونی متعارف در ${toPersianDigits(1)} روز کاری با کمترین گردوغبار`,
-  "کاهش محسوس صدای خیابان و اتلاف گرمایش و سرمایش بلافاصله پس از آب‌بندی و رگلاژ نهایی",
+const RENOVATION_GUARANTEES = [
+  {
+    code: "۰۱",
+    text: "نصب در یک روز بدون تخریب دیوار، سنگ نما، کاشی و گچ‌کاری",
+  },
+  {
+    code: "۰۲",
+    text: "آب‌بندی استاندارد و چندمرحله‌ای با فوم پلی‌اورتان و چسب ماستیک",
+  },
+  {
+    code: "۰۳",
+    text: "جمع‌آوری فریم قدیمی، حمل ضایعات و تمیزکاری کامل محل پس از نصب",
+  },
 ] as const;
 
 export default function HomePage() {
@@ -62,56 +72,66 @@ export default function HomePage() {
   return (
     <>
       <JsonLd data={jsonLd} />
-      {/* 1. Hero Section */}
+
+      {/* Hero + 3 Persona Routing Paths */}
       <HeroSection />
 
-      {/* 2. 7 Production Lines Grid */}
+      {/* 01. Editorial 7-Line Production Index */}
       <ProductsGridSection />
 
-      {/* 3. Non-Destructive Window Replacement Band */}
+      {/* 02. Interactive 4-Question Quick Window Selector */}
+      <WindowSelectorQuiz />
+
+      {/* 03. Non-Destructive 1-Day Window Replacement Plate */}
       <section
+        id="renovation"
         aria-labelledby="retrofit-heading"
-        className="border-b border-border bg-surface py-16 md:py-24"
+        className="scroll-mt-24 border-b border-border bg-surface py-16 md:py-24"
       >
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:gap-12 lg:px-8">
+        <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:gap-12 lg:px-8">
           <div className="lg:col-span-5">
-            <p className="text-xs font-bold tracking-wide text-accent">
-              بازسازی و نوسازی هوشمند ساختمان
-            </p>
+            <div className="flex items-center gap-3">
+              <span className="h-[2px] w-8 bg-eco" aria-hidden="true" />
+              <p className="text-xs font-bold tracking-wide text-eco">
+                ۰۳ — تعویض یک‌روزه بدون تخریب
+              </p>
+            </div>
             <h2
               id="retrofit-heading"
-              className="mt-2 text-2xl font-extrabold text-ink sm:text-3xl"
+              className="mt-2 text-2xl font-bold text-anthracite sm:text-3xl"
             >
-              تعویض پنجره‌های قدیمی بدون تخریب در یک روز کاری
+              نوسازی پنجره‌های قدیمی بدون بنایی و آسیب به خانه
             </h2>
-            <p className="mt-4 text-sm leading-7 text-ink-muted sm:text-base">
-              اگر پنجره‌های فعلی ساختمان عایق نیستند، نیازی به عملیات بنایی و
-              تخریب نما ندارید. با پروفیل بازسازی uPVC سپنتا، تغییر آرامش و
-              عایق‌بندی خانه در کوتاه‌ترین زمان انجام می‌شود.
+            <p className="mt-4 text-sm leading-8 text-ink-muted sm:text-[15px]">
+              برای جایگزینی پنجره‌های آهنی یا تک‌جداره قدیمی، نیازی به تخریب
+              سنگ نما یا کثیف‌کاری گچ نیست. فریم بازسازی uPVC سپنتا مستقیماً روی
+              قاب موجود نصب و آب‌بندی می‌شود.
             </p>
 
-            <ul className="mt-6 space-y-3.5">
-              {RETROFIT_BENEFITS.map((benefit) => (
-                <li
-                  key={benefit}
-                  className="flex items-start gap-2.5 text-sm leading-7 text-ink"
-                >
-                  <CheckCircle2
-                    className="mt-1.5 h-4 w-4 shrink-0 text-accent"
-                    aria-hidden="true"
-                  />
-                  <span>{benefit}</span>
+            <ol className="mt-6 divide-y divide-border border border-border bg-canvas">
+              {RENOVATION_GUARANTEES.map((item) => (
+                <li key={item.code} className="flex items-start gap-3 p-4">
+                  <span className="font-display tabular-nums mt-0.5 text-xs font-extrabold text-eco">
+                    {item.code}
+                  </span>
+                  <span className="text-sm leading-6 text-anthracite">
+                    {item.text}
+                  </span>
                 </li>
               ))}
-            </ul>
+            </ol>
 
-            <div className="mt-8">
+            <div className="mt-7">
               <Link
                 href="/configurator/?product=upvc"
-                className="inline-flex items-center gap-2 rounded-xl bg-surface-dark px-5 py-3 text-sm font-semibold text-ink-inverse transition-colors hover:bg-surface-elevated"
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-[4px] bg-primary px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-primary-hover"
               >
                 <span>محاسبه هزینه تعویض پنجره</span>
-                <ArrowUpLeft className="h-4 w-4 text-amber-400" aria-hidden="true" />
+                <ArrowUpLeft
+                  className="h-4 w-4 text-amber-400"
+                  strokeWidth={1.6}
+                  aria-hidden="true"
+                />
               </Link>
             </div>
           </div>
@@ -139,27 +159,30 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. Technical Decision Band (uPVC vs Thermal Break) */}
+      {/* 04. Engineering Comparison Ledger (uPVC vs Thermal Break) */}
       <section
         id="comparison"
         aria-labelledby="comparison-heading"
-        className="border-b border-border bg-surface-subtle py-16 md:py-24"
+        className="border-b border-border bg-canvas py-16 md:py-24"
       >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <p className="text-xs font-bold tracking-wide text-accent">
-              راهنمای انتخاب مهندسی
-            </p>
+        <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl border-b border-border pb-6">
+            <div className="flex items-center gap-3">
+              <span className="h-[2px] w-8 bg-accent-deep" aria-hidden="true" />
+              <p className="text-xs font-bold tracking-wide text-primary">
+                ۰۴ — دفتر مقایسه مهندسی سیستم‌ها
+              </p>
+            </div>
             <h2
               id="comparison-heading"
-              className="mt-2 text-2xl font-extrabold text-ink sm:text-3xl"
+              className="mt-2 text-2xl font-bold text-anthracite sm:text-3xl"
             >
               مقایسه فنی پنجره دوجداره uPVC و آلومینیوم ترمال بریک
             </h2>
-            <p className="mt-3 text-sm leading-7 text-ink-muted sm:text-base">
-              انتخاب بین uPVC و ترمال بریک به ابعاد دهانه، ارتفاع ساختمان، سطح
-              عایق‌کاری مورد انتظار و بودجه پروژه بستگی دارد. اولویت خود را انتخاب
-              کنید تا معیارهای کلیدی برجسته شوند.
+            <p className="mt-3 text-sm leading-7 text-ink-muted sm:text-[15px]">
+              انتخاب صحیح میان uPVC و ترمال بریک به عرض دهانه، تراز سر‌و‌صدای
+              محیط و بودجه ساخت بستگی دارد. اولویت پروژه خود را انتخاب کنید تا
+              معیارهای تعیین‌کننده برجسته شوند.
             </p>
           </div>
 
@@ -169,36 +192,39 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. Factory Production & 4-Step Engineering Workflow */}
+      {/* 05. Factory Workflow & CNC Production */}
       <FactoryProcessSection />
 
-      {/* 6. Featured Projects */}
+      {/* 06. Featured Executed Projects */}
       <FeaturedProjectsSection />
 
-      {/* 7. Practical Buyer FAQs & Closing CTA */}
+      {/* 07. Practical Buyer FAQs */}
       <section
         aria-labelledby="faq-heading"
-        className="border-b border-border bg-surface-subtle py-16 md:py-24"
+        className="border-b border-border bg-surface py-16 md:py-24"
       >
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
             <div>
-              <p className="text-xs font-bold tracking-wide text-accent">
-                پرسش‌های متداول خریداران و سازندگان
-              </p>
+              <div className="flex items-center gap-3">
+                <span className="h-[2px] w-8 bg-accent-deep" aria-hidden="true" />
+                <p className="text-xs font-bold tracking-wide text-primary">
+                  ۰۷ — پرسش‌های متداول خریداران و سازندگان
+                </p>
+              </div>
               <h2
                 id="faq-heading"
-                className="mt-2 text-2xl font-extrabold text-ink sm:text-3xl"
+                className="mt-2 text-2xl font-bold text-anthracite sm:text-3xl"
               >
-                پاسخ‌های روشن پیش از ثبت سفارش
+                پاسخ‌های روشن پیش از اندازه‌گیری و سفارش
               </h2>
             </div>
 
             <Link
               href="/about/#contact"
-              className="text-sm font-semibold text-accent transition-colors hover:text-accent-hover"
+              className="text-sm font-bold text-primary transition-colors hover:text-accent-deep"
             >
-              سوال تخصصی دارید؟ با ما تماس بگیرید
+              سوال تخصصی دارید؟ با دفتر فنی تماس بگیرید
             </Link>
           </div>
 
@@ -208,6 +234,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Closing Dark Anthracite Consultation Band */}
       <ClosingCtaSection />
     </>
   );

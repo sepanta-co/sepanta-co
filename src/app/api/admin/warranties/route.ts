@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { NextResponse } from "next/server";
 import { requireAdminAccess, verifySameOrigin } from "@/lib/admin-auth";
+import { recordAuditEvent } from "@/lib/audit-log";
 import { getDb } from "@/lib/db";
 import { toLatinDigits } from "@/lib/persian-seo";
 
@@ -188,6 +189,22 @@ export async function POST(request: Request) {
       const created = db
         .prepare("SELECT * FROM warranties WHERE id = ?")
         .get(info.lastInsertRowid);
+
+      recordAuditEvent({
+        session: auth.session,
+        action: "warranty.create",
+        entityType: "warranty",
+        entityId: serialCode,
+        summary: `صدور ضمانت‌نامه ${serialCode} برای ${customerName} (${warrantyYears} سال)`,
+        details: {
+          serialCode,
+          customerName,
+          city,
+          systemName,
+          warrantyYears,
+        },
+        request,
+      });
 
       return NextResponse.json({ ok: true, warranty: created }, { status: 201 });
     } catch (err) {

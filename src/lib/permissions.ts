@@ -6,6 +6,7 @@ export const ALL_PERMISSION_KEYS = [
   "pricing:edit",
   "warranties:manage",
   "staff:manage",
+  "audit:view",
 ] as const;
 
 export type PermissionKey = (typeof ALL_PERMISSION_KEYS)[number];
@@ -60,6 +61,12 @@ export const PERMISSION_CATALOG: readonly PermissionMeta[] = [
     key: "staff:manage",
     label: "مدیریت کارکنان، تعیین دسترسی‌ها و تعریف شرح وظایف",
     description: "ایجاد حساب کارمند، تغییر سطح دسترسی و تعریف چک‌لیست وظایف (اختصاصی مدیر)",
+    managerOnly: true,
+  },
+  {
+    key: "audit:view",
+    label: "مشاهده گزارش وقایع و تاریخچه عملکرد کارکنان",
+    description: "بررسی وقایع ثبت‌شده، تغییرات قیمت و سوابق ورود و خروج (اختصاصی مدیر)",
     managerOnly: true,
   },
 ];

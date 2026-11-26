@@ -141,9 +141,12 @@ export default function AboutAndContactPage() {
 
           <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
             <div className="lg:col-span-6">
-              <span className="inline-block rounded-full border border-amber-200 bg-accent-soft px-3.5 py-1 text-xs font-semibold text-accent-hover">
-                واحد تولیدی و دفتر فنی زنجان
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="h-[2px] w-8 bg-accent" aria-hidden="true" />
+                <span className="text-xs font-bold text-brand">
+                  واحد تولیدی و دفتر فنی زنجان
+                </span>
+              </div>
 
               <h1 className="mt-4 text-2xl font-extrabold leading-tight tracking-tight text-ink sm:text-4xl">
                 کارخانه گروه صنعتی سپنتا — تولید مستقیم در زنجان، اجرای سراسری
@@ -160,7 +163,7 @@ export default function AboutAndContactPage() {
               <div className="mt-6 flex flex-wrap items-center gap-3">
                 <a
                   href="#contact"
-                  className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
+                  className="inline-flex items-center gap-2 rounded-[2px] bg-brand px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-hover"
                 >
                   <MessageSquare className="h-4 w-4" aria-hidden="true" />
                   <span>ارتباط با واحد فنی و فروش</span>
@@ -168,7 +171,7 @@ export default function AboutAndContactPage() {
 
                 <Link
                   href="/configurator/"
-                  className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-surface-subtle"
+                  className="inline-flex items-center gap-2 rounded-[2px] border border-border bg-surface px-5 py-3 text-sm font-bold text-ink transition-colors hover:border-brand hover:text-brand"
                 >
                   <SlidersHorizontal
                     className="h-4 w-4 text-accent"
@@ -180,8 +183,8 @@ export default function AboutAndContactPage() {
             </div>
 
             <div className="lg:col-span-6">
-              <div className="rounded-3xl border border-border bg-surface p-3 shadow-sm">
-                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-surface-subtle">
+              <div className="border border-border bg-surface p-2.5">
+                <div className="relative aspect-[16/10] w-full overflow-hidden border border-border bg-surface-subtle">
                   <PictureImage
                     imageKey="factory-line"
                     alt="خط تولید صنعتی درب و پنجره گروه صنعتی سپنتا در زنجان"
@@ -214,18 +217,18 @@ export default function AboutAndContactPage() {
             </h2>
           </div>
 
-          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 grid grid-cols-1 border-t border-s border-border sm:grid-cols-2 lg:grid-cols-4">
             {QUALITY_PILLARS.map((pillar) => {
               const Icon = pillar.icon;
               return (
                 <div
                   key={pillar.title}
-                  className="rounded-2xl border border-border bg-surface-subtle p-6"
+                  className="border-e border-b border-border bg-surface-subtle p-6"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-dark text-amber-400">
+                  <div className="flex h-10 w-10 items-center justify-center bg-brand text-white">
                     <Icon className="h-5 w-5" aria-hidden="true" />
                   </div>
-                  <h3 className="mt-4 text-base font-bold text-ink">
+                  <h3 className="mt-4 text-base font-extrabold text-ink">
                     {pillar.title}
                   </h3>
                   <p className="mt-2 text-xs leading-6 text-ink-muted sm:text-sm">
@@ -244,7 +247,7 @@ export default function AboutAndContactPage() {
         className="border-b border-border bg-surface-subtle py-12 md:py-16"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-3xl border border-border-dark bg-surface-dark p-6 text-ink-inverse sm:p-10">
+          <div className="border border-border-dark bg-surface-dark p-6 text-ink-inverse sm:p-10">
             <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
               <div className="lg:col-span-5">
                 <p className="text-xs font-bold tracking-wide text-amber-400">
@@ -264,11 +267,11 @@ export default function AboutAndContactPage() {
               </div>
 
               <div className="lg:col-span-7">
-                <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <ul className="grid grid-cols-1 border-t border-s border-border-dark sm:grid-cols-2">
                   {WARRANTY_ITEMS.map((item) => (
                     <li
                       key={item}
-                      className="flex items-start gap-2.5 rounded-2xl border border-border-dark bg-surface-elevated p-4 text-xs leading-6 text-slate-200 sm:text-sm"
+                      className="flex items-start gap-2.5 border-e border-b border-border-dark bg-surface-elevated p-4 text-xs leading-6 text-slate-200 sm:text-sm"
                     >
                       <CheckCircle2
                         className="mt-1 h-4 w-4 shrink-0 text-amber-400"
@@ -310,7 +313,7 @@ export default function AboutAndContactPage() {
                 </p>
               </div>
 
-              <div className="space-y-4 rounded-2xl border border-border bg-surface-subtle p-6">
+              <div className="space-y-4 border border-border bg-surface-subtle p-6">
                 <div className="flex items-start gap-3">
                   <MapPin
                     className="mt-1 h-5 w-5 shrink-0 text-accent"
@@ -339,14 +342,14 @@ export default function AboutAndContactPage() {
                       <a
                         href={SITE_CONFIG.contact.phoneHref}
                         dir="ltr"
-                        className="tabular-nums text-sm font-bold text-ink hover:text-accent"
+                        className="tabular-nums text-sm font-bold text-ink hover:text-brand"
                       >
                         {SITE_CONFIG.contact.phoneDisplay}
                       </a>
                       <a
                         href={SITE_CONFIG.contact.mobileHref}
                         dir="ltr"
-                        className="tabular-nums text-sm font-semibold text-ink-muted hover:text-accent"
+                        className="tabular-nums text-sm font-semibold text-ink-muted hover:text-brand"
                       >
                         {SITE_CONFIG.contact.mobileDisplay}
                       </a>
@@ -368,7 +371,7 @@ export default function AboutAndContactPage() {
                 </div>
 
                 {SITE_CONFIG.contact.isPlaceholder && (
-                  <p className="rounded-xl border border-amber-200 bg-accent-soft px-3.5 py-2.5 text-xs leading-6 text-accent-hover">
+                  <p className="border border-amber-300 bg-accent-soft px-3.5 py-2.5 text-xs leading-6 text-accent-hover">
                     توجه: شماره‌های تماس و نشانی دقیق پلاک کارگاهی در نسخه فعلی
                     به‌صورت نمونه آزمایشی درج شده‌اند و پیش از انتشار نهایی با
                     اطلاعات رسمی شرکت جایگزین می‌شوند.
@@ -376,7 +379,7 @@ export default function AboutAndContactPage() {
                 )}
               </div>
 
-              <div className="rounded-2xl border border-border bg-surface p-5">
+              <div className="border border-border bg-surface p-5">
                 <div className="flex items-center gap-2 text-sm font-bold text-ink">
                   <FileSpreadsheet
                     className="h-4 w-4 text-accent"

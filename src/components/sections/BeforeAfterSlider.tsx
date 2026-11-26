@@ -19,12 +19,12 @@ export function BeforeAfterSlider({
     <div className="space-y-3">
       <div
         dir="ltr"
-        className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-border bg-surface-subtle select-none shadow-sm"
+        className="relative aspect-[16/10] w-full overflow-hidden border border-border-strong bg-canvas select-none"
       >
         {/* Base Layer: Before (Old Window) */}
         <div className="absolute inset-0">{beforeSlot}</div>
 
-        {/* Overlay Layer: After (Sepanta uPVC) clipped from the end (right) */}
+        {/* Overlay Layer: After (Sepanta uPVC) */}
         <div
           className="absolute inset-0"
           style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
@@ -32,33 +32,33 @@ export function BeforeAfterSlider({
           {afterSlot}
         </div>
 
-        {/* Labels (explicit RTL inside LTR canvas) */}
+        {/* Architectural Corner Captions */}
         <span
           dir="rtl"
-          className="pointer-events-none absolute top-3 start-3 z-10 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-white shadow-xs"
+          className="pointer-events-none absolute top-3 start-3 z-10 border border-eco bg-eco px-3 py-1 text-xs font-bold text-white"
         >
           پس از تعویض بدون تخریب — سپنتا
         </span>
 
         <span
           dir="rtl"
-          className="pointer-events-none absolute top-3 end-3 z-10 rounded-lg bg-surface-dark/85 px-3 py-1.5 text-xs font-semibold text-ink-inverse backdrop-blur-xs"
+          className="pointer-events-none absolute top-3 end-3 z-10 border border-border-dark bg-anthracite/90 px-3 py-1 text-xs font-bold text-white"
         >
           قبل از تعویض — پنجره قدیمی
         </span>
 
-        {/* Architectural Divider Line & Handle */}
+        {/* Crisp Architectural Divider & Tactile Grip */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 z-10 w-0.5 -translate-x-1/2 bg-white shadow-[0_0_12px_rgba(15,23,42,0.5)]"
+          className="pointer-events-none absolute inset-y-0 z-10 w-[2px] -translate-x-1/2 bg-white"
           style={{ insetInlineStart: `${position}%` }}
         >
-          <div className="absolute top-1/2 start-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-accent text-white shadow-lg">
-            <MoveHorizontal className="h-4 w-4" aria-hidden="true" />
+          <div className="absolute top-1/2 start-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[4px] border-2 border-white bg-accent text-white">
+            <MoveHorizontal className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
           </div>
         </div>
 
-        {/* Accessible Range Input for Pointer, Touch & Keyboard */}
+        {/* Accessible Range Slider */}
         <input
           type="range"
           min={10}
@@ -71,7 +71,7 @@ export function BeforeAfterSlider({
       </div>
 
       <p className="text-center text-xs text-ink-muted">
-        دستگیره مقایسه را بکشید یا از کلیدهای جهت‌نما برای مشاهده تغییر پنجره بدون تخریب نما استفاده کنید.
+        خط جداکننده را بکشید یا از کلیدهای جهت‌نما برای مقایسه آب‌بندی و نمای پنجره پیش و پس از نصب استفاده کنید.
       </p>
     </div>
   );

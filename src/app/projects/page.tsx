@@ -86,9 +86,9 @@ export default function ProjectsGalleryPage() {
           </p>
 
           {/* Compact Summary Metric Strip */}
-          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="flex items-center gap-3.5 rounded-2xl border border-border bg-surface p-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent-hover">
+          <div className="mt-8 grid grid-cols-1 border-t border-s border-border bg-surface sm:grid-cols-3">
+            <div className="flex items-center gap-3.5 border-e border-b border-border p-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-surface-panel text-brand">
                 <Building2 className="h-5 w-5" aria-hidden="true" />
               </div>
               <div>
@@ -101,8 +101,8 @@ export default function ProjectsGalleryPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3.5 rounded-2xl border border-border bg-surface p-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent-hover">
+            <div className="flex items-center gap-3.5 border-e border-b border-border p-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-surface-panel text-brand">
                 <Ruler className="h-5 w-5" aria-hidden="true" />
               </div>
               <div>
@@ -115,8 +115,8 @@ export default function ProjectsGalleryPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3.5 rounded-2xl border border-border bg-surface p-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent-hover">
+            <div className="flex items-center gap-3.5 border-e border-b border-border p-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-surface-panel text-brand">
                 <Compass className="h-5 w-5" aria-hidden="true" />
               </div>
               <div>

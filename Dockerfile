@@ -11,7 +11,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 RUN find /app/out -type f \( -name "*.html" -o -name "*.js" -o -name "*.css" -o -name "*.svg" -o -name "*.json" -o -name "*.xml" -o -name "*.txt" \) -exec gzip -9 -k {} \;
 
-FROM nginx:1.27-alpine AS runner
+FROM nginx:1.27-alpine-slim AS runner
 
 RUN rm -f /etc/nginx/conf.d/default.conf
 COPY docker/nginx.conf /etc/nginx/nginx.conf

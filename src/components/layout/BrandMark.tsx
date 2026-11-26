@@ -38,7 +38,7 @@ export function BrandMark({ className = "h-7 w-7" }: BrandMarkProps) {
         stroke="currentColor"
         strokeWidth="1.5"
       />
-      <rect x="16.5" y="4.5" width="7" height="7" fill="#B45309" />
+      <rect x="16.5" y="4.5" width="7" height="7" fill="#9A6B3F" />
     </svg>
   );
 }

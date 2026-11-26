@@ -56,8 +56,8 @@ export function WindowSvgPreview({
   const innerH = drawH - frameThickness * 2;
   const panelW = innerW / Math.max(panelCount, 1);
 
-  const strokeColor = swatch.isDark ? "#0F172A" : "#334155";
-  const innerLineStroke = swatch.isDark ? "#94A3B8" : "#475569";
+  const strokeColor = swatch.isDark ? "#141413" : "#5C5852";
+  const innerLineStroke = swatch.isDark ? "#9E978B" : "#5C5852";
 
   const activeOpeningSummary = openings
     .slice(0, panelCount)
@@ -80,9 +80,9 @@ export function WindowSvgPreview({
       >
         <defs>
           <linearGradient id="sepanta-glass-grad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#E0F2FE" stopOpacity="0.92" />
-            <stop offset="55%" stopColor="#F0F9FF" stopOpacity="0.72" />
-            <stop offset="100%" stopColor="#BAE6FD" stopOpacity="0.88" />
+            <stop offset="0%" stopColor="#EFECE6" stopOpacity="0.92" />
+            <stop offset="55%" stopColor="#FAF9F6" stopOpacity="0.72" />
+            <stop offset="100%" stopColor="#E4DFD4" stopOpacity="0.88" />
           </linearGradient>
 
           <pattern
@@ -94,7 +94,7 @@ export function WindowSvgPreview({
             <path
               d="M 6 0 L 0 0 0 6"
               fill="none"
-              stroke="#64748B"
+              stroke="#5C5852"
               strokeWidth="0.65"
               strokeOpacity="0.45"
             />
@@ -109,19 +109,19 @@ export function WindowSvgPreview({
             <path
               d="M 20 0 L 0 0 0 20"
               fill="none"
-              stroke="#CBD5E1"
-              strokeWidth="0.5"
-              strokeOpacity="0.45"
+              stroke="#E6E2D8"
+              strokeWidth="0.6"
+              strokeOpacity="0.65"
             />
           </pattern>
         </defs>
 
         {/* Crisp Architectural CAD Background */}
-        <rect x="0" y="0" width="420" height="320" fill="#F8FAFC" />
+        <rect x="0" y="0" width="420" height="320" fill="#FAF9F6" />
         <rect x="0" y="0" width="420" height="320" fill="url(#sepanta-cad-grid)" />
 
         {/* Top Width Dimension Line */}
-        <g stroke="#1E3A5F" strokeWidth="1.25">
+        <g stroke="#5C5852" strokeWidth="1.25">
           <line x1={startX} y1={startY - 22} x2={startX + drawW} y2={startY - 22} />
           <line x1={startX} y1={startY - 28} x2={startX} y2={startY - 16} />
           <line x1={startX + drawW} y1={startY - 28} x2={startX + drawW} y2={startY - 16} />
@@ -132,14 +132,14 @@ export function WindowSvgPreview({
           width="72"
           height="20"
           fill="#FFFFFF"
-          stroke="#CBD5E1"
+          stroke="#CEC8BA"
           strokeWidth="0.8"
         />
         <text
           x={startX + drawW / 2}
           y={startY - 19}
           textAnchor="middle"
-          fill="#0F172A"
+          fill="#141413"
           fontSize="11"
           fontWeight="700"
         >
@@ -147,7 +147,7 @@ export function WindowSvgPreview({
         </text>
 
         {/* Side Height Dimension Line */}
-        <g stroke="#1E3A5F" strokeWidth="1.25">
+        <g stroke="#5C5852" strokeWidth="1.25">
           <line x1={startX - 24} y1={startY} x2={startX - 24} y2={startY + drawH} />
           <line x1={startX - 30} y1={startY} x2={startX - 18} y2={startY} />
           <line x1={startX - 30} y1={startY + drawH} x2={startX - 18} y2={startY + drawH} />
@@ -159,14 +159,14 @@ export function WindowSvgPreview({
             width="72"
             height="20"
             fill="#FFFFFF"
-            stroke="#CBD5E1"
+            stroke="#CEC8BA"
             strokeWidth="0.8"
           />
           <text
             x="0"
             y="4"
             textAnchor="middle"
-            fill="#0F172A"
+            fill="#141413"
             fontSize="11"
             fontWeight="700"
           >
@@ -223,7 +223,7 @@ export function WindowSvgPreview({
                     ? "url(#sepanta-mesh-pattern)"
                     : "url(#sepanta-glass-grad)"
                 }
-                stroke="#64748B"
+                stroke="#78716C"
                 strokeWidth="0.85"
               />
 
@@ -239,7 +239,7 @@ export function WindowSvgPreview({
                         y1={gy}
                         x2={lx}
                         y2={gy + gh}
-                        stroke="#475569"
+                        stroke="#5C5852"
                         strokeWidth="0.6"
                         strokeOpacity="0.45"
                       />
@@ -249,7 +249,7 @@ export function WindowSvgPreview({
 
               {/* Architectural Opening Direction Symbols */}
               {opening === "fixed" && (
-                <g stroke="#475569" strokeWidth="1" strokeOpacity="0.7">
+                <g stroke="#5C5852" strokeWidth="1" strokeOpacity="0.7">
                   <line
                     x1={gx + gw / 2 - 6}
                     y1={gy + gh / 2 - 6}
@@ -269,7 +269,7 @@ export function WindowSvgPreview({
                 <path
                   d={`M ${gx} ${gy} L ${gx + gw} ${gy + gh / 2} L ${gx} ${gy + gh}`}
                   fill="none"
-                  stroke="#0F172A"
+                  stroke="#141413"
                   strokeWidth="1.15"
                   strokeDasharray="5 4"
                   strokeOpacity="0.72"
@@ -280,15 +280,15 @@ export function WindowSvgPreview({
                 <path
                   d={`M ${gx} ${gy + gh} L ${gx + gw / 2} ${gy} L ${gx + gw} ${gy + gh}`}
                   fill="none"
-                  stroke="#B45309"
+                  stroke="#9A6B3F"
                   strokeWidth="1.15"
                   strokeDasharray="4 4"
-                  strokeOpacity="0.85"
+                  strokeOpacity="0.9"
                 />
               )}
 
               {opening === "sliding" && (
-                <g stroke="#0F172A" strokeWidth="1.4" strokeOpacity="0.8">
+                <g stroke="#141413" strokeWidth="1.4" strokeOpacity="0.8">
                   <line
                     x1={gx + gw * 0.25}
                     y1={gy + gh / 2}
@@ -303,7 +303,7 @@ export function WindowSvgPreview({
               )}
 
               {opening === "folding" && (
-                <g stroke="#0F172A" strokeWidth="1.1" strokeOpacity="0.72">
+                <g stroke="#141413" strokeWidth="1.1" strokeOpacity="0.72">
                   <polyline
                     points={`${gx + 4},${gy + gh * 0.35} ${gx + gw / 2},${gy + gh * 0.5} ${gx + gw - 4},${gy + gh * 0.35}`}
                     fill="none"
@@ -325,7 +325,7 @@ export function WindowSvgPreview({
           x="210"
           y="302"
           textAnchor="middle"
-          fill="#475569"
+          fill="#5C5852"
           fontSize="10"
           fontWeight="600"
         >

@@ -35,14 +35,14 @@ export function BeforeAfterSlider({
         {/* Architectural Corner Captions */}
         <span
           dir="rtl"
-          className="pointer-events-none absolute top-3 start-3 z-10 border border-eco bg-eco px-3 py-1 text-xs font-bold text-white"
+          className="pointer-events-none absolute top-3 start-3 z-10 border border-charcoal bg-surface/95 px-3 py-1 text-xs font-bold text-charcoal"
         >
           پس از تعویض بدون تخریب — سپنتا
         </span>
 
         <span
           dir="rtl"
-          className="pointer-events-none absolute top-3 end-3 z-10 border border-border-dark bg-anthracite/90 px-3 py-1 text-xs font-bold text-white"
+          className="pointer-events-none absolute top-3 end-3 z-10 border border-border-dark bg-charcoal/90 px-3 py-1 text-xs font-bold text-canvas"
         >
           قبل از تعویض — پنجره قدیمی
         </span>
@@ -53,7 +53,7 @@ export function BeforeAfterSlider({
           className="pointer-events-none absolute inset-y-0 z-10 w-[2px] -translate-x-1/2 bg-white"
           style={{ insetInlineStart: `${position}%` }}
         >
-          <div className="absolute top-1/2 start-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[4px] border-2 border-white bg-accent text-white">
+          <div className="absolute top-1/2 start-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[3px] border-2 border-white bg-bronze text-white">
             <MoveHorizontal className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
           </div>
         </div>

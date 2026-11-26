@@ -4,37 +4,32 @@
   --font-sans: var(--font-body), Tahoma, sans-serif;
   --font-heading: var(--font-display), var(--font-body), sans-serif;
 
-  /* Warm Architectural Limestone & Craft Material Palette */
-  --color-canvas: #F5F4F0;
+  /* 90 / 8 / 2 Architectural Material Palette */
+  --color-canvas: #FAF9F6;
   --color-surface: #FFFFFF;
-  --color-surface-warm: #EDEAE2;
-  --color-surface-subtle: #F5F4F0;
-  --color-surface-panel: #EDEAE2;
-  --color-surface-dark: #0F172A;
-  --color-surface-elevated: #172236;
+  --color-surface-warm: #F1EFEA;
+  --color-surface-subtle: #F1EFEA;
+  --color-surface-panel: #F1EFEA;
+  --color-surface-dark: #141413;
+  --color-surface-elevated: #262523;
 
-  --color-primary: #1E3A5F;
-  --color-primary-hover: #162D4A;
-  --color-brand: #1E3A5F;
-  --color-brand-hover: #162D4A;
+  --color-charcoal: #141413;
+  --color-charcoal-soft: #262523;
+  --color-ink: #1C1B19;
+  --color-ink-muted: #5C5852;
+  --color-ink-subtle: #78716C;
+  --color-ink-inverse: #FAF9F6;
 
-  --color-anthracite: #0F172A;
-  --color-ink: #1E293B;
-  --color-ink-muted: #526071;
-  --color-ink-subtle: #64748B;
-  --color-ink-inverse: #F8FAFC;
+  --color-bronze: #9A6B3F;
+  --color-bronze-hover: #7F552F;
+  --color-bronze-soft: #F5EFE7;
 
-  --color-accent: #D97706;
-  --color-accent-deep: #B45309;
-  --color-accent-hover: #B45309;
-  --color-accent-soft: #FEF3C7;
+  --color-pine: #2C5E4F;
+  --color-pine-soft: #ECF2EF;
 
-  --color-eco: #0F766E;
-  --color-eco-soft: #CCFBF1;
-
-  --color-border: #DCD7CC;
-  --color-border-strong: #B8B1A3;
-  --color-border-dark: #253349;
+  --color-border: #E6E2D8;
+  --color-border-strong: #CEC8BA;
+  --color-border-dark: #2E2B27;
 }
 
 @layer base {
@@ -48,7 +43,7 @@
 
   body {
     background-color: var(--color-canvas);
-    color: #1C2430;
+    color: var(--color-ink);
     font-family: var(--font-sans);
     font-size: 15px;
     line-height: 1.8;
@@ -73,7 +68,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-bronze);
     outline-offset: 2px;
   }
 }

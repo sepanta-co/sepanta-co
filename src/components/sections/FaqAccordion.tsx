@@ -29,17 +29,17 @@ export function FaqAccordion({ items }: FaqAccordionProps) {
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 onClick={() => setOpenIndex(isOpen ? null : index)}
-                className="flex w-full items-center justify-between gap-4 px-5 py-4 text-start text-sm font-bold text-anthracite transition-colors hover:bg-surface-warm/45 sm:px-6 sm:py-5 sm:text-base"
+                className="flex w-full items-center justify-between gap-4 px-5 py-4 text-start text-sm font-bold text-charcoal transition-colors hover:bg-surface-warm/45 sm:px-6 sm:py-5 sm:text-base"
               >
                 <span className="flex items-start gap-3">
-                  <span className="font-display tabular-nums mt-0.5 text-xs font-extrabold text-accent-deep">
+                  <span className="font-display tabular-nums mt-0.5 text-xs font-bold text-bronze">
                     {toPersianDigits(index + 1).padStart(2, "۰")}
                   </span>
                   <span>{item.question}</span>
                 </span>
                 <ChevronDown
                   className={`h-5 w-5 shrink-0 text-ink-muted transition-transform duration-200 ${
-                    isOpen ? "rotate-180 text-primary" : ""
+                    isOpen ? "rotate-180 text-charcoal" : ""
                   }`}
                   strokeWidth={1.6}
                   aria-hidden="true"

@@ -14,7 +14,7 @@ export function MobileBottomBar() {
           className="flex flex-col items-center justify-center gap-1 border-e border-border text-ink transition-colors hover:bg-canvas"
         >
           <LayoutGrid
-            className="h-4 w-4 text-primary"
+            className="h-4 w-4 text-charcoal"
             strokeWidth={1.6}
             aria-hidden="true"
           />
@@ -23,7 +23,7 @@ export function MobileBottomBar() {
 
         <Link
           href="/configurator/"
-          className="flex flex-col items-center justify-center gap-1 border-e border-border bg-primary text-white transition-colors hover:bg-primary-hover"
+          className="flex flex-col items-center justify-center gap-1 border-e border-border bg-charcoal text-canvas transition-colors hover:bg-charcoal-soft"
         >
           <SlidersHorizontal
             className="h-4 w-4"
@@ -38,7 +38,7 @@ export function MobileBottomBar() {
           className="flex flex-col items-center justify-center gap-1 text-ink transition-colors hover:bg-canvas"
         >
           <Phone
-            className="h-4 w-4 text-accent-deep"
+            className="h-4 w-4 text-bronze"
             strokeWidth={1.6}
             aria-hidden="true"
           />

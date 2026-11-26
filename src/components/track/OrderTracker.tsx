@@ -157,7 +157,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
               value={trackingCode}
               onChange={(e) => setTrackingCode(e.target.value)}
               placeholder="SPN-XXXXXX"
-              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-3 text-end font-mono text-sm font-bold uppercase text-ink placeholder:text-slate-400 focus:border-brand focus:outline-none"
+              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-3 text-end font-mono text-sm font-bold uppercase text-ink placeholder:text-ink-subtle focus:border-bronze focus:outline-none"
             />
           </div>
 
@@ -175,7 +175,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
               value={phoneVerify}
               onChange={(e) => setPhoneVerify(e.target.value)}
               placeholder="مثلاً 6789 یا 09123456789"
-              className="tabular-nums mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-3 text-end text-sm text-ink placeholder:text-slate-400 focus:border-brand focus:outline-none"
+              className="tabular-nums mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-3 text-end text-sm text-ink placeholder:text-ink-subtle focus:border-bronze focus:outline-none"
             />
           </div>
 
@@ -183,7 +183,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-[2px] bg-brand px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-[3px] bg-charcoal px-5 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Search className="h-4 w-4" aria-hidden="true" />
               <span>{loading ? "بررسی..." : "پیگیری"}</span>
@@ -194,7 +194,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
         {error && (
           <div
             role="alert"
-            className="mt-4 flex items-center gap-2 border border-red-300 bg-red-50 px-4 py-3 text-xs font-medium text-red-700 sm:text-sm"
+            className="mt-4 flex items-center gap-2 border border-red-300 bg-red-50 px-4 py-3 text-xs font-medium text-[#991B1B] sm:text-sm"
           >
             <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span>{error}</span>
@@ -204,23 +204,23 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
 
       {/* Tracking Result */}
       {inquiry && (
-        <div className="space-y-6 border-s-2 border-s-brand border border-border bg-surface p-6 sm:p-8">
+        <div className="space-y-6 border-s-2 border-s-bronze border border-border bg-surface p-6 sm:p-8">
           {/* Header Metadata */}
           <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-6">
             <div>
               <div className="flex flex-wrap items-center gap-2.5">
                 <span
                   dir="ltr"
-                  className="bg-surface-dark px-3 py-1 font-mono text-sm font-bold text-amber-400"
+                  className="bg-charcoal px-3 py-1 font-mono text-sm font-bold text-bronze"
                 >
                   {inquiry.trackingCode}
                 </span>
-                <span className="border border-brand/20 bg-surface-panel px-3 py-1 text-xs font-bold text-brand">
+                <span className="border border-border bg-surface-panel px-3 py-1 text-xs font-bold text-charcoal">
                   {INQUIRY_STATUS_LABELS[inquiry.status] ?? inquiry.status}
                 </span>
               </div>
 
-              <h2 className="mt-3 text-xl font-extrabold text-ink">
+              <h2 className="mt-3 text-xl font-extrabold text-charcoal">
                 {inquiry.customerName} — {inquiry.city}
               </h2>
               <p className="mt-1 text-xs text-ink-muted sm:text-sm">
@@ -239,7 +239,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
                 آخرین بروزرسانی: {formatPersianDate(inquiry.updatedAt)}
               </p>
               {inquiry.estimatedTotalIrr > 0 && (
-                <p className="tabular-nums mt-2 text-base font-extrabold text-brand">
+                <p className="tabular-nums mt-2 text-base font-extrabold text-charcoal">
                   برآورد سامانه: {formatToman(inquiry.estimatedTotalIrr)}
                 </p>
               )}
@@ -248,7 +248,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
 
           {/* 6-Stage Architectural Timeline or Cancelled Notice */}
           {inquiry.status === "cancelled" ? (
-            <div className="flex items-start gap-3 border border-red-300 bg-red-50 p-5 text-sm text-red-800">
+            <div className="flex items-start gap-3 border border-red-300 bg-red-50 p-5 text-sm text-[#991B1B]">
               <XCircle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
               <div>
                 <p className="font-bold">این درخواست لغو شده است</p>
@@ -260,7 +260,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
             </div>
           ) : (
             <div>
-              <h3 className="text-sm font-extrabold text-ink sm:text-base">
+              <h3 className="text-sm font-extrabold text-charcoal sm:text-base">
                 مراحل پیشرفت پرونده در کارخانه سپنتا
               </h3>
 
@@ -273,9 +273,9 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
                       key={step.key}
                       className={`border-e border-b p-3.5 transition-colors ${
                         isCurrent
-                          ? "border-brand bg-surface-panel"
+                          ? "border-charcoal bg-surface-panel"
                           : isDone
-                            ? "border-border bg-eco-soft/50"
+                            ? "border-border bg-bronze-soft/50"
                             : "border-border bg-surface-subtle opacity-70"
                       }`}
                     >
@@ -285,12 +285,12 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
                         </span>
                         {isDone ? (
                           <CheckCircle2
-                            className="h-4 w-4 text-eco"
+                            className="h-4 w-4 text-pine"
                             aria-hidden="true"
                           />
                         ) : isCurrent ? (
                           <Clock
-                            className="h-4 w-4 text-brand"
+                            className="h-4 w-4 text-bronze"
                             aria-hidden="true"
                           />
                         ) : null}
@@ -311,7 +311,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
           {/* Attachment Confirmation Badge */}
           {inquiry.hasAttachment && (
             <div className="flex items-center gap-2.5 border border-border bg-surface-subtle px-4 py-3 text-xs text-ink">
-              <Paperclip className="h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+              <Paperclip className="h-4 w-4 shrink-0 text-bronze" aria-hidden="true" />
               <span>
                 فایل نقشه / تصویر پیوست‌شده در سیستم کارخانه ثبت شده است:{" "}
                 <strong dir="ltr" className="font-mono">
@@ -324,7 +324,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
           {/* Itemized Summary */}
           {inquiry.items.length > 0 && (
             <div>
-              <h3 className="text-sm font-extrabold text-ink sm:text-base">
+              <h3 className="text-sm font-extrabold text-charcoal sm:text-base">
                 جزئیات اقلام ثبت‌شده ({toPersianDigits(inquiry.items.length)}{" "}
                 ردیف)
               </h3>
@@ -359,7 +359,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
                         </p>
                       </div>
                       {item.breakdown?.totalIrr ? (
-                        <p className="tabular-nums text-xs font-bold text-accent-hover sm:text-sm">
+                        <p className="tabular-nums text-xs font-bold text-bronze-hover sm:text-sm">
                           {formatToman(item.breakdown.totalIrr)}
                         </p>
                       ) : null}
@@ -374,7 +374,7 @@ function OrderTrackerInner({ initialCode }: { initialCode: string }) {
             <span>سوالی درباره وضعیت سفارش خود دارید؟</span>
             <Link
               href="/about/#contact"
-              className="font-semibold text-accent hover:text-accent-hover"
+              className="font-semibold text-charcoal hover:text-bronze"
             >
               تماس با دفتر فنی و فروش کارخانه
             </Link>

@@ -811,11 +811,11 @@ export function AdminDashboard({
     return (
       <div className="mx-auto max-w-md border border-border bg-surface p-8">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-[2px] bg-surface-dark text-amber-400">
+          <div className="flex h-11 w-11 items-center justify-center rounded-[3px] bg-charcoal text-bronze">
             <Lock className="h-5 w-5" aria-hidden="true" />
           </div>
           <div>
-            <h1 className="text-xl font-extrabold text-ink">
+            <h1 className="text-xl font-extrabold text-charcoal">
               ورود به پنل مدیریت کارخانه
             </h1>
             <p className="text-xs text-ink-muted">
@@ -839,7 +839,7 @@ export function AdminDashboard({
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-end text-sm text-ink focus:border-brand focus:outline-none"
+              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-end text-sm text-ink focus:border-bronze focus:outline-none"
             />
           </div>
 
@@ -857,14 +857,14 @@ export function AdminDashboard({
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-end text-sm text-ink focus:border-brand focus:outline-none"
+              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-end text-sm text-ink focus:border-bronze focus:outline-none"
             />
           </div>
 
           {loginError && (
             <div
               role="alert"
-              className="rounded-[2px] border border-red-200 bg-red-50 px-3.5 py-2.5 text-xs font-medium text-red-700"
+              className="rounded-[2px] border border-red-200 bg-red-50 px-3.5 py-2.5 text-xs font-medium text-[#991B1B]"
             >
               {loginError}
             </div>
@@ -873,7 +873,7 @@ export function AdminDashboard({
           <button
             type="submit"
             disabled={loginLoading}
-            className="w-full rounded-[2px] bg-brand px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-hover disabled:opacity-60"
+            className="w-full rounded-[3px] bg-charcoal px-5 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft disabled:opacity-60"
           >
             {loginLoading ? "در حال بررسی..." : "ورود امن به داشبورد"}
           </button>
@@ -908,7 +908,7 @@ export function AdminDashboard({
       {/* Top Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 border border-border bg-surface p-5">
         <div>
-          <h1 className="text-xl font-extrabold text-ink sm:text-2xl">
+          <h1 className="text-xl font-extrabold text-charcoal sm:text-2xl">
             پنل مدیریت و CRM کارخانه سپنتا
           </h1>
           <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-ink-muted">
@@ -921,7 +921,7 @@ export function AdminDashboard({
             <span dir="ltr" className="font-mono text-ink-muted">
               (@{currentUser?.username})
             </span>
-            <span className="rounded-[2px] bg-accent-soft px-2 py-0.5 text-[11px] font-bold text-accent-hover">
+            <span className="rounded-[2px] bg-bronze-soft px-2 py-0.5 text-[11px] font-bold text-bronze-hover">
               {currentUser?.userId === "root"
                 ? "مدیر ارشد"
                 : currentUser
@@ -935,7 +935,7 @@ export function AdminDashboard({
           <button
             type="button"
             onClick={handleRefreshAll}
-            className="inline-flex items-center gap-1.5 rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2 text-xs font-semibold text-ink hover:border-brand"
+            className="inline-flex items-center gap-1.5 rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2 text-xs font-semibold text-ink hover:border-charcoal"
           >
             <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
             <span>بروزرسانی</span>
@@ -944,9 +944,9 @@ export function AdminDashboard({
           <button
             type="button"
             onClick={handleLogout}
-            className="inline-flex items-center gap-1.5 rounded-[2px] bg-surface-dark px-4 py-2 text-xs font-semibold text-ink-inverse hover:bg-surface-elevated"
+            className="inline-flex items-center gap-1.5 rounded-[3px] bg-charcoal px-4 py-2 text-xs font-semibold text-canvas hover:bg-charcoal-soft"
           >
-            <LogOut className="h-3.5 w-3.5 text-amber-400" aria-hidden="true" />
+            <LogOut className="h-3.5 w-3.5 text-bronze" aria-hidden="true" />
             <span>خروج امن</span>
           </button>
         </div>
@@ -958,8 +958,8 @@ export function AdminDashboard({
           role={feedback.type === "error" ? "alert" : "status"}
           className={`flex items-center gap-2 rounded-[2px] border px-4 py-3 text-xs font-semibold sm:text-sm ${
             feedback.type === "success"
-              ? "border-emerald-200 bg-emerald-50 text-emerald-900"
-              : "border-red-200 bg-red-50 text-red-700"
+              ? "border-pine/25 bg-pine-soft text-pine"
+              : "border-red-200 bg-red-50 text-[#991B1B]"
           }`}
         >
           <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -978,10 +978,10 @@ export function AdminDashboard({
           role="tab"
           aria-selected={activeTab === "tasks"}
           onClick={() => setActiveTab("tasks")}
-          className={`inline-flex items-center gap-2 rounded-[2px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+          className={`inline-flex items-center gap-2 rounded-[3px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
             activeTab === "tasks"
-              ? "bg-accent text-white"
-              : "border border-border bg-surface text-ink-muted hover:text-ink"
+              ? "bg-charcoal text-canvas"
+              : "border border-border bg-surface text-ink-muted hover:text-charcoal"
           }`}
         >
           <ListChecks className="h-4 w-4" aria-hidden="true" />
@@ -996,10 +996,10 @@ export function AdminDashboard({
             role="tab"
             aria-selected={activeTab === "inquiries"}
             onClick={() => setActiveTab("inquiries")}
-            className={`inline-flex items-center gap-2 rounded-[2px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+            className={`inline-flex items-center gap-2 rounded-[3px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
               activeTab === "inquiries"
-                ? "bg-accent text-white"
-                : "border border-border bg-surface text-ink-muted hover:text-ink"
+                ? "bg-charcoal text-canvas"
+                : "border border-border bg-surface text-ink-muted hover:text-charcoal"
             }`}
           >
             <Users className="h-4 w-4" aria-hidden="true" />
@@ -1013,10 +1013,10 @@ export function AdminDashboard({
             role="tab"
             aria-selected={activeTab === "pricing"}
             onClick={() => setActiveTab("pricing")}
-            className={`inline-flex items-center gap-2 rounded-[2px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+            className={`inline-flex items-center gap-2 rounded-[3px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
               activeTab === "pricing"
-                ? "bg-accent text-white"
-                : "border border-border bg-surface text-ink-muted hover:text-ink"
+                ? "bg-charcoal text-canvas"
+                : "border border-border bg-surface text-ink-muted hover:text-charcoal"
             }`}
           >
             <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
@@ -1030,10 +1030,10 @@ export function AdminDashboard({
             role="tab"
             aria-selected={activeTab === "warranties"}
             onClick={() => setActiveTab("warranties")}
-            className={`inline-flex items-center gap-2 rounded-[2px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+            className={`inline-flex items-center gap-2 rounded-[3px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
               activeTab === "warranties"
-                ? "bg-accent text-white"
-                : "border border-border bg-surface text-ink-muted hover:text-ink"
+                ? "bg-charcoal text-canvas"
+                : "border border-border bg-surface text-ink-muted hover:text-charcoal"
             }`}
           >
             <ShieldCheck className="h-4 w-4" aria-hidden="true" />
@@ -1047,10 +1047,10 @@ export function AdminDashboard({
             role="tab"
             aria-selected={activeTab === "staff"}
             onClick={() => setActiveTab("staff")}
-            className={`inline-flex items-center gap-2 rounded-[2px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+            className={`inline-flex items-center gap-2 rounded-[3px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
               activeTab === "staff"
-                ? "bg-accent text-white"
-                : "border border-border bg-surface text-ink-muted hover:text-ink"
+                ? "bg-charcoal text-canvas"
+                : "border border-border bg-surface text-ink-muted hover:text-charcoal"
             }`}
           >
             <UserCog className="h-4 w-4" aria-hidden="true" />
@@ -1064,10 +1064,10 @@ export function AdminDashboard({
             role="tab"
             aria-selected={activeTab === "audit"}
             onClick={() => setActiveTab("audit")}
-            className={`inline-flex items-center gap-2 rounded-[2px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+            className={`inline-flex items-center gap-2 rounded-[3px] px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
               activeTab === "audit"
-                ? "bg-accent text-white"
-                : "border border-border bg-surface text-ink-muted hover:text-ink"
+                ? "bg-charcoal text-canvas"
+                : "border border-border bg-surface text-ink-muted hover:text-charcoal"
             }`}
           >
             <FileText className="h-4 w-4" aria-hidden="true" />
@@ -1126,19 +1126,19 @@ export function AdminDashboard({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div className="border border-border bg-surface p-5">
               <p className="text-xs text-ink-muted">کل درخواست‌های ثبت‌شده</p>
-              <p className="tabular-nums mt-2 text-2xl font-extrabold text-ink">
+              <p className="tabular-nums mt-2 text-2xl font-extrabold text-charcoal">
                 {toPersianDigits(kpis.total)} پرونده
               </p>
             </div>
-            <div className="border border-amber-200 bg-accent-soft/50 p-5">
-              <p className="text-xs text-accent-hover">درخواست‌های جدید (پاسخ‌داده‌نشده)</p>
-              <p className="tabular-nums mt-2 text-2xl font-extrabold text-accent-hover">
+            <div className="border border-bronze/30 bg-bronze-soft/50 p-5">
+              <p className="text-xs text-bronze-hover">درخواست‌های جدید (پاسخ‌داده‌نشده)</p>
+              <p className="tabular-nums mt-2 text-2xl font-extrabold text-bronze-hover">
                 {toPersianDigits(kpis.newCount)} مورد
               </p>
             </div>
             <div className="border border-border bg-surface p-5">
               <p className="text-xs text-ink-muted">مجموع برآورد فروش فعال</p>
-              <p className="tabular-nums mt-2 text-xl font-extrabold text-ink sm:text-2xl">
+              <p className="tabular-nums mt-2 text-xl font-extrabold text-charcoal sm:text-2xl">
                 {formatToman(kpis.pipelineIrr)}
               </p>
             </div>
@@ -1156,7 +1156,7 @@ export function AdminDashboard({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="جستجو با کد رهگیری، نام، شماره تماس یا شهر..."
-                className="w-full rounded-[2px] border border-border bg-surface-subtle py-2.5 ps-10 pe-3.5 text-sm text-ink focus:border-brand focus:outline-none"
+                className="w-full rounded-[2px] border border-border bg-surface-subtle py-2.5 ps-10 pe-3.5 text-sm text-ink focus:border-bronze focus:outline-none"
               />
             </div>
 
@@ -1167,7 +1167,7 @@ export function AdminDashboard({
                 loadInquiries(e.target.value, searchQuery);
               }}
               aria-label="فیلتر وضعیت"
-              className="rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
+              className="rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none"
             >
               <option value="all">همه وضعیت‌ها</option>
               {Object.entries(INQUIRY_STATUS_LABELS).map(([key, label]) => (
@@ -1180,7 +1180,7 @@ export function AdminDashboard({
             <button
               type="button"
               onClick={() => loadInquiries(statusFilter, searchQuery)}
-              className="rounded-[2px] bg-surface-dark px-4 py-2.5 text-xs font-semibold text-ink-inverse hover:bg-surface-elevated"
+              className="rounded-[3px] bg-charcoal px-4 py-2.5 text-xs font-semibold text-canvas hover:bg-charcoal-soft"
             >
               اعمال فیلتر
             </button>
@@ -1209,7 +1209,7 @@ export function AdminDashboard({
                       <div className="flex flex-wrap items-center gap-3">
                         <span
                           dir="ltr"
-                          className="rounded-[2px] bg-surface-dark px-2.5 py-1 font-mono text-xs font-bold text-amber-400"
+                          className="rounded-[2px] bg-charcoal px-2.5 py-1 font-mono text-xs font-bold text-bronze"
                         >
                           {inq.trackingCode}
                         </span>
@@ -1229,11 +1229,11 @@ export function AdminDashboard({
 
                       <div className="flex items-center gap-3">
                         {inq.estimatedTotalIrr > 0 && (
-                          <span className="tabular-nums text-xs font-bold text-accent-hover sm:text-sm">
+                          <span className="tabular-nums text-xs font-bold text-bronze-hover sm:text-sm">
                             {formatToman(inq.estimatedTotalIrr)}
                           </span>
                         )}
-                        <span className="rounded-[2px] bg-accent-soft px-2.5 py-1 text-xs font-bold text-accent-hover">
+                        <span className="rounded-[2px] bg-bronze-soft px-2.5 py-1 text-xs font-bold text-bronze-hover">
                           {INQUIRY_STATUS_LABELS[inq.status] ?? inq.status}
                         </span>
                         <ChevronDown
@@ -1257,7 +1257,7 @@ export function AdminDashboard({
                           <div>
                             <a
                               href={`/api/admin/uploads/${encodeURIComponent(inq.attachmentPath)}/`}
-                              className="inline-flex items-center gap-2 rounded-[2px] border border-amber-300 bg-accent-soft px-4 py-2 text-xs font-bold text-accent-hover hover:bg-amber-200/70"
+                              className="inline-flex items-center gap-2 rounded-[2px] border border-bronze/40 bg-bronze-soft px-4 py-2 text-xs font-bold text-bronze-hover hover:bg-surface-warm"
                             >
                               <Download className="h-4 w-4" aria-hidden="true" />
                               <span>
@@ -1291,7 +1291,7 @@ export function AdminDashboard({
                                   )
                                 </span>
                                 {item.breakdown?.totalIrr ? (
-                                  <span className="tabular-nums font-bold text-accent-hover">
+                                  <span className="tabular-nums font-bold text-bronze-hover">
                                     {formatToman(item.breakdown.totalIrr)}
                                   </span>
                                 ) : null}
@@ -1314,7 +1314,7 @@ export function AdminDashboard({
                                     [inq.id]: e.target.value,
                                   }))
                                 }
-                                className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
+                                className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none"
                               >
                                 {Object.entries(INQUIRY_STATUS_LABELS).map(
                                   ([key, label]) => (
@@ -1340,7 +1340,7 @@ export function AdminDashboard({
                                   }))
                                 }
                                 placeholder="مثلاً: تاریخ بازدید هماهنگ شد..."
-                                className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
+                                className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none"
                               />
                             </div>
 
@@ -1349,7 +1349,7 @@ export function AdminDashboard({
                                 type="button"
                                 disabled={savingInquiryId === inq.id}
                                 onClick={() => handleSaveInquiry(inq.id)}
-                                className="inline-flex w-full items-center justify-center gap-1.5 rounded-[2px] bg-brand px-4 py-2.5 text-xs font-semibold text-white hover:bg-brand-hover disabled:opacity-60"
+                                className="inline-flex w-full items-center justify-center gap-1.5 rounded-[3px] bg-charcoal px-4 py-2.5 text-xs font-semibold text-canvas hover:bg-charcoal-soft disabled:opacity-60"
                               >
                                 <Save className="h-4 w-4" aria-hidden="true" />
                                 <span>
@@ -1385,15 +1385,15 @@ export function AdminDashboard({
             </div>
           )}
           {/* FX Control Panel */}
-          <section className="border border-amber-200 bg-surface p-5 sm:p-6">
+          <section className="border border-border-strong bg-surface p-5 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-4">
               <div>
                 <div className="flex items-center gap-2">
                   <DollarSign
-                    className="h-5 w-5 text-accent"
+                    className="h-5 w-5 text-bronze"
                     aria-hidden="true"
                   />
-                  <h2 className="text-base font-extrabold text-ink sm:text-lg">
+                  <h2 className="text-base font-extrabold text-charcoal sm:text-lg">
                     مدیریت نرخ لحظه‌ای دلار و همگام‌سازی سرور
                   </h2>
                 </div>
@@ -1410,10 +1410,10 @@ export function AdminDashboard({
                   type="button"
                   disabled={syncingFx}
                   onClick={handleSyncFxNow}
-                  className="inline-flex items-center gap-2 rounded-[2px] bg-surface-dark px-4 py-2.5 text-xs font-semibold text-ink-inverse transition-colors hover:bg-surface-elevated disabled:opacity-60"
+                  className="inline-flex items-center gap-2 rounded-[3px] bg-charcoal px-4 py-2.5 text-xs font-semibold text-canvas transition-colors hover:bg-charcoal-soft disabled:opacity-60"
                 >
                   <RefreshCw
-                    className={`h-4 w-4 text-amber-400 ${
+                    className={`h-4 w-4 text-bronze ${
                       syncingFx ? "animate-spin" : ""
                     }`}
                     aria-hidden="true"
@@ -1431,11 +1431,11 @@ export function AdminDashboard({
               <div className="mt-5 space-y-5">
                 {/* Active Rate Summary */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                  <div className="rounded-[2px] border border-amber-200 bg-accent-soft/60 p-4">
-                    <p className="text-xs font-semibold text-accent-hover">
+                  <div className="rounded-[2px] border border-bronze/35 bg-bronze-soft/60 p-4">
+                    <p className="text-xs font-semibold text-bronze-hover">
                       نرخ فعال مبنای محاسبه
                     </p>
-                    <p className="tabular-nums mt-1.5 text-xl font-extrabold text-ink">
+                    <p className="tabular-nums mt-1.5 text-xl font-extrabold text-charcoal">
                       {formatToman(fxSettings.active_usd_irr)}
                     </p>
                     <p className="tabular-nums mt-0.5 text-[11px] text-ink-muted">
@@ -1448,7 +1448,7 @@ export function AdminDashboard({
                       منبع و وضعیت فعلی
                     </p>
                     <div className="mt-2 flex flex-wrap items-center gap-2">
-                      <span className="rounded-[2px] bg-surface-dark px-2.5 py-1 text-xs font-bold text-amber-400">
+                      <span className="rounded-[2px] bg-charcoal px-2.5 py-1 text-xs font-bold text-bronze">
                         {getFxSourceLabel(fxSettings.source_used)}
                       </span>
                       <span className="rounded-[2px] border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-ink">
@@ -1474,9 +1474,9 @@ export function AdminDashboard({
                 </div>
 
                 {fxSettings.last_error && (
-                  <div className="flex items-start gap-2 rounded-[2px] border border-amber-300 bg-amber-50 px-4 py-3 text-xs text-amber-900">
+                  <div className="flex items-start gap-2 rounded-[2px] border border-bronze/40 bg-bronze-soft px-4 py-3 text-xs text-bronze-hover">
                     <AlertTriangle
-                      className="mt-0.5 h-4 w-4 shrink-0 text-amber-700"
+                      className="mt-0.5 h-4 w-4 shrink-0 text-bronze"
                       aria-hidden="true"
                     />
                     <span>
@@ -1502,7 +1502,7 @@ export function AdminDashboard({
                         aria-pressed={fxModeDraft === "auto"}
                         className={`rounded-[2px] px-3 py-2 text-xs font-bold transition-colors ${
                           fxModeDraft === "auto"
-                            ? "bg-accent text-white"
+                            ? "bg-charcoal text-canvas"
                             : "border border-border bg-surface text-ink-muted hover:text-ink"
                         }`}
                       >
@@ -1514,7 +1514,7 @@ export function AdminDashboard({
                         aria-pressed={fxModeDraft === "manual"}
                         className={`rounded-[2px] px-3 py-2 text-xs font-bold transition-colors ${
                           fxModeDraft === "manual"
-                            ? "bg-accent text-white"
+                            ? "bg-charcoal text-canvas"
                             : "border border-border bg-surface text-ink-muted hover:text-ink"
                         }`}
                       >
@@ -1538,7 +1538,7 @@ export function AdminDashboard({
                       dir="ltr"
                       value={manualUsdDraft}
                       onChange={(e) => setManualUsdDraft(e.target.value)}
-                      className="tabular-nums mt-2 w-full rounded-[2px] border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink focus:border-brand focus:outline-none"
+                      className="tabular-nums mt-2 w-full rounded-[2px] border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink focus:border-bronze focus:outline-none"
                     />
                     <p className="tabular-nums mt-1 text-[11px] text-ink-muted">
                       معادل:{" "}
@@ -1564,7 +1564,7 @@ export function AdminDashboard({
                       dir="ltr"
                       value={syncIntervalDraft}
                       onChange={(e) => setSyncIntervalDraft(e.target.value)}
-                      className="tabular-nums mt-2 w-full rounded-[2px] border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink focus:border-brand focus:outline-none"
+                      className="tabular-nums mt-2 w-full rounded-[2px] border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink focus:border-bronze focus:outline-none"
                     />
                   </div>
 
@@ -1573,7 +1573,7 @@ export function AdminDashboard({
                       type="button"
                       disabled={savingFx}
                       onClick={handleSaveFxSettings}
-                      className="inline-flex w-full items-center justify-center gap-1.5 rounded-[2px] bg-brand px-4 py-2.5 text-xs font-semibold text-white hover:bg-brand-hover disabled:opacity-60"
+                      className="inline-flex w-full items-center justify-center gap-1.5 rounded-[3px] bg-charcoal px-4 py-2.5 text-xs font-semibold text-canvas hover:bg-charcoal-soft disabled:opacity-60"
                     >
                       <Save className="h-4 w-4" aria-hidden="true" />
                       <span>
@@ -1591,7 +1591,7 @@ export function AdminDashboard({
                   <div className="rounded-[2px] border border-border bg-surface-subtle p-4">
                     <div className="flex items-center gap-2 text-xs font-bold text-ink">
                       <History
-                        className="h-4 w-4 text-accent"
+                        className="h-4 w-4 text-bronze"
                         aria-hidden="true"
                       />
                       <span>
@@ -1673,11 +1673,11 @@ export function AdminDashboard({
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3">
-                      <div className="rounded-[2px] border border-amber-200 bg-accent-soft/60 px-3.5 py-2 text-end text-xs">
-                        <p className="text-[11px] text-accent-hover">
+                      <div className="rounded-[2px] border border-bronze/35 bg-bronze-soft/60 px-3.5 py-2 text-end text-xs">
+                        <p className="text-[11px] text-bronze-hover">
                           پیش‌نمایش قیمت فرمول ({unitLabel})
                         </p>
-                        <p className="tabular-nums font-extrabold text-ink">
+                        <p className="tabular-nums font-extrabold text-charcoal">
                           {formatToman(previewIrr)}
                         </p>
                       </div>
@@ -1687,7 +1687,7 @@ export function AdminDashboard({
                           type="button"
                           disabled={savingPricingKey === rule.system_key}
                           onClick={() => handleSavePricingRule(rule)}
-                          className="inline-flex items-center gap-1.5 rounded-[2px] bg-brand px-4 py-2.5 text-xs font-semibold text-white hover:bg-brand-hover disabled:opacity-60"
+                          className="inline-flex items-center gap-1.5 rounded-[3px] bg-charcoal px-4 py-2.5 text-xs font-semibold text-canvas hover:bg-charcoal-soft disabled:opacity-60"
                         >
                           <Save className="h-4 w-4" aria-hidden="true" />
                           <span>
@@ -1995,8 +1995,8 @@ export function AdminDashboard({
             className="border border-border bg-surface p-5 sm:p-6"
           >
             <div className="flex items-center gap-2">
-              <Plus className="h-4 w-4 text-accent" aria-hidden="true" />
-              <h2 className="text-base font-bold text-ink">
+              <Plus className="h-4 w-4 text-bronze" aria-hidden="true" />
+              <h2 className="text-base font-bold text-charcoal">
                 صدور ضمانت‌نامه جدید کارخانه
               </h2>
             </div>
@@ -2096,7 +2096,7 @@ export function AdminDashboard({
             <button
               type="submit"
               disabled={creatingWarranty}
-              className="mt-4 inline-flex items-center gap-2 rounded-[2px] bg-brand px-5 py-2.5 text-xs font-semibold text-white hover:bg-brand-hover disabled:opacity-60"
+              className="mt-4 inline-flex items-center gap-2 rounded-[3px] bg-charcoal px-5 py-2.5 text-xs font-semibold text-canvas hover:bg-charcoal-soft disabled:opacity-60"
             >
               <Plus className="h-4 w-4" aria-hidden="true" />
               <span>
@@ -2123,7 +2123,7 @@ export function AdminDashboard({
                     <div className="flex flex-wrap items-center gap-2">
                       <span
                         dir="ltr"
-                        className="rounded-[2px] bg-surface-dark px-2.5 py-1 font-mono font-bold text-amber-400"
+                        className="rounded-[2px] bg-charcoal px-2.5 py-1 font-mono font-bold text-bronze"
                       >
                         {w.serial_code}
                       </span>
@@ -2141,7 +2141,7 @@ export function AdminDashboard({
                     </p>
                   </div>
 
-                  <span className="rounded-[2px] bg-emerald-50 px-2.5 py-1 font-semibold text-emerald-800">
+                  <span className="rounded-[2px] bg-pine-soft px-2.5 py-1 font-semibold text-pine">
                     {WARRANTY_STATUS_LABELS[w.status] ?? w.status} (
                     {toPersianDigits(w.warranty_years)} سال)
                   </span>
@@ -2174,7 +2174,7 @@ export function AdminDashboard({
                       <div className="flex flex-wrap items-center gap-2">
                         <span
                           dir="ltr"
-                          className="font-mono font-bold text-accent-hover"
+                          className="font-mono font-bold text-bronze-hover"
                         >
                           {req.tracking_code}
                         </span>

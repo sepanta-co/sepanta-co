@@ -52,10 +52,10 @@ export function Header() {
 
   return (
     <>
-      {/* Row 1: Deep Anthracite Architectural Utility Strip */}
-      <div className="no-print hidden border-b border-border-dark bg-anthracite text-xs text-slate-300 md:block">
-        <div className="mx-auto flex h-9 max-w-[1280px] items-center justify-between px-4 sm:px-6 lg:px-8">
-          <p className="font-medium text-slate-200">
+      {/* Row 1: Light Warm-Stone Utility Strip */}
+      <div className="no-print hidden h-9 border-b border-border bg-surface-warm text-[12px] text-ink-muted md:block">
+        <div className="mx-auto flex h-full max-w-[1280px] items-center justify-between px-4 sm:px-6 lg:px-8">
+          <p className="font-medium text-ink-muted">
             تولید CNC کارخانه زنجان و اجرای سراسری پروژه‌ها در ایران
           </p>
 
@@ -64,11 +64,11 @@ export function Header() {
               <Link
                 key={portal.href}
                 href={portal.href}
-                className="inline-flex items-center gap-1.5 text-slate-300 transition-colors hover:text-amber-400"
+                className="inline-flex items-center gap-1.5 text-ink-muted transition-colors hover:text-charcoal"
               >
                 <ShieldCheck
-                  className="h-3.5 w-3.5 text-amber-400"
-                  strokeWidth={1.6}
+                  className="h-3.5 w-3.5 text-ink-subtle"
+                  strokeWidth={1.5}
                   aria-hidden="true"
                 />
                 <span>{portal.label}</span>
@@ -77,11 +77,11 @@ export function Header() {
 
             <a
               href={SITE_CONFIG.contact.phoneHref}
-              className="inline-flex items-center gap-1.5 border-s border-border-dark ps-4 font-bold text-white transition-colors hover:text-amber-400"
+              className="inline-flex items-center gap-1.5 border-s border-border ps-4 font-semibold text-charcoal transition-colors hover:text-bronze"
             >
               <Phone
-                className="h-3.5 w-3.5 text-amber-400"
-                strokeWidth={1.6}
+                className="h-3.5 w-3.5 text-ink-subtle"
+                strokeWidth={1.5}
                 aria-hidden="true"
               />
               <span dir="ltr" className="tabular-nums">
@@ -92,9 +92,9 @@ export function Header() {
         </div>
       </div>
 
-      {/* Row 2: Main Sticky Warm Limestone Architectural Header */}
+      {/* Row 2: Main Sticky Warm Alabaster Architectural Header */}
       <header className="sticky top-0 z-40 border-b border-border bg-canvas/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-4 px-4 sm:px-6 lg:h-[74px] lg:px-8">
+        <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           {/* Start: Editorial Wordmark & Mobile Menu Trigger */}
           <div className="flex items-center gap-3">
             <button
@@ -103,18 +103,18 @@ export function Header() {
               aria-label="باز کردن منوی ناوبری"
               aria-expanded={drawerOpen}
               aria-controls="mobile-nav-drawer"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-[4px] border border-border bg-surface text-anthracite transition-colors hover:border-border-strong lg:hidden"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-[3px] border border-border bg-surface text-charcoal transition-colors hover:border-border-strong lg:hidden"
             >
-              <Menu className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
+              <Menu className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
             </button>
 
             <Link
               href="/"
-              className="group flex items-center gap-3 text-anthracite transition-opacity hover:opacity-90"
+              className="group flex items-center gap-2.5 text-charcoal transition-opacity hover:opacity-85"
             >
-              <BrandMark className="h-8 w-8 shrink-0 text-primary transition-colors group-hover:text-accent-deep" />
+              <BrandMark className="h-7 w-7 shrink-0 text-charcoal" />
               <span className="flex flex-col leading-tight">
-                <span className="font-display text-base font-extrabold tracking-tight text-anthracite sm:text-lg">
+                <span className="font-display text-base font-extrabold tracking-tight text-charcoal sm:text-lg">
                   سپنتا
                 </span>
                 <span className="text-[11px] font-medium text-ink-muted">
@@ -124,7 +124,7 @@ export function Header() {
             </Link>
           </div>
 
-          {/* Center: Desktop Architectural Navigation */}
+          {/* Center: Desktop Architectural Navigation (borderless, flush bronze underline) */}
           <nav
             aria-label="منوی اصلی"
             className="hidden h-full items-center gap-1 lg:flex"
@@ -142,10 +142,10 @@ export function Header() {
                     <Link
                       href={item.href}
                       aria-current={active ? "page" : undefined}
-                      className={`inline-flex items-center gap-1 border-b-2 px-3.5 py-2 text-sm font-bold transition-colors ${
+                      className={`relative inline-flex h-16 items-center gap-1 px-3.5 text-sm transition-colors ${
                         active
-                          ? "border-accent-deep text-primary"
-                          : "border-transparent text-ink-muted hover:text-anthracite"
+                          ? "font-semibold text-charcoal after:absolute after:inset-x-3.5 after:bottom-0 after:h-[2px] after:bg-bronze"
+                          : "font-medium text-ink-muted hover:text-charcoal"
                       }`}
                     >
                       <span>{item.label}</span>
@@ -153,7 +153,7 @@ export function Header() {
                         className={`h-3.5 w-3.5 transition-transform ${
                           productsMenuOpen ? "rotate-180" : ""
                         }`}
-                        strokeWidth={1.6}
+                        strokeWidth={1.5}
                         aria-hidden="true"
                       />
                     </Link>
@@ -161,13 +161,13 @@ export function Header() {
                     {productsMenuOpen && (
                       <div className="absolute top-full start-0 z-50 w-[520px] border border-border bg-surface p-5">
                         <div className="flex items-center justify-between border-b border-border pb-3">
-                          <span className="font-display text-xs font-bold text-primary">
+                          <span className="font-display text-xs font-bold text-charcoal">
                             ۷ خط تولید تخصصی کارخانه زنجان
                           </span>
                           <Link
                             href="/products/"
                             onClick={() => setProductsMenuOpen(false)}
-                            className="text-xs font-bold text-accent-deep hover:text-primary"
+                            className="text-xs font-semibold text-bronze hover:text-bronze-hover"
                           >
                             مشاهده کاتالوگ کامل ←
                           </Link>
@@ -179,7 +179,7 @@ export function Header() {
                               key={prod.slug}
                               href={prod.href}
                               onClick={() => setProductsMenuOpen(false)}
-                              className="flex items-center justify-between border border-transparent px-3 py-2 text-xs font-bold text-ink transition-colors hover:border-border hover:bg-canvas hover:text-primary"
+                              className="flex items-center justify-between border border-transparent px-3 py-2 text-xs font-semibold text-ink transition-colors hover:border-border hover:bg-canvas hover:text-charcoal"
                             >
                               <span>{prod.title}</span>
                               <span className="text-[10px] font-medium text-ink-muted">
@@ -199,10 +199,10 @@ export function Header() {
                   key={item.href}
                   href={item.href}
                   aria-current={active ? "page" : undefined}
-                  className={`border-b-2 px-3.5 py-2 text-sm font-bold transition-colors ${
+                  className={`relative inline-flex h-16 items-center px-3.5 text-sm transition-colors ${
                     active
-                      ? "border-accent-deep text-primary"
-                      : "border-transparent text-ink-muted hover:text-anthracite"
+                      ? "font-semibold text-charcoal after:absolute after:inset-x-3.5 after:bottom-0 after:h-[2px] after:bg-bronze"
+                      : "font-medium text-ink-muted hover:text-charcoal"
                   }`}
                 >
                   {item.label}
@@ -211,16 +211,16 @@ export function Header() {
             })}
           </nav>
 
-          {/* End: Compact Direct Phone & Bronze Engineering CTA */}
+          {/* End: Understated Architectural CTA */}
           <div className="flex items-center gap-2.5">
             <a
               href={SITE_CONFIG.contact.phoneHref}
-              className="hidden min-h-[44px] items-center gap-1.5 rounded-[4px] border border-border bg-surface px-3 text-xs font-bold text-ink transition-colors hover:border-primary sm:inline-flex md:hidden"
+              className="hidden min-h-[38px] items-center gap-1.5 rounded-[3px] border border-border bg-surface px-3 text-xs font-semibold text-ink transition-colors hover:border-charcoal sm:inline-flex md:hidden"
               aria-label={`تماس با ${SITE_CONFIG.name}`}
             >
               <Phone
-                className="h-3.5 w-3.5 text-accent-deep"
-                strokeWidth={1.6}
+                className="h-3.5 w-3.5 text-ink-subtle"
+                strokeWidth={1.5}
                 aria-hidden="true"
               />
               <span dir="ltr" className="tabular-nums">
@@ -230,11 +230,11 @@ export function Header() {
 
             <Link
               href="/configurator/"
-              className="inline-flex min-h-[44px] items-center gap-2 rounded-[4px] bg-accent px-4 py-2.5 text-xs font-bold text-white transition-colors hover:bg-accent-deep sm:px-5 sm:text-sm"
+              className="inline-flex items-center gap-2 rounded-[3px] border border-charcoal px-4 py-2 text-[13px] font-medium text-charcoal transition-colors hover:bg-charcoal hover:text-canvas"
             >
               <SlidersHorizontal
-                className="h-4 w-4 shrink-0"
-                strokeWidth={1.6}
+                className="h-3.5 w-3.5 shrink-0"
+                strokeWidth={1.5}
                 aria-hidden="true"
               />
               <span>پیکربندی و برآورد قیمت</span>
@@ -253,7 +253,7 @@ export function Header() {
           className="fixed inset-0 z-50 lg:hidden"
         >
           <div
-            className="fixed inset-0 bg-anthracite/65 backdrop-blur-xs"
+            className="fixed inset-0 bg-charcoal/65 backdrop-blur-xs"
             onClick={() => setDrawerOpen(false)}
             aria-hidden="true"
           />
@@ -263,9 +263,9 @@ export function Header() {
               <Link
                 href="/"
                 onClick={() => setDrawerOpen(false)}
-                className="flex items-center gap-2.5 text-anthracite"
+                className="flex items-center gap-2.5 text-charcoal"
               >
-                <BrandMark className="h-6 w-6 text-primary" />
+                <BrandMark className="h-6 w-6 text-charcoal" />
                 <span className="font-display text-sm font-extrabold">
                   {SITE_CONFIG.name}
                 </span>
@@ -274,9 +274,9 @@ export function Header() {
                 type="button"
                 onClick={() => setDrawerOpen(false)}
                 aria-label="بستن منوی ناوبری"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-[4px] border border-border bg-canvas text-ink-muted hover:text-anthracite"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-[3px] border border-border bg-canvas text-ink-muted hover:text-charcoal"
               >
-                <X className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
+                <X className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
               </button>
             </div>
 
@@ -290,10 +290,10 @@ export function Header() {
                         href={item.href}
                         onClick={() => setDrawerOpen(false)}
                         aria-current={active ? "page" : undefined}
-                        className={`flex items-center justify-between px-4 py-3 text-sm font-bold transition-colors ${
+                        className={`flex items-center justify-between px-4 py-3 text-sm transition-colors ${
                           active
-                            ? "border-s-4 border-accent-deep bg-surface-warm text-primary"
-                            : "text-ink hover:bg-surface-warm/50"
+                            ? "border-s-2 border-bronze bg-surface-warm font-semibold text-charcoal"
+                            : "font-medium text-ink hover:bg-surface-warm/50"
                         }`}
                       >
                         <span>{item.label}</span>
@@ -316,10 +316,10 @@ export function Header() {
                           href={portal.href}
                           onClick={() => setDrawerOpen(false)}
                           aria-current={active ? "page" : undefined}
-                          className={`flex items-center justify-between px-4 py-2.5 text-sm font-medium transition-colors ${
+                          className={`flex items-center justify-between px-4 py-2.5 text-sm transition-colors ${
                             active
-                              ? "border-s-4 border-accent-deep bg-surface-warm font-bold text-primary"
-                              : "text-ink hover:bg-surface-warm/50"
+                              ? "border-s-2 border-bronze bg-surface-warm font-semibold text-charcoal"
+                              : "font-medium text-ink hover:bg-surface-warm/50"
                           }`}
                         >
                           <span>{portal.label}</span>
@@ -336,11 +336,11 @@ export function Header() {
                 </p>
                 <a
                   href={SITE_CONFIG.contact.phoneHref}
-                  className="mt-2 flex items-center gap-2 text-sm font-bold text-primary"
+                  className="mt-2 flex items-center gap-2 text-sm font-bold text-charcoal"
                 >
                   <Phone
-                    className="h-4 w-4 text-accent-deep"
-                    strokeWidth={1.6}
+                    className="h-4 w-4 text-ink-subtle"
+                    strokeWidth={1.5}
                     aria-hidden="true"
                   />
                   <span dir="ltr" className="tabular-nums">
@@ -357,11 +357,11 @@ export function Header() {
               <Link
                 href="/configurator/"
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[4px] bg-accent px-4 py-3 text-sm font-bold text-white hover:bg-accent-deep"
+                className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[3px] bg-charcoal px-4 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft"
               >
                 <SlidersHorizontal
                   className="h-4 w-4"
-                  strokeWidth={1.6}
+                  strokeWidth={1.5}
                   aria-hidden="true"
                 />
                 <span>پیکربندی و برآورد قیمت</span>

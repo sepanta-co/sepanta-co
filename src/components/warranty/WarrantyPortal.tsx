@@ -189,8 +189,8 @@ export function WarrantyPortal() {
         className="border border-border bg-surface p-6 sm:p-8"
       >
         <div className="flex items-center gap-2.5">
-          <ShieldCheck className="h-5 w-5 text-brand" aria-hidden="true" />
-          <h2 className="text-lg font-extrabold text-ink">
+          <ShieldCheck className="h-5 w-5 text-bronze" aria-hidden="true" />
+          <h2 className="text-lg font-extrabold text-charcoal">
             استعلام اصالت ضمانت‌نامه ۱۰ تا ۲۵ ساله سپنتا
           </h2>
         </div>
@@ -217,7 +217,7 @@ export function WarrantyPortal() {
               value={serialCode}
               onChange={(e) => setSerialCode(e.target.value)}
               placeholder="SPN-W-1404-1001"
-              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-3 text-end font-mono text-sm font-bold uppercase text-ink placeholder:text-slate-400 focus:border-brand focus:outline-none"
+              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-3 text-end font-mono text-sm font-bold uppercase text-ink placeholder:text-ink-subtle focus:border-bronze focus:outline-none"
             />
           </div>
 
@@ -235,7 +235,7 @@ export function WarrantyPortal() {
               value={phoneVerify}
               onChange={(e) => setPhoneVerify(e.target.value)}
               placeholder="مثلاً 1001 یا 09120001001"
-              className="tabular-nums mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-3 text-end text-sm text-ink placeholder:text-slate-400 focus:border-brand focus:outline-none"
+              className="tabular-nums mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-3 text-end text-sm text-ink placeholder:text-ink-subtle focus:border-bronze focus:outline-none"
             />
           </div>
 
@@ -243,7 +243,7 @@ export function WarrantyPortal() {
             <button
               type="submit"
               disabled={lookupLoading}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-[2px] bg-brand px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-[3px] bg-charcoal px-5 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Search className="h-4 w-4" aria-hidden="true" />
               <span>{lookupLoading ? "بررسی..." : "استعلام"}</span>
@@ -254,7 +254,7 @@ export function WarrantyPortal() {
         {lookupError && (
           <div
             role="alert"
-            className="mt-4 flex items-center gap-2 border border-red-300 bg-red-50 px-4 py-3 text-xs font-medium text-red-700 sm:text-sm"
+            className="mt-4 flex items-center gap-2 border border-red-300 bg-red-50 px-4 py-3 text-xs font-medium text-[#991B1B] sm:text-sm"
           >
             <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span>{lookupError}</span>
@@ -266,17 +266,17 @@ export function WarrantyPortal() {
       {warranty && (
         <div className="space-y-8">
           {/* Official Digital Certificate */}
-          <div className="border border-border-dark bg-surface-dark p-6 text-ink-inverse sm:p-8">
+          <div className="border border-border-dark bg-charcoal p-6 text-canvas sm:p-8">
             <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border-dark pb-6">
               <div>
-                <div className="inline-flex items-center gap-2 border border-border-dark bg-surface-elevated px-3 py-1 text-xs font-bold text-amber-400">
+                <div className="inline-flex items-center gap-2 border border-border-dark bg-charcoal-soft px-3 py-1 text-xs font-bold text-bronze">
                   <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
                   <span>ضمانت‌نامه معتبر ثبت‌شده در کارخانه زنجان</span>
                 </div>
-                <h3 className="mt-3 text-xl font-extrabold text-ink-inverse">
+                <h3 className="mt-3 text-xl font-extrabold text-canvas">
                   {warranty.customerName}
                 </h3>
-                <p className="mt-1 text-xs text-slate-300 sm:text-sm">
+                <p className="mt-1 text-xs text-border-strong sm:text-sm">
                   سیستم اجراشده: {warranty.systemName}
                 </p>
               </div>
@@ -284,38 +284,38 @@ export function WarrantyPortal() {
               <div className="text-start sm:text-end">
                 <p
                   dir="ltr"
-                  className="font-mono text-lg font-extrabold text-amber-400"
+                  className="font-mono text-lg font-extrabold text-bronze"
                 >
                   {warranty.serialCode}
                 </p>
-                <span className="mt-1 inline-block border border-emerald-800 bg-emerald-950/80 px-2.5 py-1 text-xs font-bold text-emerald-300">
+                <span className="mt-1 inline-block border border-pine bg-pine px-2.5 py-1 text-xs font-bold text-canvas">
                   {WARRANTY_STATUS_LABELS[warranty.status] ?? warranty.status}
                 </span>
               </div>
             </div>
 
             <dl className="mt-6 grid grid-cols-2 border-t border-s border-border-dark sm:grid-cols-4">
-              <div className="border-e border-b border-border-dark bg-surface-elevated p-3.5">
-                <dt className="text-xs text-slate-400">مدت پوشش گارانتی</dt>
-                <dd className="tabular-nums mt-1 text-sm font-bold text-ink-inverse">
+              <div className="border-e border-b border-border-dark bg-charcoal-soft p-3.5">
+                <dt className="text-xs text-ink-subtle">مدت پوشش گارانتی</dt>
+                <dd className="tabular-nums mt-1 text-sm font-bold text-canvas">
                   {toPersianDigits(warranty.warrantyYears)} سال
                 </dd>
               </div>
-              <div className="border-e border-b border-border-dark bg-surface-elevated p-3.5">
-                <dt className="text-xs text-slate-400">تاریخ صدور</dt>
-                <dd className="tabular-nums mt-1 text-sm font-bold text-ink-inverse">
+              <div className="border-e border-b border-border-dark bg-charcoal-soft p-3.5">
+                <dt className="text-xs text-ink-subtle">تاریخ صدور</dt>
+                <dd className="tabular-nums mt-1 text-sm font-bold text-canvas">
                   {toPersianDigits(warranty.issuedDate)}
                 </dd>
               </div>
-              <div className="border-e border-b border-border-dark bg-surface-elevated p-3.5">
-                <dt className="text-xs text-slate-400">تاریخ اعتبار</dt>
-                <dd className="tabular-nums mt-1 text-sm font-bold text-ink-inverse">
+              <div className="border-e border-b border-border-dark bg-charcoal-soft p-3.5">
+                <dt className="text-xs text-ink-subtle">تاریخ اعتبار</dt>
+                <dd className="tabular-nums mt-1 text-sm font-bold text-canvas">
                   {toPersianDigits(warranty.expiresDate)}
                 </dd>
               </div>
-              <div className="border-e border-b border-border-dark bg-surface-elevated p-3.5">
-                <dt className="text-xs text-slate-400">شهر و شماره</dt>
-                <dd className="tabular-nums mt-1 text-sm font-bold text-ink-inverse">
+              <div className="border-e border-b border-border-dark bg-charcoal-soft p-3.5">
+                <dt className="text-xs text-ink-subtle">شهر و شماره</dt>
+                <dd className="tabular-nums mt-1 text-sm font-bold text-canvas">
                   {warranty.city} ({toPersianDigits(warranty.maskedPhone)})
                 </dd>
               </div>
@@ -330,15 +330,15 @@ export function WarrantyPortal() {
               className="space-y-5 border border-border bg-surface p-6 sm:p-8 lg:col-span-7"
             >
               <div className="flex items-center gap-2.5">
-                <Wrench className="h-5 w-5 text-brand" aria-hidden="true" />
-                <h3 className="text-lg font-extrabold text-ink">
+                <Wrench className="h-5 w-5 text-bronze" aria-hidden="true" />
+                <h3 className="text-lg font-extrabold text-charcoal">
                   ثبت درخواست خدمات پس از فروش و رگلاژ رایگان
                 </h3>
               </div>
 
               {serviceSuccessCode && (
-                <div className="border border-eco/25 bg-eco-soft p-4 text-xs leading-6 text-ink sm:text-sm">
-                  <p className="font-bold text-eco">
+                <div className="border border-pine/25 bg-pine-soft p-4 text-xs leading-6 text-ink sm:text-sm">
+                  <p className="font-bold text-pine">
                     درخواست خدمات شما با موفقیت ثبت شد.
                   </p>
                   <p className="mt-1">
@@ -365,7 +365,7 @@ export function WarrantyPortal() {
                       e.target.value as "adjustment" | "inspection" | "hardware"
                     )
                   }
-                  className="mt-1.5 w-full rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
+                  className="mt-1.5 w-full rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none"
                 >
                   <option value="adjustment">
                     {SERVICE_REQUEST_TYPE_LABELS.adjustment}
@@ -392,14 +392,14 @@ export function WarrantyPortal() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="مثلاً: لنگه پنجره اتاق خواب هنگام بستن به فریم پایین گیر می‌کند..."
-                  className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
+                  className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none"
                 />
               </div>
 
               {serviceError && (
                 <div
                   role="alert"
-                  className="border border-red-300 bg-red-50 px-4 py-3 text-xs font-medium text-red-700"
+                  className="border border-red-300 bg-red-50 px-4 py-3 text-xs font-medium text-[#991B1B]"
                 >
                   {serviceError}
                 </div>
@@ -408,7 +408,7 @@ export function WarrantyPortal() {
               <button
                 type="submit"
                 disabled={serviceLoading || warranty.status !== "active"}
-                className="inline-flex items-center gap-2 rounded-[2px] bg-brand px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-[3px] bg-charcoal px-6 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <Send className="h-4 w-4" aria-hidden="true" />
                 <span>
@@ -421,7 +421,7 @@ export function WarrantyPortal() {
 
             {/* Previous Service Requests */}
             <div className="border border-border bg-surface-subtle p-6 lg:col-span-5">
-              <h3 className="text-base font-extrabold text-ink">
+              <h3 className="text-base font-extrabold text-charcoal">
                 سوابق خدمات ثبت‌شده ({toPersianDigits(serviceRequests.length)})
               </h3>
 
@@ -439,7 +439,7 @@ export function WarrantyPortal() {
                       <div className="flex items-center justify-between gap-2">
                         <span
                           dir="ltr"
-                          className="font-mono font-bold text-brand"
+                          className="font-mono font-bold text-charcoal"
                         >
                           {req.trackingCode}
                         </span>

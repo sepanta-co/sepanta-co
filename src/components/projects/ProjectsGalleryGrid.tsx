@@ -52,10 +52,10 @@ export function ProjectsGalleryGrid({
                 type="button"
                 onClick={() => setSelectedUsage("all")}
                 aria-pressed={selectedUsage === "all"}
-                className={`border-e border-b border-border px-3.5 py-2 text-xs font-bold transition-colors sm:text-sm ${
+                className={`border-e border-b border-border px-3.5 py-2 text-xs font-semibold transition-colors sm:text-sm ${
                   selectedUsage === "all"
-                    ? "bg-brand text-white"
-                    : "bg-surface text-ink-muted hover:bg-surface-panel hover:text-ink"
+                    ? "bg-charcoal text-canvas"
+                    : "bg-surface text-ink-muted hover:bg-surface-panel hover:text-charcoal"
                 }`}
               >
                 همه پروژه‌ها
@@ -69,10 +69,10 @@ export function ProjectsGalleryGrid({
                     type="button"
                     onClick={() => setSelectedUsage(usage)}
                     aria-pressed={active}
-                    className={`border-e border-b border-border px-3.5 py-2 text-xs font-bold transition-colors sm:text-sm ${
+                    className={`border-e border-b border-border px-3.5 py-2 text-xs font-semibold transition-colors sm:text-sm ${
                       active
-                        ? "bg-brand text-white"
-                        : "bg-surface text-ink-muted hover:bg-surface-panel hover:text-ink"
+                        ? "bg-charcoal text-canvas"
+                        : "bg-surface text-ink-muted hover:bg-surface-panel hover:text-charcoal"
                     }`}
                   >
                     {usage}
@@ -94,10 +94,10 @@ export function ProjectsGalleryGrid({
                 type="button"
                 onClick={() => setSelectedCity("all")}
                 aria-pressed={selectedCity === "all"}
-                className={`border-e border-b border-border px-3 py-2 text-xs font-bold transition-colors ${
+                className={`border-e border-b border-border px-3 py-2 text-xs font-semibold transition-colors ${
                   selectedCity === "all"
-                    ? "bg-accent text-white"
-                    : "bg-surface text-ink-muted hover:bg-surface-panel hover:text-ink"
+                    ? "bg-bronze text-white"
+                    : "bg-surface text-ink-muted hover:bg-surface-panel hover:text-charcoal"
                 }`}
               >
                 همه شهرها
@@ -111,10 +111,10 @@ export function ProjectsGalleryGrid({
                     type="button"
                     onClick={() => setSelectedCity(city)}
                     aria-pressed={active}
-                    className={`border-e border-b border-border px-3 py-2 text-xs font-bold transition-colors ${
+                    className={`border-e border-b border-border px-3 py-2 text-xs font-semibold transition-colors ${
                       active
-                        ? "bg-accent text-white"
-                        : "bg-surface text-ink-muted hover:bg-surface-panel hover:text-ink"
+                        ? "bg-bronze text-white"
+                        : "bg-surface text-ink-muted hover:bg-surface-panel hover:text-charcoal"
                     }`}
                   >
                     {city}
@@ -139,7 +139,7 @@ export function ProjectsGalleryGrid({
             <button
               type="button"
               onClick={resetFilters}
-              className="inline-flex items-center gap-1.5 font-bold text-brand hover:text-accent"
+              className="inline-flex items-center gap-1.5 font-semibold text-charcoal hover:text-bronze"
             >
               <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
               <span>پاک کردن فیلترها</span>
@@ -151,7 +151,7 @@ export function ProjectsGalleryGrid({
       {/* Empty State or Cards Grid */}
       {filteredProjects.length === 0 ? (
         <div className="border border-border bg-surface-subtle p-10 text-center">
-          <p className="text-base font-extrabold text-ink">
+          <p className="text-base font-extrabold text-charcoal">
             پروژه‌ای با ترکیب فیلتر انتخاب‌شده یافت نشد
           </p>
           <p className="mt-2 text-sm text-ink-muted">
@@ -161,7 +161,7 @@ export function ProjectsGalleryGrid({
           <button
             type="button"
             onClick={resetFilters}
-            className="mt-5 inline-flex items-center gap-2 rounded-[2px] bg-brand px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-brand-hover"
+            className="mt-5 inline-flex items-center gap-2 rounded-[3px] bg-charcoal px-5 py-2.5 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft"
           >
             <RotateCcw className="h-4 w-4" aria-hidden="true" />
             <span>نمایش همه پروژه‌ها</span>
@@ -188,18 +188,18 @@ export function ProjectsGalleryGrid({
                 <div>
                   <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
                     <span className="inline-flex items-center gap-1 font-bold text-ink-muted">
-                      <MapPin className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+                      <MapPin className="h-3.5 w-3.5 text-bronze" aria-hidden="true" />
                       <span>
                         {project.city}، {project.province}
                       </span>
                     </span>
 
-                    <span className="tabular-nums border border-border bg-surface-panel px-2 py-0.5 font-bold text-brand">
+                    <span className="tabular-nums border border-border bg-surface-panel px-2 py-0.5 font-bold text-charcoal">
                       {project.year} • {toPersianDigits(project.areaSqm)} مترمربع
                     </span>
                   </div>
 
-                  <h2 className="mt-3 text-base font-extrabold text-ink sm:text-lg">
+                  <h2 className="mt-3 text-base font-extrabold text-charcoal sm:text-lg">
                     {project.title}
                   </h2>
 
@@ -222,10 +222,10 @@ export function ProjectsGalleryGrid({
                 <div className="mt-5 flex items-center justify-between border-t border-border pt-4 text-xs">
                   <Link
                     href={`/projects/${project.slug}/`}
-                    className="inline-flex items-center gap-1.5 text-sm font-bold text-brand transition-colors hover:text-accent"
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-charcoal transition-colors hover:text-bronze"
                   >
                     <span>مشاهده جزئیات پروژه</span>
-                    <ArrowUpLeft className="h-4 w-4 text-accent" aria-hidden="true" />
+                    <ArrowUpLeft className="h-4 w-4 text-bronze" aria-hidden="true" />
                   </Link>
                   <span className="text-ink-muted">{project.usageType}</span>
                 </div>

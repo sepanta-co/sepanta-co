@@ -21,14 +21,14 @@ export function FeaturedProjectsSection() {
         <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="h-[2px] w-8 bg-accent-deep" aria-hidden="true" />
-              <p className="text-xs font-bold tracking-wide text-primary">
+              <span className="h-[2px] w-6 bg-bronze" aria-hidden="true" />
+              <p className="text-xs font-medium tracking-wide text-ink-muted">
                 ۰۶ — کارنامه پروژه‌های اجراشده
               </p>
             </div>
             <h2
               id="projects-heading"
-              className="mt-2 text-2xl font-bold text-anthracite sm:text-3xl"
+              className="mt-2 text-2xl font-bold text-charcoal sm:text-3xl"
             >
               پروژه‌های مستندشده در زنجان، تهران و شهرهای همجوار
             </h2>
@@ -40,11 +40,11 @@ export function FeaturedProjectsSection() {
 
           <Link
             href="/projects/"
-            className="inline-flex min-h-[42px] items-center gap-1.5 rounded-[4px] border border-border-strong bg-surface px-4 py-2 text-sm font-bold text-anthracite transition-colors hover:border-primary hover:text-primary"
+            className="inline-flex min-h-[42px] items-center gap-1.5 rounded-[3px] border border-border-strong bg-surface px-4 py-2 text-sm font-semibold text-charcoal transition-colors hover:border-charcoal"
           >
             <span>مشاهده همه پروژه‌ها</span>
             <ArrowUpLeft
-              className="h-4 w-4 text-accent-deep"
+              className="h-4 w-4 text-bronze"
               strokeWidth={1.6}
               aria-hidden="true"
             />
@@ -72,7 +72,7 @@ export function FeaturedProjectsSection() {
                   <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
                     <span className="inline-flex items-center gap-1 font-bold text-ink-muted">
                       <MapPin
-                        className="h-3.5 w-3.5 text-accent-deep"
+                        className="h-3.5 w-3.5 text-bronze"
                         strokeWidth={1.6}
                         aria-hidden="true"
                       />
@@ -81,12 +81,12 @@ export function FeaturedProjectsSection() {
                       </span>
                     </span>
 
-                    <span className="tabular-nums border border-eco/25 bg-eco-soft px-2 py-0.5 font-bold text-eco">
+                    <span className="tabular-nums border border-border bg-surface-warm px-2 py-0.5 font-semibold text-charcoal">
                       {toPersianDigits(project.areaSqm)} مترمربع
                     </span>
                   </div>
 
-                  <h3 className="mt-3 text-base font-bold text-anthracite sm:text-lg">
+                  <h3 className="mt-3 text-base font-bold text-charcoal sm:text-lg">
                     {project.title}
                   </h3>
 
@@ -109,11 +109,11 @@ export function FeaturedProjectsSection() {
                 <div className="mt-5 flex items-center justify-between border-t border-border pt-4 text-xs">
                   <Link
                     href={`/projects/${project.slug}/`}
-                    className="inline-flex items-center gap-1 font-bold text-primary transition-colors hover:text-accent-deep"
+                    className="inline-flex items-center gap-1 font-semibold text-charcoal transition-colors hover:text-bronze"
                   >
                     <span>گزارش فنی پروژه</span>
                     <ArrowUpLeft
-                      className="h-3.5 w-3.5 text-accent-deep"
+                      className="h-3.5 w-3.5 text-bronze"
                       strokeWidth={1.6}
                       aria-hidden="true"
                     />

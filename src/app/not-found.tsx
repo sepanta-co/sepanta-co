@@ -6,13 +6,13 @@ export default function NotFound() {
     <section className="mx-auto flex max-w-3xl flex-col items-start justify-center px-4 py-16 sm:px-6 lg:py-24">
       <div className="w-full border border-border bg-surface-subtle p-8 sm:p-10">
         <div className="flex items-center gap-3">
-          <span className="h-[2px] w-8 bg-accent" aria-hidden="true" />
-          <p className="text-xs font-bold text-brand tabular-nums">
+          <span className="h-[2px] w-6 bg-bronze" aria-hidden="true" />
+          <p className="text-xs font-medium text-ink-muted tabular-nums">
             خطای ۴۰۴ • مسیر یافت نشد
           </p>
         </div>
 
-        <h1 className="mt-5 text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
+        <h1 className="mt-5 text-2xl font-extrabold tracking-tight text-charcoal sm:text-3xl">
           صفحه مورد نظر در وب‌سایت گروه صنعتی سپنتا یافت نشد
         </h1>
 
@@ -24,7 +24,7 @@ export default function NotFound() {
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-[2px] bg-brand px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-hover"
+            className="inline-flex items-center gap-2 rounded-[3px] bg-charcoal px-5 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft"
           >
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
             <span>بازگشت به صفحه اصلی</span>
@@ -32,15 +32,15 @@ export default function NotFound() {
 
           <Link
             href="/products/"
-            className="inline-flex items-center gap-2 rounded-[2px] border border-border bg-surface px-5 py-3 text-sm font-bold text-ink transition-colors hover:border-brand hover:text-brand"
+            className="inline-flex items-center gap-2 rounded-[3px] border border-border-strong bg-surface px-5 py-3 text-sm font-semibold text-charcoal transition-colors hover:border-charcoal"
           >
-            <LayoutGrid className="h-4 w-4 text-accent" aria-hidden="true" />
+            <LayoutGrid className="h-4 w-4 text-bronze" aria-hidden="true" />
             <span>مشاهده محصولات</span>
           </Link>
 
           <Link
             href="/configurator/"
-            className="inline-flex items-center gap-2 rounded-[2px] bg-accent px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-accent-hover"
+            className="inline-flex items-center gap-2 rounded-[3px] border border-charcoal px-5 py-3 text-sm font-semibold text-charcoal transition-colors hover:bg-charcoal hover:text-canvas"
           >
             <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
             <span>کانفیگوریتور هوشمند</span>

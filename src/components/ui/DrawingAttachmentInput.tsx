@@ -65,9 +65,9 @@ export function DrawingAttachmentInput({
       </label>
 
       {file ? (
-        <div className="flex items-center justify-between gap-3 border border-brand/30 bg-surface-panel px-3.5 py-2.5 text-xs">
+        <div className="flex items-center justify-between gap-3 border border-bronze/40 bg-surface-panel px-3.5 py-2.5 text-xs">
           <div className="flex min-w-0 items-center gap-2 text-ink">
-            <Paperclip className="h-4 w-4 shrink-0 text-brand" aria-hidden="true" />
+            <Paperclip className="h-4 w-4 shrink-0 text-bronze" aria-hidden="true" />
             <span className="truncate font-semibold">{file.name}</span>
             <span className="tabular-nums shrink-0 text-ink-muted">
               ({toPersianDigits((file.size / (1024 * 1024)).toFixed(2))} مگابایت)
@@ -78,7 +78,7 @@ export function DrawingAttachmentInput({
             type="button"
             onClick={() => onFileChange(null, null)}
             aria-label="حذف فایل پیوست"
-            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-[2px] border border-border bg-surface text-ink-muted hover:text-red-600"
+            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-[2px] border border-border bg-surface text-ink-muted hover:text-[#991B1B]"
           >
             <X className="h-3.5 w-3.5" aria-hidden="true" />
           </button>
@@ -89,12 +89,12 @@ export function DrawingAttachmentInput({
           type="file"
           accept=".pdf,.jpg,.jpeg,.png,.dwg"
           onChange={handleSelect}
-          className="block w-full cursor-pointer rounded-[2px] border border-dashed border-border bg-surface px-3.5 py-2.5 text-xs text-ink-muted file:me-3 file:cursor-pointer file:rounded-[2px] file:border-0 file:bg-brand file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white hover:border-brand"
+          className="block w-full cursor-pointer rounded-[2px] border border-dashed border-border-strong bg-surface px-3.5 py-2.5 text-xs text-ink-muted file:me-3 file:cursor-pointer file:rounded-[2px] file:border-0 file:bg-charcoal file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-canvas hover:border-charcoal"
         />
       )}
 
       {error && (
-        <p role="alert" className="text-xs text-red-600">
+        <p role="alert" className="text-xs text-[#991B1B]">
           {error}
         </p>
       )}

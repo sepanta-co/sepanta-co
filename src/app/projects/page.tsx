@@ -88,11 +88,11 @@ export default function ProjectsGalleryPage() {
           {/* Compact Summary Metric Strip */}
           <div className="mt-8 grid grid-cols-1 border-t border-s border-border bg-surface sm:grid-cols-3">
             <div className="flex items-center gap-3.5 border-e border-b border-border p-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-surface-panel text-brand">
-                <Building2 className="h-5 w-5" aria-hidden="true" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-surface-panel text-charcoal">
+                <Building2 className="h-5 w-5 text-bronze" aria-hidden="true" />
               </div>
               <div>
-                <p className="tabular-nums text-lg font-extrabold text-ink">
+                <p className="tabular-nums text-lg font-extrabold text-charcoal">
                   {toPersianDigits(PROJECTS.length)} پروژه شاخص
                 </p>
                 <p className="text-xs text-ink-muted">
@@ -102,11 +102,11 @@ export default function ProjectsGalleryPage() {
             </div>
 
             <div className="flex items-center gap-3.5 border-e border-b border-border p-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-surface-panel text-brand">
-                <Ruler className="h-5 w-5" aria-hidden="true" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-surface-panel text-charcoal">
+                <Ruler className="h-5 w-5 text-bronze" aria-hidden="true" />
               </div>
               <div>
-                <p className="tabular-nums text-lg font-extrabold text-ink">
+                <p className="tabular-nums text-lg font-extrabold text-charcoal">
                   {toPersianDigits(totalAreaSqm.toLocaleString("en-US"))} مترمربع
                 </p>
                 <p className="text-xs text-ink-muted">
@@ -116,11 +116,11 @@ export default function ProjectsGalleryPage() {
             </div>
 
             <div className="flex items-center gap-3.5 border-e border-b border-border p-4">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-surface-panel text-brand">
-                <Compass className="h-5 w-5" aria-hidden="true" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-surface-panel text-charcoal">
+                <Compass className="h-5 w-5 text-bronze" aria-hidden="true" />
               </div>
               <div>
-                <p className="text-lg font-extrabold text-ink">نصب سراسری</p>
+                <p className="text-lg font-extrabold text-charcoal">نصب سراسری</p>
                 <p className="text-xs text-ink-muted">
                   تولید در زنجان • اعزام تیم اجرایی
                 </p>

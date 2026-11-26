@@ -91,14 +91,14 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:gap-12 lg:px-8">
           <div className="lg:col-span-5">
             <div className="flex items-center gap-3">
-              <span className="h-[2px] w-8 bg-eco" aria-hidden="true" />
-              <p className="text-xs font-bold tracking-wide text-eco">
+              <span className="h-[2px] w-6 bg-bronze" aria-hidden="true" />
+              <p className="text-xs font-medium tracking-wide text-ink-muted">
                 ۰۳ — تعویض یک‌روزه بدون تخریب
               </p>
             </div>
             <h2
               id="retrofit-heading"
-              className="mt-2 text-2xl font-bold text-anthracite sm:text-3xl"
+              className="mt-2 text-2xl font-bold text-charcoal sm:text-3xl"
             >
               نوسازی پنجره‌های قدیمی بدون بنایی و آسیب به خانه
             </h2>
@@ -111,10 +111,10 @@ export default function HomePage() {
             <ol className="mt-6 divide-y divide-border border border-border bg-canvas">
               {RENOVATION_GUARANTEES.map((item) => (
                 <li key={item.code} className="flex items-start gap-3 p-4">
-                  <span className="font-display tabular-nums mt-0.5 text-xs font-extrabold text-eco">
+                  <span className="font-display tabular-nums mt-0.5 text-xs font-bold text-bronze">
                     {item.code}
                   </span>
-                  <span className="text-sm leading-6 text-anthracite">
+                  <span className="text-sm leading-6 text-charcoal">
                     {item.text}
                   </span>
                 </li>
@@ -124,11 +124,11 @@ export default function HomePage() {
             <div className="mt-7">
               <Link
                 href="/configurator/?product=upvc"
-                className="inline-flex min-h-[44px] items-center gap-2 rounded-[4px] bg-primary px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-primary-hover"
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-[3px] bg-charcoal px-5 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft"
               >
                 <span>محاسبه هزینه تعویض پنجره</span>
                 <ArrowUpLeft
-                  className="h-4 w-4 text-amber-400"
+                  className="h-4 w-4 text-bronze"
                   strokeWidth={1.6}
                   aria-hidden="true"
                 />
@@ -168,14 +168,14 @@ export default function HomePage() {
         <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl border-b border-border pb-6">
             <div className="flex items-center gap-3">
-              <span className="h-[2px] w-8 bg-accent-deep" aria-hidden="true" />
-              <p className="text-xs font-bold tracking-wide text-primary">
+              <span className="h-[2px] w-6 bg-bronze" aria-hidden="true" />
+              <p className="text-xs font-medium tracking-wide text-ink-muted">
                 ۰۴ — دفتر مقایسه مهندسی سیستم‌ها
               </p>
             </div>
             <h2
               id="comparison-heading"
-              className="mt-2 text-2xl font-bold text-anthracite sm:text-3xl"
+              className="mt-2 text-2xl font-bold text-charcoal sm:text-3xl"
             >
               مقایسه فنی پنجره دوجداره uPVC و آلومینیوم ترمال بریک
             </h2>
@@ -207,14 +207,14 @@ export default function HomePage() {
           <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
             <div>
               <div className="flex items-center gap-3">
-                <span className="h-[2px] w-8 bg-accent-deep" aria-hidden="true" />
-                <p className="text-xs font-bold tracking-wide text-primary">
+                <span className="h-[2px] w-6 bg-bronze" aria-hidden="true" />
+                <p className="text-xs font-medium tracking-wide text-ink-muted">
                   ۰۷ — پرسش‌های متداول خریداران و سازندگان
                 </p>
               </div>
               <h2
                 id="faq-heading"
-                className="mt-2 text-2xl font-bold text-anthracite sm:text-3xl"
+                className="mt-2 text-2xl font-bold text-charcoal sm:text-3xl"
               >
                 پاسخ‌های روشن پیش از اندازه‌گیری و سفارش
               </h2>
@@ -222,7 +222,7 @@ export default function HomePage() {
 
             <Link
               href="/about/#contact"
-              className="text-sm font-bold text-primary transition-colors hover:text-accent-deep"
+              className="text-sm font-semibold text-charcoal transition-colors hover:text-bronze"
             >
               سوال تخصصی دارید؟ با دفتر فنی تماس بگیرید
             </Link>

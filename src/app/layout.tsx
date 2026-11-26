@@ -70,10 +70,10 @@ export default function RootLayout({
       dir="rtl"
       className={`${shabnam.variable} ${estedad.variable}`}
     >
-      <body className="flex min-h-screen flex-col bg-canvas text-[#1C2430] antialiased">
+      <body className="flex min-h-screen flex-col bg-canvas text-ink antialiased">
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:rounded-[4px] focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white"
+          className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:rounded-[3px] focus:bg-charcoal focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-canvas"
         >
           پرش به محتوای اصلی
         </a>

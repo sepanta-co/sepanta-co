@@ -83,9 +83,9 @@ export function ProductCatalogGrid({ products }: ProductCatalogGridProps) {
     <div className="space-y-8">
       {/* Live FX Status Strip */}
       {fx && (
-        <div className="flex flex-wrap items-center justify-between gap-3 border-s-2 border-s-brand border border-border bg-surface-panel px-4 py-3 text-xs text-ink sm:px-5">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-s-2 border-s-bronze border border-border bg-surface-panel px-4 py-3 text-xs text-ink sm:px-5">
           <div className="flex flex-wrap items-center gap-2.5">
-            <RefreshCw className="h-4 w-4 shrink-0 text-eco" aria-hidden="true" />
+            <RefreshCw className="h-4 w-4 shrink-0 text-bronze" aria-hidden="true" />
             <span className="font-bold">
               تعرفه‌های پایه بر اساس نرخ روز دلار ({formatToman(fx.activeUsdIrr)})
               محاسبه شده‌اند
@@ -112,17 +112,17 @@ export function ProductCatalogGrid({ products }: ProductCatalogGridProps) {
               type="button"
               onClick={() => setSelectedCategory(tab.id)}
               aria-pressed={active}
-              className={`inline-flex items-center gap-2 border-e border-b border-border px-4 py-2.5 text-xs font-bold transition-colors sm:text-sm ${
+              className={`inline-flex items-center gap-2 border-e border-b border-border px-4 py-2.5 text-xs font-semibold transition-colors sm:text-sm ${
                 active
-                  ? "bg-brand text-white"
-                  : "bg-surface text-ink-muted hover:bg-surface-panel hover:text-ink"
+                  ? "bg-charcoal text-canvas"
+                  : "bg-surface text-ink-muted hover:bg-surface-panel hover:text-charcoal"
               }`}
             >
               <span>{tab.label}</span>
               <span
                 className={`tabular-nums px-1.5 py-0.5 text-[11px] ${
                   active
-                    ? "bg-brand-hover text-amber-300"
+                    ? "bg-charcoal-soft text-bronze"
                     : "bg-surface-subtle text-ink-muted"
                 }`}
               >
@@ -165,13 +165,13 @@ export function ProductCatalogGrid({ products }: ProductCatalogGridProps) {
                       {product.category}
                     </span>
                     {product.configuratorEligible && (
-                      <span className="border border-brand/20 bg-surface-panel px-2 py-0.5 text-[11px] font-bold text-brand">
+                      <span className="border border-border bg-surface-panel px-2 py-0.5 text-[11px] font-semibold text-charcoal">
                         محاسبه آنلاین
                       </span>
                     )}
                   </div>
 
-                  <h2 className="mt-2.5 text-lg font-extrabold text-ink">
+                  <h2 className="mt-2.5 text-lg font-extrabold text-charcoal">
                     {product.name}
                   </h2>
                   <p className="mt-2 line-clamp-2 text-xs leading-6 text-ink-muted sm:text-sm">
@@ -183,7 +183,7 @@ export function ProductCatalogGrid({ products }: ProductCatalogGridProps) {
                       <span className="font-semibold text-ink-muted">
                         تعرفه پایه ({unitLabel}):
                       </span>
-                      <strong className="tabular-nums text-sm font-extrabold text-brand">
+                      <strong className="tabular-nums text-sm font-extrabold text-charcoal">
                         {formatToman(livePriceIrr)}
                       </strong>
                     </div>
@@ -209,11 +209,11 @@ export function ProductCatalogGrid({ products }: ProductCatalogGridProps) {
                 <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
                   <Link
                     href={`/products/${product.slug}/`}
-                    className="inline-flex items-center gap-1.5 text-sm font-bold text-brand transition-colors hover:text-accent"
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-charcoal transition-colors hover:text-bronze"
                   >
                     <span>مشاهده مشخصات فنی</span>
                     <ArrowUpLeft
-                      className="h-4 w-4 text-accent"
+                      className="h-4 w-4 text-bronze"
                       aria-hidden="true"
                     />
                   </Link>
@@ -221,10 +221,10 @@ export function ProductCatalogGrid({ products }: ProductCatalogGridProps) {
                   {product.configuratorEligible && product.configuratorKey && (
                     <Link
                       href={`/configurator/?product=${product.configuratorKey}`}
-                      className="inline-flex items-center gap-1.5 rounded-[2px] border border-border bg-surface-subtle px-3 py-1.5 text-xs font-bold text-ink transition-colors hover:border-brand hover:text-brand"
+                      className="inline-flex items-center gap-1.5 rounded-[3px] border border-border-strong bg-surface-subtle px-3 py-1.5 text-xs font-semibold text-charcoal transition-colors hover:border-charcoal"
                     >
                       <SlidersHorizontal
-                        className="h-3.5 w-3.5 text-accent"
+                        className="h-3.5 w-3.5 text-bronze"
                         aria-hidden="true"
                       />
                       <span>محاسبه و برآورد</span>

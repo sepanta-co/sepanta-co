@@ -196,9 +196,9 @@ export function AuditLogPanel({
       <div className="border border-border bg-surface p-5 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
           <div className="flex items-center gap-2.5">
-            <FileText className="h-5 w-5 text-accent" aria-hidden="true" />
+            <FileText className="h-5 w-5 text-bronze" aria-hidden="true" />
             <div>
-              <h2 className="text-base font-extrabold text-ink sm:text-lg">
+              <h2 className="text-base font-extrabold text-charcoal sm:text-lg">
                 گزارش وقایع و تاریخچه عملکرد (Append-Only)
               </h2>
               <p className="text-xs text-ink-muted">
@@ -212,7 +212,7 @@ export function AuditLogPanel({
             <button
               type="button"
               onClick={() => loadLogs(page)}
-              className="inline-flex items-center gap-1.5 rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2 text-xs font-semibold text-ink hover:border-brand"
+              className="inline-flex items-center gap-1.5 rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2 text-xs font-semibold text-ink hover:border-charcoal"
             >
               <RefreshCw
                 className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`}
@@ -223,9 +223,9 @@ export function AuditLogPanel({
 
             <a
               href={csvDownloadUrl}
-              className="inline-flex items-center gap-1.5 rounded-[2px] bg-surface-dark px-4 py-2 text-xs font-semibold text-ink-inverse hover:bg-surface-elevated"
+              className="inline-flex items-center gap-1.5 rounded-[3px] bg-charcoal px-4 py-2 text-xs font-semibold text-canvas hover:bg-charcoal-soft"
             >
-              <Download className="h-3.5 w-3.5 text-amber-400" aria-hidden="true" />
+              <Download className="h-3.5 w-3.5 text-bronze" aria-hidden="true" />
               <span>خروجی اکسل (CSV)</span>
             </a>
           </div>
@@ -247,7 +247,7 @@ export function AuditLogPanel({
                 }
               }}
               placeholder="جستجو در شرح واقعه، شناسه، نام یا نام کاربری..."
-              className="w-full rounded-[2px] border border-border bg-surface-subtle py-2.5 ps-10 pe-3.5 text-xs text-ink focus:border-brand focus:outline-none sm:text-sm"
+              className="w-full rounded-[2px] border border-border bg-surface-subtle py-2.5 ps-10 pe-3.5 text-xs text-ink focus:border-bronze focus:outline-none sm:text-sm"
             />
           </div>
 
@@ -260,7 +260,7 @@ export function AuditLogPanel({
                 loadLogs(1, nextActor, entityFilter);
               }}
               aria-label="فیلتر کاربر"
-              className="w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2.5 text-xs font-semibold text-ink focus:border-brand focus:outline-none sm:text-sm"
+              className="w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2.5 text-xs font-semibold text-ink focus:border-bronze focus:outline-none sm:text-sm"
             >
               <option value="all">همه کاربران</option>
               {actors.map((username) => (
@@ -280,7 +280,7 @@ export function AuditLogPanel({
                 loadLogs(1, actorFilter, nextEntity);
               }}
               aria-label="فیلتر بخش"
-              className="w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2.5 text-xs font-semibold text-ink focus:border-brand focus:outline-none sm:text-sm"
+              className="w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2.5 text-xs font-semibold text-ink focus:border-bronze focus:outline-none sm:text-sm"
             >
               <option value="all">همه بخش‌ها</option>
               {Object.entries(AUDIT_ENTITY_LABELS).map(([key, label]) => (
@@ -295,7 +295,7 @@ export function AuditLogPanel({
             <button
               type="button"
               onClick={() => loadLogs(1)}
-              className="w-full rounded-[2px] bg-brand px-4 py-2.5 text-xs font-semibold text-white hover:bg-brand-hover sm:text-sm"
+              className="w-full rounded-[3px] bg-charcoal px-4 py-2.5 text-xs font-semibold text-canvas hover:bg-charcoal-soft sm:text-sm"
             >
               جستجو
             </button>
@@ -337,10 +337,10 @@ export function AuditLogPanel({
                   <div className="flex flex-col justify-between gap-3 lg:flex-row lg:items-center">
                     <div className="space-y-1.5">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="rounded-[2px] bg-surface-dark px-2 py-0.5 text-[11px] font-bold text-amber-400">
+                        <span className="rounded-[2px] bg-charcoal px-2 py-0.5 text-[11px] font-bold text-bronze">
                           {actionLabel}
                         </span>
-                        <span className="rounded-[2px] bg-accent-soft px-2 py-0.5 text-[11px] font-bold text-accent-hover">
+                        <span className="rounded-[2px] bg-bronze-soft px-2 py-0.5 text-[11px] font-bold text-bronze-hover">
                           {entityLabel}
                         </span>
                         {log.entityId && (
@@ -385,7 +385,7 @@ export function AuditLogPanel({
                             setExpandedId(isExpanded ? null : log.id)
                           }
                           aria-expanded={isExpanded}
-                          className="inline-flex items-center gap-1 rounded-[2px] border border-border bg-surface-subtle px-3 py-1.5 text-xs font-semibold text-ink hover:border-brand"
+                          className="inline-flex items-center gap-1 rounded-[2px] border border-border bg-surface-subtle px-3 py-1.5 text-xs font-semibold text-ink hover:border-charcoal"
                         >
                           <span>جزئیات تغییرات</span>
                           <ChevronDown
@@ -425,7 +425,7 @@ export function AuditLogPanel({
               type="button"
               disabled={page <= 1 || loading}
               onClick={() => loadLogs(page - 1)}
-              className="rounded-[2px] border border-border bg-surface px-3.5 py-2 font-semibold text-ink hover:border-brand disabled:opacity-50"
+              className="rounded-[2px] border border-border bg-surface px-3.5 py-2 font-semibold text-ink hover:border-charcoal disabled:opacity-50"
             >
               صفحه قبل
             </button>
@@ -438,7 +438,7 @@ export function AuditLogPanel({
               type="button"
               disabled={page >= totalPages || loading}
               onClick={() => loadLogs(page + 1)}
-              className="rounded-[2px] border border-border bg-surface px-3.5 py-2 font-semibold text-ink hover:border-brand disabled:opacity-50"
+              className="rounded-[2px] border border-border bg-surface px-3.5 py-2 font-semibold text-ink hover:border-charcoal disabled:opacity-50"
             >
               صفحه بعد
             </button>

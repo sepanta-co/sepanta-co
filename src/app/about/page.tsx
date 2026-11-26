@@ -142,13 +142,13 @@ export default function AboutAndContactPage() {
           <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
             <div className="lg:col-span-6">
               <div className="flex items-center gap-3">
-                <span className="h-[2px] w-8 bg-accent" aria-hidden="true" />
-                <span className="text-xs font-bold text-brand">
+                <span className="h-[2px] w-6 bg-bronze" aria-hidden="true" />
+                <span className="text-xs font-medium text-ink-muted">
                   واحد تولیدی و دفتر فنی زنجان
                 </span>
               </div>
 
-              <h1 className="mt-4 text-2xl font-extrabold leading-tight tracking-tight text-ink sm:text-4xl">
+              <h1 className="mt-4 text-2xl font-extrabold leading-tight tracking-tight text-charcoal sm:text-4xl">
                 کارخانه گروه صنعتی سپنتا — تولید مستقیم در زنجان، اجرای سراسری
               </h1>
 
@@ -163,7 +163,7 @@ export default function AboutAndContactPage() {
               <div className="mt-6 flex flex-wrap items-center gap-3">
                 <a
                   href="#contact"
-                  className="inline-flex items-center gap-2 rounded-[2px] bg-brand px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-hover"
+                  className="inline-flex items-center gap-2 rounded-[3px] bg-charcoal px-5 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft"
                 >
                   <MessageSquare className="h-4 w-4" aria-hidden="true" />
                   <span>ارتباط با واحد فنی و فروش</span>
@@ -171,10 +171,10 @@ export default function AboutAndContactPage() {
 
                 <Link
                   href="/configurator/"
-                  className="inline-flex items-center gap-2 rounded-[2px] border border-border bg-surface px-5 py-3 text-sm font-bold text-ink transition-colors hover:border-brand hover:text-brand"
+                  className="inline-flex items-center gap-2 rounded-[3px] border border-border-strong bg-surface px-5 py-3 text-sm font-semibold text-charcoal transition-colors hover:border-charcoal"
                 >
                   <SlidersHorizontal
-                    className="h-4 w-4 text-accent"
+                    className="h-4 w-4 text-bronze"
                     aria-hidden="true"
                   />
                   <span>کانفیگوریتور هوشمند</span>
@@ -206,12 +206,12 @@ export default function AboutAndContactPage() {
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
-            <p className="text-xs font-bold tracking-wide text-accent">
+            <p className="text-xs font-bold tracking-wide text-bronze">
               استانداردهای خط تولید
             </p>
             <h2
               id="standards-heading"
-              className="mt-2 text-2xl font-extrabold text-ink sm:text-3xl"
+              className="mt-2 text-2xl font-extrabold text-charcoal sm:text-3xl"
             >
               ۴ رکن کیفیت در تولید و مونتاژ سپنتا
             </h2>
@@ -225,10 +225,10 @@ export default function AboutAndContactPage() {
                   key={pillar.title}
                   className="border-e border-b border-border bg-surface-subtle p-6"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center bg-brand text-white">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  <div className="flex h-10 w-10 items-center justify-center bg-charcoal text-canvas">
+                    <Icon className="h-5 w-5 text-bronze" aria-hidden="true" />
                   </div>
-                  <h3 className="mt-4 text-base font-extrabold text-ink">
+                  <h3 className="mt-4 text-base font-extrabold text-charcoal">
                     {pillar.title}
                   </h3>
                   <p className="mt-2 text-xs leading-6 text-ink-muted sm:text-sm">
@@ -247,19 +247,19 @@ export default function AboutAndContactPage() {
         className="border-b border-border bg-surface-subtle py-12 md:py-16"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="border border-border-dark bg-surface-dark p-6 text-ink-inverse sm:p-10">
+          <div className="border border-border-dark bg-charcoal p-6 text-canvas sm:p-10">
             <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
               <div className="lg:col-span-5">
-                <p className="text-xs font-bold tracking-wide text-amber-400">
+                <p className="text-xs font-bold tracking-wide text-bronze">
                   تعهد و پشتیبانی پس از فروش
                 </p>
                 <h2
                   id="warranty-heading"
-                  className="mt-2 text-2xl font-extrabold text-ink-inverse sm:text-3xl"
+                  className="mt-2 text-2xl font-extrabold text-canvas sm:text-3xl"
                 >
                   شفافیت ضمانت‌نامه مکتوب و خدمات رگلاژ
                 </h2>
-                <p className="mt-3 text-sm leading-7 text-slate-300">
+                <p className="mt-3 text-sm leading-7 text-border-strong">
                   در گروه صنعتی سپنتا، تمامی تعهدات مربوط به نوع پروفیل،
                   ضخامت ورق گالوانیزه و یراق‌آلات به‌صورت دقیق در قرارداد ثبت
                   شده و پشتیبانی فنی پس از نصب ادامه دارد.
@@ -271,10 +271,10 @@ export default function AboutAndContactPage() {
                   {WARRANTY_ITEMS.map((item) => (
                     <li
                       key={item}
-                      className="flex items-start gap-2.5 border-e border-b border-border-dark bg-surface-elevated p-4 text-xs leading-6 text-slate-200 sm:text-sm"
+                      className="flex items-start gap-2.5 border-e border-b border-border-dark bg-charcoal-soft p-4 text-xs leading-6 text-surface-warm sm:text-sm"
                     >
                       <CheckCircle2
-                        className="mt-1 h-4 w-4 shrink-0 text-amber-400"
+                        className="mt-1 h-4 w-4 shrink-0 text-bronze"
                         aria-hidden="true"
                       />
                       <span>{item}</span>
@@ -298,12 +298,12 @@ export default function AboutAndContactPage() {
             {/* Start Column: Contact Details & Drawing Submission Guide */}
             <div className="space-y-6 lg:col-span-5">
               <div>
-                <p className="text-xs font-bold tracking-wide text-accent">
+                <p className="text-xs font-bold tracking-wide text-bronze">
                   ارتباط مستقیم با کارخانه
                 </p>
                 <h2
                   id="contact-heading"
-                  className="mt-2 text-2xl font-extrabold text-ink sm:text-3xl"
+                  className="mt-2 text-2xl font-extrabold text-charcoal sm:text-3xl"
                 >
                   نشانی کارخانه و مشاوره تخصصی
                 </h2>
@@ -316,7 +316,7 @@ export default function AboutAndContactPage() {
               <div className="space-y-4 border border-border bg-surface-subtle p-6">
                 <div className="flex items-start gap-3">
                   <MapPin
-                    className="mt-1 h-5 w-5 shrink-0 text-accent"
+                    className="mt-1 h-5 w-5 shrink-0 text-bronze"
                     aria-hidden="true"
                   />
                   <div>
@@ -331,7 +331,7 @@ export default function AboutAndContactPage() {
 
                 <div className="flex items-start gap-3">
                   <Phone
-                    className="mt-1 h-5 w-5 shrink-0 text-accent"
+                    className="mt-1 h-5 w-5 shrink-0 text-bronze"
                     aria-hidden="true"
                   />
                   <div>
@@ -342,14 +342,14 @@ export default function AboutAndContactPage() {
                       <a
                         href={SITE_CONFIG.contact.phoneHref}
                         dir="ltr"
-                        className="tabular-nums text-sm font-bold text-ink hover:text-brand"
+                        className="tabular-nums text-sm font-bold text-ink hover:text-bronze"
                       >
                         {SITE_CONFIG.contact.phoneDisplay}
                       </a>
                       <a
                         href={SITE_CONFIG.contact.mobileHref}
                         dir="ltr"
-                        className="tabular-nums text-sm font-semibold text-ink-muted hover:text-brand"
+                        className="tabular-nums text-sm font-semibold text-ink-muted hover:text-bronze"
                       >
                         {SITE_CONFIG.contact.mobileDisplay}
                       </a>
@@ -359,7 +359,7 @@ export default function AboutAndContactPage() {
 
                 <div className="flex items-start gap-3">
                   <Clock
-                    className="mt-1 h-5 w-5 shrink-0 text-accent"
+                    className="mt-1 h-5 w-5 shrink-0 text-bronze"
                     aria-hidden="true"
                   />
                   <div>
@@ -371,7 +371,7 @@ export default function AboutAndContactPage() {
                 </div>
 
                 {SITE_CONFIG.contact.isPlaceholder && (
-                  <p className="border border-amber-300 bg-accent-soft px-3.5 py-2.5 text-xs leading-6 text-accent-hover">
+                  <p className="border border-bronze/35 bg-bronze-soft px-3.5 py-2.5 text-xs leading-6 text-bronze-hover">
                     توجه: شماره‌های تماس و نشانی دقیق پلاک کارگاهی در نسخه فعلی
                     به‌صورت نمونه آزمایشی درج شده‌اند و پیش از انتشار نهایی با
                     اطلاعات رسمی شرکت جایگزین می‌شوند.
@@ -382,7 +382,7 @@ export default function AboutAndContactPage() {
               <div className="border border-border bg-surface p-5">
                 <div className="flex items-center gap-2 text-sm font-bold text-ink">
                   <FileSpreadsheet
-                    className="h-4 w-4 text-accent"
+                    className="h-4 w-4 text-bronze"
                     aria-hidden="true"
                   />
                   <span>نحوه ارسال نقشه معماری یا جدول بازشوها</span>

@@ -590,9 +590,9 @@ function WindowConfiguratorInner({
   return (
     <div className="space-y-10">
       {/* Honest Pricing Transparency Banner */}
-      <div className="no-print space-y-3 border border-border border-s-2 border-s-eco bg-surface p-4 text-xs leading-6 text-ink sm:p-5 sm:text-sm">
+      <div className="no-print space-y-3 border border-border border-s-2 border-s-bronze bg-surface p-4 text-xs leading-6 text-ink sm:p-5 sm:text-sm">
         <div className="flex items-start gap-3">
-          <Info className="mt-1 h-5 w-5 shrink-0 text-eco" strokeWidth={1.6} aria-hidden="true" />
+          <Info className="mt-1 h-5 w-5 shrink-0 text-bronze" strokeWidth={1.6} aria-hidden="true" />
           <p>
             <strong>برآورد قیمت هوشمند بر اساس تعرفه روز کارخانه سپنتا و نرخ
             لحظه‌ای ارز محاسبه می‌شود؛</strong>{" "}
@@ -603,7 +603,7 @@ function WindowConfiguratorInner({
 
         {fxSummary && (
           <div className="flex flex-wrap items-center gap-2 border-t border-border pt-3 text-[11px] sm:text-xs">
-            <span className="tabular-nums border border-eco/25 bg-eco-soft px-2.5 py-1 font-bold text-eco">
+            <span className="tabular-nums border border-bronze/30 bg-bronze-soft px-2.5 py-1 font-bold text-bronze-hover">
               نرخ مبنای دلار: {formatToman(fxSummary.activeUsdIrr)}
             </span>
             <span className="border border-border bg-canvas px-2.5 py-1 font-bold text-ink">
@@ -622,7 +622,7 @@ function WindowConfiguratorInner({
         <div className="space-y-6 lg:col-span-7">
           {/* Step 1: System Selection */}
           <div className="border border-border bg-surface p-5 sm:p-6">
-            <h2 className="text-base font-bold text-anthracite">
+            <h2 className="text-base font-bold text-charcoal">
               ۱. انتخاب سیستم تولیدی
             </h2>
             <div
@@ -638,9 +638,9 @@ function WindowConfiguratorInner({
                     type="button"
                     onClick={() => handleSystemChange(sys.key)}
                     aria-pressed={active}
-                    className={`rounded-[4px] border p-3.5 text-start transition-colors ${
+                    className={`rounded-[3px] border p-3.5 text-start transition-colors ${
                       active
-                        ? "border-primary bg-surface-warm text-anthracite"
+                        ? "border-charcoal bg-surface-warm text-charcoal"
                         : "border-border bg-canvas text-ink-muted hover:border-border-strong hover:text-ink"
                     }`}
                   >
@@ -674,7 +674,7 @@ function WindowConfiguratorInner({
                   value={locationName}
                   onChange={(e) => setLocationName(e.target.value)}
                   placeholder="مثلاً: پنجره پذیرایی"
-                  className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
+                  className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none"
                 />
               </div>
 
@@ -692,7 +692,7 @@ function WindowConfiguratorInner({
                   dir="ltr"
                   value={widthCm || ""}
                   onChange={(e) => setWidthCm(parseDimensionInput(e.target.value))}
-                  className="tabular-nums mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-end text-sm font-semibold text-ink focus:border-brand focus:outline-none"
+                  className="tabular-nums mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-end text-sm font-semibold text-ink focus:border-bronze focus:outline-none"
                 />
                 <p className="mt-1 text-[11px] text-ink-muted tabular-nums">
                   محدوده مجاز: {toPersianDigits(activeRule.minWidth)} تا{" "}
@@ -714,7 +714,7 @@ function WindowConfiguratorInner({
                   dir="ltr"
                   value={heightCm || ""}
                   onChange={(e) => setHeightCm(parseDimensionInput(e.target.value))}
-                  className="tabular-nums mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-end text-sm font-semibold text-ink focus:border-brand focus:outline-none"
+                  className="tabular-nums mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-end text-sm font-semibold text-ink focus:border-bronze focus:outline-none"
                 />
                 <p className="mt-1 text-[11px] text-ink-muted tabular-nums">
                   محدوده مجاز: {toPersianDigits(activeRule.minHeight)} تا{" "}
@@ -743,7 +743,7 @@ function WindowConfiguratorInner({
                       setWidthCm(preset.width);
                       setHeightCm(preset.height);
                     }}
-                    className="tabular-nums rounded-[2px] border border-border bg-surface-subtle px-3 py-1.5 text-xs font-semibold text-ink transition-colors hover:border-brand hover:text-accent"
+                    className="tabular-nums rounded-[2px] border border-border bg-surface-subtle px-3 py-1.5 text-xs font-semibold text-ink transition-colors hover:border-charcoal hover:text-bronze"
                   >
                     {preset.label}
                   </button>
@@ -775,8 +775,8 @@ function WindowConfiguratorInner({
                       aria-pressed={active}
                       className={`tabular-nums rounded-[2px] px-4 py-2 text-xs font-bold transition-colors ${
                         active
-                          ? "bg-surface-dark text-ink-inverse"
-                          : "border border-border bg-surface-subtle text-ink hover:border-brand"
+                          ? "bg-charcoal text-canvas"
+                          : "border border-border bg-surface-subtle text-ink hover:border-charcoal"
                       }`}
                     >
                       {toPersianDigits(count)} لنگه
@@ -807,7 +807,7 @@ function WindowConfiguratorInner({
                         handleOpeningChange(idx, e.target.value as OpeningType)
                       }
                       disabled={activeRule.allowedOpenings.length === 1}
-                      className="mt-1 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2 text-xs font-semibold text-ink focus:border-brand focus:outline-none disabled:opacity-75"
+                      className="mt-1 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2 text-xs font-semibold text-ink focus:border-bronze focus:outline-none disabled:opacity-75"
                     >
                       {activeRule.allowedOpenings.map((op) => (
                         <option key={op} value={op}>
@@ -833,7 +833,7 @@ function WindowConfiguratorInner({
                 value={glass}
                 onChange={(e) => setGlass(e.target.value as GlassOptionKey)}
                 disabled={activeRule.allowedGlasses.length === 1}
-                className="mt-1.5 w-full rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2.5 text-sm text-ink focus:border-brand focus:outline-none disabled:opacity-75"
+                className="mt-1.5 w-full rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none disabled:opacity-75"
               >
                 {activeRule.allowedGlasses.map((gKey) => (
                   <option key={gKey} value={gKey}>
@@ -856,9 +856,9 @@ function WindowConfiguratorInner({
                       type="button"
                       onClick={() => setFinish(fKey)}
                       aria-pressed={active}
-                      className={`flex items-center gap-2.5 rounded-[4px] border p-2.5 text-start text-xs font-bold transition-colors ${
+                      className={`flex items-center gap-2.5 rounded-[3px] border p-2.5 text-start text-xs font-bold transition-colors ${
                         active
-                          ? "border-primary bg-surface-warm text-anthracite"
+                          ? "border-charcoal bg-surface-warm text-charcoal"
                           : "border-border bg-surface text-ink-muted hover:border-border-strong hover:text-ink"
                       }`}
                     >
@@ -895,7 +895,7 @@ function WindowConfiguratorInner({
                       Math.max(1, Math.min(50, Number(e.target.value) || 1))
                     )
                   }
-                  className="tabular-nums w-20 rounded-[2px] border border-border bg-surface px-3 py-2 text-center text-sm font-bold text-ink focus:border-brand focus:outline-none"
+                  className="tabular-nums w-20 rounded-[2px] border border-border bg-surface px-3 py-2 text-center text-sm font-bold text-ink focus:border-bronze focus:outline-none"
                 />
               </div>
 
@@ -905,7 +905,7 @@ function WindowConfiguratorInner({
                     type="checkbox"
                     checked={includeMesh}
                     onChange={(e) => setIncludeMesh(e.target.checked)}
-                    className="h-4 w-4 rounded border-border accent-amber-700"
+                    className="h-4 w-4 rounded border-border accent-bronze"
                   />
                   <span>افزودن توری پلیسه همرنگ</span>
                 </label>
@@ -921,7 +921,7 @@ function WindowConfiguratorInner({
               <h2 className="text-base font-bold text-ink">
                 پیش‌نمایش مهندسی و برآورد زنده
               </h2>
-              <span className="rounded-[2px] bg-accent-soft px-2.5 py-1 text-xs font-bold text-accent-hover">
+              <span className="rounded-[2px] bg-bronze-soft px-2.5 py-1 text-xs font-bold text-bronze-hover">
                 {activeRule.shortLabel}
               </span>
             </div>
@@ -963,16 +963,16 @@ function WindowConfiguratorInner({
                 در حال دریافت تعرفه روز کارخانه...
               </div>
             ) : activePriceBreakdown ? (
-              <div className="border border-border-dark bg-anthracite p-4 text-ink-inverse">
+              <div className="border border-border-dark bg-charcoal p-4 text-canvas">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs text-slate-300">
+                  <span className="text-xs text-border-strong">
                     برآورد تقریبی ({toPersianDigits(quantity)} عدد):
                   </span>
-                  <span className="tabular-nums text-base font-extrabold text-amber-400">
+                  <span className="tabular-nums text-base font-extrabold text-bronze">
                     {formatToman(activePriceBreakdown.totalIrr)}
                   </span>
                 </div>
-                <p className="tabular-nums mt-1.5 text-[11px] text-slate-400">
+                <p className="tabular-nums mt-1.5 text-[11px] text-ink-subtle">
                   شامل پروفیل، شیشه، نصب و رگلاژ استاندارد • مساحت مبنای محاسبه:{" "}
                   {toPersianDigits(activePriceBreakdown.billableAreaSqm)} مترمربع
                   {fxSummary
@@ -986,7 +986,7 @@ function WindowConfiguratorInner({
             {validation.errors.length > 0 && (
               <div
                 role="alert"
-                className="space-y-1.5 rounded-[4px] border border-red-200 bg-red-50 p-3.5 text-xs leading-6 text-red-700"
+                className="space-y-1.5 rounded-[3px] border border-red-200 bg-red-50 p-3.5 text-xs leading-6 text-[#991B1B]"
               >
                 {validation.errors.map((err) => (
                   <p key={err}>{err}</p>
@@ -996,7 +996,7 @@ function WindowConfiguratorInner({
 
             {/* Engineering Warnings */}
             {validation.warnings.length > 0 && (
-              <div className="space-y-2 rounded-[4px] border border-amber-300 bg-accent-soft/65 p-3.5 text-xs leading-6 text-accent-deep">
+              <div className="space-y-2 rounded-[3px] border border-bronze/40 bg-bronze-soft/75 p-3.5 text-xs leading-6 text-bronze-hover">
                 <div className="flex items-center gap-1.5 font-bold">
                   <AlertTriangle className="h-4 w-4 shrink-0" strokeWidth={1.6} aria-hidden="true" />
                   <span>توصیه‌های فنی کارشناسی</span>
@@ -1011,7 +1011,7 @@ function WindowConfiguratorInner({
               type="button"
               onClick={handleAddItem}
               disabled={!validation.isValid}
-              className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[4px] bg-accent px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-accent-deep disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[3px] bg-charcoal px-5 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Plus className="h-4 w-4" aria-hidden="true" />
               <span>افزودن به لیست استعلام پروژه</span>
@@ -1029,7 +1029,7 @@ function WindowConfiguratorInner({
           <div>
             <h2
               id="inquiry-list-heading"
-              className="text-lg font-extrabold text-ink sm:text-xl"
+              className="text-lg font-extrabold text-charcoal sm:text-xl"
             >
               لیست اقلام استعلام پروژه
             </h2>
@@ -1048,9 +1048,9 @@ function WindowConfiguratorInner({
 
           <div className="flex flex-wrap items-center gap-3">
             {pricedSummary && (
-              <div className="rounded-[2px] border border-amber-200 bg-accent-soft px-4 py-2 text-xs sm:text-sm">
-                <span className="text-accent-hover">جمع برآورد تقریبی: </span>
-                <strong className="tabular-nums text-ink">
+              <div className="rounded-[2px] border border-bronze/30 bg-bronze-soft px-4 py-2 text-xs sm:text-sm">
+                <span className="text-bronze-hover">جمع برآورد تقریبی: </span>
+                <strong className="tabular-nums text-charcoal">
                   {formatToman(pricedSummary.totalIrr)}
                 </strong>
               </div>
@@ -1060,7 +1060,7 @@ function WindowConfiguratorInner({
               <button
                 type="button"
                 onClick={handleClearList}
-                className="inline-flex items-center gap-1.5 rounded-[2px] border border-border px-3.5 py-2 text-xs font-semibold text-ink-muted hover:border-red-300 hover:text-red-600"
+                className="inline-flex items-center gap-1.5 rounded-[2px] border border-border px-3.5 py-2 text-xs font-semibold text-ink-muted hover:border-red-300 hover:text-[#991B1B]"
               >
                 <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                 <span>پاک کردن لیست</span>
@@ -1081,13 +1081,13 @@ function WindowConfiguratorInner({
                 >
                   <div className="space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="tabular-nums rounded-[2px] bg-surface-dark px-2 py-0.5 text-[11px] font-bold text-amber-400">
+                      <span className="tabular-nums rounded-[2px] bg-charcoal px-2 py-0.5 text-[11px] font-bold text-bronze">
                         {toPersianDigits(idx + 1)}
                       </span>
-                      <span className="text-sm font-bold text-ink">
+                      <span className="text-sm font-bold text-charcoal">
                         {item.locationName}
                       </span>
-                      <span className="rounded-[2px] bg-accent-soft px-2 py-0.5 text-xs font-semibold text-accent-hover">
+                      <span className="rounded-[2px] bg-bronze-soft px-2 py-0.5 text-xs font-semibold text-bronze-hover">
                         {SYSTEM_RULES[item.system].shortLabel}
                       </span>
                     </div>
@@ -1112,7 +1112,7 @@ function WindowConfiguratorInner({
                         م²)
                       </p>
                       {itemPriced && (
-                        <p className="mt-0.5 font-bold text-accent-hover">
+                        <p className="mt-0.5 font-bold text-bronze-hover">
                           {formatToman(itemPriced.breakdown.totalIrr)}
                         </p>
                       )}
@@ -1122,7 +1122,7 @@ function WindowConfiguratorInner({
                       type="button"
                       onClick={() => handleRemoveItem(item.id)}
                       aria-label={`حذف ${item.locationName}`}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-[2px] border border-border bg-surface text-ink-muted transition-colors hover:border-red-300 hover:text-red-600"
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-[2px] border border-border bg-surface text-ink-muted transition-colors hover:border-red-300 hover:text-[#991B1B]"
                     >
                       <Trash2 className="h-4 w-4" aria-hidden="true" />
                     </button>
@@ -1138,9 +1138,9 @@ function WindowConfiguratorInner({
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex items-center gap-2 rounded-[2px] bg-surface-dark px-5 py-3 text-sm font-semibold text-ink-inverse transition-colors hover:bg-surface-elevated"
+            className="inline-flex items-center gap-2 rounded-[3px] bg-charcoal px-5 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft"
           >
-            <Printer className="h-4 w-4 text-amber-400" aria-hidden="true" />
+            <Printer className="h-4 w-4 text-bronze" aria-hidden="true" />
             <span>چاپ / ذخیره PDF برگه مشخصات فنی (A4)</span>
           </button>
 
@@ -1148,20 +1148,20 @@ function WindowConfiguratorInner({
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-[2px] border border-border bg-surface px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-surface-subtle"
+            className="inline-flex items-center gap-2 rounded-[3px] border border-border-strong bg-surface px-5 py-3 text-sm font-semibold text-charcoal transition-colors hover:border-charcoal"
           >
-            <ExternalLink className="h-4 w-4 text-accent" aria-hidden="true" />
+            <ExternalLink className="h-4 w-4 text-bronze" aria-hidden="true" />
             <span>ارسال لیست به واتساپ کارخانه</span>
           </a>
 
           <button
             type="button"
             onClick={handleCopySummary}
-            className="inline-flex items-center gap-2 rounded-[2px] border border-border bg-surface-subtle px-4 py-3 text-sm font-semibold text-ink transition-colors hover:bg-surface"
+            className="inline-flex items-center gap-2 rounded-[3px] border border-border bg-surface-subtle px-4 py-3 text-sm font-semibold text-charcoal transition-colors hover:bg-surface"
           >
             {copied ? (
               <>
-                <Check className="h-4 w-4 text-accent" aria-hidden="true" />
+                <Check className="h-4 w-4 text-pine" aria-hidden="true" />
                 <span>مشخصات فنی کپی شد</span>
               </>
             ) : (
@@ -1180,15 +1180,15 @@ function WindowConfiguratorInner({
         className="no-print border border-border bg-surface-subtle p-5 sm:p-8"
       >
         {submitSuccess ? (
-          <div className="border border-amber-300 bg-surface p-6 sm:p-8">
-            <div className="inline-flex items-center gap-2 bg-accent-soft px-3.5 py-1 text-xs font-bold text-accent-hover">
+          <div className="border border-bronze/40 bg-surface p-6 sm:p-8">
+            <div className="inline-flex items-center gap-2 bg-bronze-soft px-3.5 py-1 text-xs font-bold text-bronze-hover">
               <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
               <span>درخواست شما با موفقیت در سامانه کارخانه ثبت شد</span>
             </div>
 
             <h2
               id="official-submit-heading"
-              className="mt-4 text-xl font-extrabold text-ink"
+              className="mt-4 text-xl font-extrabold text-charcoal"
             >
               کد رهگیری رسمی پروژه شما صادر شد
             </h2>
@@ -1198,7 +1198,7 @@ function WindowConfiguratorInner({
                 <p className="text-xs text-ink-muted">کد رهگیری اختصاصی</p>
                 <p
                   dir="ltr"
-                  className="mt-1 font-mono text-xl font-extrabold tracking-wider text-ink"
+                  className="mt-1 font-mono text-xl font-extrabold tracking-wider text-charcoal"
                 >
                   {submitSuccess.trackingCode}
                 </p>
@@ -1207,11 +1207,11 @@ function WindowConfiguratorInner({
               <button
                 type="button"
                 onClick={handleCopyTrackingCode}
-                className="inline-flex items-center gap-1.5 rounded-[2px] border border-border bg-surface px-3.5 py-2 text-xs font-semibold text-ink hover:border-brand"
+                className="inline-flex items-center gap-1.5 rounded-[2px] border border-border bg-surface px-3.5 py-2 text-xs font-semibold text-charcoal hover:border-charcoal"
               >
                 {codeCopied ? (
                   <>
-                    <Check className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+                    <Check className="h-3.5 w-3.5 text-pine" aria-hidden="true" />
                     <span>کد کپی شد</span>
                   </>
                 ) : (
@@ -1227,7 +1227,7 @@ function WindowConfiguratorInner({
                   برآورد محاسبه‌شده سرور ({toPersianDigits(submitSuccess.itemCount)}{" "}
                   دهانه)
                 </p>
-                <p className="tabular-nums mt-1 text-base font-extrabold text-accent-hover">
+                <p className="tabular-nums mt-1 text-base font-extrabold text-bronze-hover">
                   {formatToman(submitSuccess.estimatedTotalIrr)}
                 </p>
               </div>
@@ -1236,7 +1236,7 @@ function WindowConfiguratorInner({
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Link
                 href={`/track/?code=${submitSuccess.trackingCode}`}
-                className="inline-flex items-center gap-2 rounded-[2px] bg-brand px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-hover"
+                className="inline-flex items-center gap-2 rounded-[3px] bg-charcoal px-5 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft"
               >
                 <span>پیگیری وضعیت درخواست</span>
               </Link>
@@ -1244,7 +1244,7 @@ function WindowConfiguratorInner({
               <button
                 type="button"
                 onClick={() => setSubmitSuccess(null)}
-                className="inline-flex items-center gap-2 rounded-[2px] border border-border bg-surface px-4 py-3 text-sm font-semibold text-ink hover:bg-surface-subtle"
+                className="inline-flex items-center gap-2 rounded-[3px] border border-border-strong bg-surface px-4 py-3 text-sm font-semibold text-charcoal hover:border-charcoal"
               >
                 <span>ثبت استعلام جدید</span>
               </button>
@@ -1255,7 +1255,7 @@ function WindowConfiguratorInner({
             <div>
               <h2
                 id="official-submit-heading"
-                className="text-lg font-extrabold text-ink sm:text-xl"
+                className="text-lg font-extrabold text-charcoal sm:text-xl"
               >
                 ثبت رسمی استعلام و دریافت کد رهگیری
               </h2>
@@ -1292,7 +1292,7 @@ function WindowConfiguratorInner({
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   placeholder="مثلاً: مهندس علی محمدی"
-                  className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
+                  className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none"
                 />
               </div>
 
@@ -1310,7 +1310,7 @@ function WindowConfiguratorInner({
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="09120000000"
-                  className="tabular-nums mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-end text-sm text-ink focus:border-brand focus:outline-none"
+                  className="tabular-nums mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-end text-sm text-ink focus:border-bronze focus:outline-none"
                 />
               </div>
 
@@ -1327,7 +1327,7 @@ function WindowConfiguratorInner({
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="مثلاً: زنجان / تهران"
-                  className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
+                  className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none"
                 />
               </div>
             </div>
@@ -1345,7 +1345,7 @@ function WindowConfiguratorInner({
                 value={inquiryNotes}
                 onChange={(e) => setInquiryNotes(e.target.value)}
                 placeholder="مثلاً: تعویض بدون تخریب پنجره‌های طبقه سوم..."
-                className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
+                className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none"
               />
             </div>
 
@@ -1362,7 +1362,7 @@ function WindowConfiguratorInner({
             {submitError && (
               <div
                 role="alert"
-                className="rounded-[2px] border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700 sm:text-sm"
+                className="rounded-[2px] border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-[#991B1B] sm:text-sm"
               >
                 {submitError}
               </div>
@@ -1371,7 +1371,7 @@ function WindowConfiguratorInner({
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center justify-center gap-2 rounded-[2px] bg-brand px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center justify-center gap-2 rounded-[3px] bg-charcoal px-6 py-3.5 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Send className="h-4 w-4" aria-hidden="true" />
               <span>
@@ -1392,7 +1392,7 @@ function WindowConfiguratorInner({
               <h2 className="text-xl font-extrabold text-black">
                 {SITE_CONFIG.name} — برگه مشخصات فنی و برآورد قیمت پروژه
               </h2>
-              <p className="mt-1 text-xs text-slate-700">
+              <p className="mt-1 text-xs text-ink-muted">
                 {SITE_CONFIG.coverageNote}
               </p>
               {submitSuccess && (
@@ -1412,7 +1412,7 @@ function WindowConfiguratorInner({
 
         <table className="mt-6 w-full border-collapse border border-black text-start text-xs">
           <thead>
-            <tr className="bg-slate-100 font-bold">
+            <tr className="bg-surface-warm font-bold">
               <th className="border border-black px-2 py-2 text-start">ردیف</th>
               <th className="border border-black px-2 py-2 text-start">موقعیت</th>
               <th className="border border-black px-2 py-2 text-start">سیستم</th>
@@ -1472,7 +1472,7 @@ function WindowConfiguratorInner({
           </tbody>
         </table>
 
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border border-black bg-slate-50 px-4 py-3 text-sm font-bold">
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border border-black bg-canvas px-4 py-3 text-sm font-bold">
           <span className="tabular-nums">
             مجموع دهانه‌ها: {toPersianDigits(totalCount)} عدد
           </span>
@@ -1491,7 +1491,7 @@ function WindowConfiguratorInner({
           )}
         </div>
 
-        <p className="mt-4 text-[11px] leading-6 text-slate-700">
+        <p className="mt-4 text-[11px] leading-6 text-ink-muted">
           توضیح فنی: برآورد قیمت بر اساس تعرفه روز کارخانه محاسبه شده است.
           اندازه‌گیری نهایی پیش از تولید توسط کارشناس فنی گروه صنعتی سپنتا با
           ابزار لیزری در محل انجام و پیش‌فاکتور قطعی صادر خواهد شد.

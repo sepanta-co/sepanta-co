@@ -288,12 +288,12 @@ export function TasksChecklistPanel({
       {canManageStaff && (
         <form
           onSubmit={handleCreateTask}
-          className="border border-amber-200 bg-surface p-5 sm:p-6"
+          className="border border-border-strong bg-surface p-5 sm:p-6"
         >
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
             <div className="flex items-center gap-2">
-              <ListChecks className="h-5 w-5 text-accent" aria-hidden="true" />
-              <h2 className="text-base font-extrabold text-ink">
+              <ListChecks className="h-5 w-5 text-bronze" aria-hidden="true" />
+              <h2 className="text-base font-extrabold text-charcoal">
                 تعریف شرح وظایف و چک‌لیست کارمندان
               </h2>
             </div>
@@ -402,7 +402,7 @@ export function TasksChecklistPanel({
                 <button
                   type="submit"
                   disabled={creatingTask}
-                  className="inline-flex items-center gap-1.5 rounded-[2px] bg-brand px-5 py-2.5 text-xs font-semibold text-white hover:bg-brand-hover disabled:opacity-60"
+                  className="inline-flex items-center gap-1.5 rounded-[3px] bg-charcoal px-5 py-2.5 text-xs font-semibold text-canvas hover:bg-charcoal-soft disabled:opacity-60"
                 >
                   <Plus className="h-4 w-4" aria-hidden="true" />
                   <span>{creatingTask ? "در حال ثبت..." : "افزودن به چک‌لیست"}</span>
@@ -421,9 +421,9 @@ export function TasksChecklistPanel({
                       type="button"
                       disabled={creatingTask}
                       onClick={() => handleQuickPresetAdd(preset)}
-                      className="inline-flex items-center gap-1 rounded-[2px] border border-border bg-surface-subtle px-2.5 py-1.5 text-[11px] font-semibold text-ink transition-colors hover:border-brand hover:text-accent-hover disabled:opacity-50"
+                      className="inline-flex items-center gap-1 rounded-[2px] border border-border bg-surface-subtle px-2.5 py-1.5 text-[11px] font-semibold text-ink transition-colors hover:border-charcoal hover:text-bronze-hover disabled:opacity-50"
                     >
-                      <Plus className="h-3 w-3 text-accent" aria-hidden="true" />
+                      <Plus className="h-3 w-3 text-bronze" aria-hidden="true" />
                       <span>{preset.title}</span>
                     </button>
                   ))}
@@ -444,14 +444,14 @@ export function TasksChecklistPanel({
                   ? "پیشرفت چک‌لیست وظایف"
                   : "پیشرفت شرح وظایف من"}
               </span>
-              <span className="tabular-nums font-bold text-accent-hover">
+              <span className="tabular-nums font-bold text-bronze-hover">
                 {toPersianDigits(completedCount)} از{" "}
                 {toPersianDigits(totalCount)} مورد ({toPersianDigits(progressPct)}٪)
               </span>
             </div>
             <div className="mt-2 h-2 w-full overflow-hidden bg-surface-subtle">
               <div
-                className="h-full bg-accent transition-all"
+                className="h-full bg-bronze transition-all"
                 style={{ width: `${progressPct}%` }}
               />
             </div>
@@ -482,7 +482,7 @@ export function TasksChecklistPanel({
               onClick={() => setStatusFilter(st)}
               className={`rounded-[2px] px-3 py-2 text-xs font-bold transition-colors ${
                 statusFilter === st
-                  ? "bg-surface-dark text-ink-inverse"
+                  ? "bg-charcoal text-canvas"
                   : "border border-border bg-surface-subtle text-ink-muted hover:text-ink"
               }`}
             >
@@ -508,7 +508,7 @@ export function TasksChecklistPanel({
               key={task.id}
               className={`flex flex-col justify-between gap-3 border p-4 transition-colors sm:flex-row sm:items-center sm:p-5 ${
                 task.isCompleted
-                  ? "border-emerald-200 bg-emerald-50/40"
+                  ? "border-pine/25 bg-pine-soft/45"
                   : "border-border bg-surface"
               }`}
             >
@@ -521,8 +521,8 @@ export function TasksChecklistPanel({
                   aria-label={`تغییر وضعیت انجام ${task.title}`}
                   className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-[2px] border transition-colors ${
                     task.isCompleted
-                      ? "border-emerald-600 bg-emerald-600 text-white"
-                      : "border-slate-300 bg-surface-subtle text-ink-muted hover:border-brand"
+                      ? "border-pine bg-pine text-canvas"
+                      : "border-border-strong bg-surface-subtle text-ink-muted hover:border-charcoal"
                   }`}
                 >
                   {task.isCompleted ? (
@@ -549,13 +549,13 @@ export function TasksChecklistPanel({
                     </span>
 
                     {task.priority === "high" && (
-                      <span className="rounded-[2px] bg-red-50 px-2 py-0.5 text-[11px] font-bold text-red-700">
+                      <span className="rounded-[2px] bg-red-50 px-2 py-0.5 text-[11px] font-bold text-[#991B1B]">
                         {TASK_PRIORITY_LABELS.high}
                       </span>
                     )}
 
                     {canManageStaff && (
-                      <span className="rounded-[2px] bg-accent-soft px-2 py-0.5 text-[11px] font-bold text-accent-hover">
+                      <span className="rounded-[2px] bg-bronze-soft px-2 py-0.5 text-[11px] font-bold text-bronze-hover">
                         {task.staffFullName}
                       </span>
                     )}
@@ -570,12 +570,12 @@ export function TasksChecklistPanel({
                   <div className="flex flex-wrap items-center gap-3 text-[11px] text-ink-muted">
                     {task.dueLabel && (
                       <span className="inline-flex items-center gap-1">
-                        <Clock className="h-3 w-3 text-accent" aria-hidden="true" />
+                        <Clock className="h-3 w-3 text-bronze" aria-hidden="true" />
                         <span>مهلت: {task.dueLabel}</span>
                       </span>
                     )}
                     {task.isCompleted && task.completedAt && (
-                      <span className="font-semibold text-emerald-800">
+                      <span className="font-semibold text-pine">
                         تکمیل‌شده توسط{" "}
                         <span dir="ltr" className="font-mono">
                           {task.completedByUsername}
@@ -592,10 +592,10 @@ export function TasksChecklistPanel({
                   type="button"
                   disabled={togglingId === task.id}
                   onClick={() => handleToggleTask(task)}
-                  className={`rounded-[2px] px-3.5 py-2 text-xs font-bold transition-colors ${
+                  className={`rounded-[3px] px-3.5 py-2 text-xs font-bold transition-colors ${
                     task.isCompleted
-                      ? "border border-border bg-surface text-ink-muted hover:text-ink"
-                      : "bg-accent text-white hover:bg-brand-hover"
+                      ? "border border-border bg-surface text-ink-muted hover:text-charcoal"
+                      : "bg-charcoal text-canvas hover:bg-charcoal-soft"
                   }`}
                 >
                   {task.isCompleted ? "بازگردانی به انجام‌نشده" : "تیک انجام شد"}
@@ -607,7 +607,7 @@ export function TasksChecklistPanel({
                     disabled={deletingId === task.id}
                     onClick={() => handleDeleteTask(task)}
                     aria-label={`حذف وظیفه ${task.title}`}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-[2px] border border-border bg-surface text-ink-muted hover:border-red-300 hover:text-red-600"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-[2px] border border-border bg-surface text-ink-muted hover:border-red-300 hover:text-[#991B1B]"
                   >
                     <Trash2 className="h-4 w-4" aria-hidden="true" />
                   </button>

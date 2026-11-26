@@ -48,10 +48,10 @@ export function FactoryProcessSection() {
               />
             </div>
             <div className="mt-2.5 flex items-center justify-between border-t border-border px-1 pt-2.5 text-xs text-ink-muted">
-              <span className="font-bold text-anthracite">
+              <span className="font-bold text-charcoal">
                 کارخانه مرکزی: شهرک صنعتی زنجان
               </span>
-              <span className="tabular-nums font-bold text-eco">
+              <span className="tabular-nums font-semibold text-bronze">
                 تحویل {toPersianDigits(10)} تا {toPersianDigits(25)} روز کاری
               </span>
             </div>
@@ -60,14 +60,14 @@ export function FactoryProcessSection() {
 
         <div className="lg:col-span-7">
           <div className="flex items-center gap-3">
-            <span className="h-[2px] w-8 bg-accent-deep" aria-hidden="true" />
-            <p className="text-xs font-bold tracking-wide text-primary">
+            <span className="h-[2px] w-6 bg-bronze" aria-hidden="true" />
+            <p className="text-xs font-medium tracking-wide text-ink-muted">
               ۰۵ — فرآیند تولید و اجرای شفاف کارخانه
             </p>
           </div>
           <h2
             id="process-heading"
-            className="mt-2 text-2xl font-bold text-anthracite sm:text-3xl"
+            className="mt-2 text-2xl font-bold text-charcoal sm:text-3xl"
           >
             ۴ مرحله مشخص از اندازه‌گیری لیزری تا رگلاژ نهایی
           </h2>
@@ -83,10 +83,10 @@ export function FactoryProcessSection() {
                 className="border-e border-b border-border bg-canvas p-5"
               >
                 <div className="flex items-center gap-3">
-                  <span className="font-display tabular-nums inline-flex h-7 w-7 shrink-0 items-center justify-center bg-primary text-xs font-extrabold text-white">
+                  <span className="font-display tabular-nums inline-flex h-7 w-7 shrink-0 items-center justify-center bg-charcoal text-xs font-bold text-canvas">
                     {toPersianDigits(item.step).padStart(2, "۰")}
                   </span>
-                  <h3 className="text-sm font-bold text-anthracite sm:text-base">
+                  <h3 className="text-sm font-bold text-charcoal sm:text-base">
                     {item.title}
                   </h3>
                 </div>
@@ -100,11 +100,11 @@ export function FactoryProcessSection() {
           <div className="mt-6">
             <Link
               href="/about/"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-primary transition-colors hover:text-accent-deep"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-charcoal transition-colors hover:text-bronze"
             >
               <span>آشنایی با خطوط تولید و استانداردهای کارخانه زنجان</span>
               <ArrowUpLeft
-                className="h-4 w-4 text-accent-deep"
+                className="h-4 w-4 text-bronze"
                 strokeWidth={1.6}
                 aria-hidden="true"
               />

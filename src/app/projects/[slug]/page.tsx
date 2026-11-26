@@ -157,13 +157,13 @@ export default async function ProjectDetailPage({
           <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
             <div className="lg:col-span-6">
               <div className="flex items-center gap-3">
-                <span className="h-[2px] w-8 bg-accent" aria-hidden="true" />
-                <span className="text-xs font-bold text-brand">
+                <span className="h-[2px] w-6 bg-bronze" aria-hidden="true" />
+                <span className="text-xs font-medium text-ink-muted">
                   پروژه {project.usageType}
                 </span>
               </div>
 
-              <h1 className="mt-4 text-2xl font-extrabold leading-tight tracking-tight text-ink sm:text-4xl">
+              <h1 className="mt-4 text-2xl font-extrabold leading-tight tracking-tight text-charcoal sm:text-4xl">
                 {project.title}
               </h1>
 
@@ -177,7 +177,7 @@ export default async function ProjectDetailPage({
                     <dt className="text-xs font-medium text-ink-muted">
                       {cell.label}
                     </dt>
-                    <dd className="tabular-nums mt-1 text-sm font-extrabold text-ink">
+                    <dd className="tabular-nums mt-1 text-sm font-extrabold text-charcoal">
                       {cell.value}
                     </dd>
                   </div>
@@ -187,7 +187,7 @@ export default async function ProjectDetailPage({
               <div className="mt-6 flex flex-wrap items-center gap-3">
                 <Link
                   href="/configurator/"
-                  className="inline-flex items-center gap-2 rounded-[2px] bg-brand px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-hover"
+                  className="inline-flex items-center gap-2 rounded-[3px] bg-charcoal px-5 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft"
                 >
                   <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
                   <span>برآورد پروژه مشابه</span>
@@ -195,7 +195,7 @@ export default async function ProjectDetailPage({
 
                 <Link
                   href="/about/#contact"
-                  className="inline-flex items-center gap-2 rounded-[2px] border border-border bg-surface px-5 py-3 text-sm font-bold text-ink transition-colors hover:border-brand hover:text-brand"
+                  className="inline-flex items-center gap-2 rounded-[3px] border border-border-strong bg-surface px-5 py-3 text-sm font-semibold text-charcoal transition-colors hover:border-charcoal"
                 >
                   <span>مشاوره با کارخانه زنجان</span>
                 </Link>
@@ -234,8 +234,8 @@ export default async function ProjectDetailPage({
 
           <div className="mt-6 grid grid-cols-1 border-t border-s border-border md:grid-cols-2">
             <div className="border-e border-b border-border bg-surface-subtle p-6">
-              <div className="flex items-center gap-2 text-sm font-extrabold text-ink">
-                <Layers className="h-4 w-4 text-accent" aria-hidden="true" />
+              <div className="flex items-center gap-2 text-sm font-extrabold text-charcoal">
+                <Layers className="h-4 w-4 text-bronze" aria-hidden="true" />
                 <h3>چالش فنی پروژه</h3>
               </div>
               <p className="mt-3 text-sm leading-8 text-ink-muted">
@@ -244,8 +244,8 @@ export default async function ProjectDetailPage({
             </div>
 
             <div className="border-e border-b border-border bg-surface-subtle p-6">
-              <div className="flex items-center gap-2 text-sm font-extrabold text-ink">
-                <Wrench className="h-4 w-4 text-brand" aria-hidden="true" />
+              <div className="flex items-center gap-2 text-sm font-extrabold text-charcoal">
+                <Wrench className="h-4 w-4 text-charcoal" aria-hidden="true" />
                 <h3>راهکار مهندسی سپنتا</h3>
               </div>
               <p className="mt-3 text-sm leading-8 text-ink-muted">
@@ -255,7 +255,7 @@ export default async function ProjectDetailPage({
           </div>
 
           <div className="mt-6 border border-border bg-surface p-6">
-            <h3 className="text-sm font-extrabold text-ink sm:text-base">
+            <h3 className="text-sm font-extrabold text-charcoal sm:text-base">
               دستاوردها و نکات کلیدی اجرا
             </h3>
             <ul className="mt-4 grid grid-cols-1 border-t border-s border-border md:grid-cols-3">
@@ -265,7 +265,7 @@ export default async function ProjectDetailPage({
                   className="flex items-start gap-2.5 border-e border-b border-border bg-surface-subtle p-4 text-xs leading-6 text-ink sm:text-sm"
                 >
                   <CheckCircle2
-                    className="mt-1 h-4 w-4 shrink-0 text-eco"
+                    className="mt-1 h-4 w-4 shrink-0 text-bronze"
                     aria-hidden="true"
                   />
                   <span>{highlight}</span>
@@ -284,7 +284,7 @@ export default async function ProjectDetailPage({
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2
             id="systems-used-heading"
-            className="text-xl font-extrabold text-ink sm:text-2xl"
+            className="text-xl font-extrabold text-charcoal sm:text-2xl"
           >
             سیستم‌های تولیدی استفاده‌شده در این پروژه
           </h2>
@@ -303,7 +303,7 @@ export default async function ProjectDetailPage({
                   <span className="border border-border bg-surface-subtle px-2 py-0.5 text-xs font-bold text-ink-muted">
                     {system.category}
                   </span>
-                  <h3 className="mt-3 text-base font-extrabold text-ink">
+                  <h3 className="mt-3 text-base font-extrabold text-charcoal">
                     {system.name}
                   </h3>
                   <p className="mt-2 text-xs leading-6 text-ink-muted">
@@ -314,11 +314,11 @@ export default async function ProjectDetailPage({
                 <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4">
                   <Link
                     href={`/products/${system.slug}/`}
-                    className="inline-flex items-center gap-1.5 text-sm font-bold text-brand hover:text-accent"
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-charcoal hover:text-bronze"
                   >
                     <span>صفحه محصول</span>
                     <ArrowUpLeft
-                      className="h-4 w-4 text-accent"
+                      className="h-4 w-4 text-bronze"
                       aria-hidden="true"
                     />
                   </Link>
@@ -326,10 +326,10 @@ export default async function ProjectDetailPage({
                   {system.configuratorEligible && system.configuratorKey && (
                     <Link
                       href={`/configurator/?product=${system.configuratorKey}`}
-                      className="inline-flex items-center gap-1.5 rounded-[2px] border border-border bg-surface-subtle px-3 py-1.5 text-xs font-bold text-ink hover:border-brand hover:text-brand"
+                      className="inline-flex items-center gap-1.5 rounded-[3px] border border-border bg-surface-subtle px-3 py-1.5 text-xs font-semibold text-charcoal hover:border-charcoal"
                     >
                       <SlidersHorizontal
-                        className="h-3.5 w-3.5 text-accent"
+                        className="h-3.5 w-3.5 text-bronze"
                         aria-hidden="true"
                       />
                       <span>برآورد قیمت</span>
@@ -351,13 +351,13 @@ export default async function ProjectDetailPage({
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2
               id="more-projects-heading"
-              className="text-xl font-extrabold text-ink sm:text-2xl"
+              className="text-xl font-extrabold text-charcoal sm:text-2xl"
             >
               سایر پروژه‌های اجراشده سپنتا
             </h2>
             <Link
               href="/projects/"
-              className="text-sm font-bold text-brand hover:text-accent"
+              className="text-sm font-semibold text-charcoal hover:text-bronze"
             >
               بازگشت به گالری پروژه‌ها
             </Link>
@@ -383,16 +383,16 @@ export default async function ProjectDetailPage({
                   <div className="flex items-center justify-between text-xs text-ink-muted">
                     <span className="inline-flex items-center gap-1">
                       <MapPin
-                        className="h-3.5 w-3.5 text-accent"
+                        className="h-3.5 w-3.5 text-bronze"
                         aria-hidden="true"
                       />
                       <span>{other.city}</span>
                     </span>
-                    <span className="tabular-nums font-bold text-brand">
+                    <span className="tabular-nums font-bold text-charcoal">
                       {toPersianDigits(other.areaSqm)} مترمربع
                     </span>
                   </div>
-                  <h3 className="mt-2.5 text-sm font-extrabold text-ink group-hover:text-brand sm:text-base">
+                  <h3 className="mt-2.5 text-sm font-extrabold text-charcoal group-hover:text-bronze sm:text-base">
                     {other.title}
                   </h3>
                 </div>

@@ -252,13 +252,13 @@ export function StaffManagementPanel({
       {/* Create Staff Form */}
       <form
         onSubmit={handleCreateStaff}
-        className="border border-amber-200 bg-surface p-5 sm:p-6"
+        className="border border-border-strong bg-surface p-5 sm:p-6"
       >
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
           <div className="flex items-center gap-2">
-            <UserPlus className="h-5 w-5 text-accent" aria-hidden="true" />
+            <UserPlus className="h-5 w-5 text-bronze" aria-hidden="true" />
             <div>
-              <h2 className="text-base font-extrabold text-ink">
+              <h2 className="text-base font-extrabold text-charcoal">
                 افزودن کارمند جدید و تعیین دسترسی‌ها
               </h2>
               <p className="text-xs text-ink-muted">
@@ -280,7 +280,7 @@ export function StaffManagementPanel({
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="مثلاً: رضا محمدی"
-              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
+              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none"
             />
           </div>
 
@@ -294,7 +294,7 @@ export function StaffManagementPanel({
               value={jobTitle}
               onChange={(e) => setJobTitle(e.target.value)}
               placeholder="مثلاً: کارشناس فروش"
-              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
+              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none"
             />
           </div>
 
@@ -309,7 +309,7 @@ export function StaffManagementPanel({
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="reza_sales"
-              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2.5 text-end font-mono text-sm text-ink focus:border-brand focus:outline-none"
+              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2.5 text-end font-mono text-sm text-ink focus:border-bronze focus:outline-none"
             />
           </div>
 
@@ -325,7 +325,7 @@ export function StaffManagementPanel({
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2.5 text-end text-sm text-ink focus:border-brand focus:outline-none"
+              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2.5 text-end text-sm text-ink focus:border-bronze focus:outline-none"
             />
           </div>
 
@@ -336,7 +336,7 @@ export function StaffManagementPanel({
             <select
               value={role}
               onChange={(e) => setRole(e.target.value as StaffRole)}
-              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
+              className="mt-1.5 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none"
             >
               <option value="staff">کارمند</option>
               <option value="manager">مدیر</option>
@@ -348,7 +348,7 @@ export function StaffManagementPanel({
         <div className="mt-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="flex items-center gap-1.5 text-xs font-bold text-ink">
-              <CheckSquare className="h-4 w-4 text-accent" aria-hidden="true" />
+              <CheckSquare className="h-4 w-4 text-bronze" aria-hidden="true" />
               <span>انتخاب دسترسی‌های کارمند (تیک مجوزها):</span>
             </span>
 
@@ -361,7 +361,7 @@ export function StaffManagementPanel({
                     setRole(preset.role);
                     setSelectedPermissions([...preset.permissions]);
                   }}
-                  className="rounded-[2px] border border-border bg-surface-subtle px-2.5 py-1 text-[11px] font-semibold text-ink transition-colors hover:border-brand hover:text-accent-hover"
+                  className="rounded-[2px] border border-border bg-surface-subtle px-2.5 py-1 text-[11px] font-semibold text-ink transition-colors hover:border-charcoal hover:text-bronze-hover"
                 >
                   {preset.label}
                 </button>
@@ -369,7 +369,7 @@ export function StaffManagementPanel({
               <button
                 type="button"
                 onClick={() => setSelectedPermissions([])}
-                className="rounded-[2px] border border-border bg-surface px-2.5 py-1 text-[11px] font-semibold text-ink-muted hover:text-red-600"
+                className="rounded-[2px] border border-border bg-surface px-2.5 py-1 text-[11px] font-semibold text-ink-muted hover:text-[#991B1B]"
               >
                 پاک کردن همه
               </button>
@@ -384,7 +384,7 @@ export function StaffManagementPanel({
                   key={perm.key}
                   className={`flex cursor-pointer items-start gap-2.5 rounded-[2px] border p-3 text-xs transition-colors ${
                     checked
-                      ? "border-accent bg-accent-soft/50 text-ink"
+                      ? "border-bronze bg-bronze-soft/50 text-ink"
                       : "border-border bg-surface-subtle text-ink-muted hover:text-ink"
                   }`}
                 >
@@ -392,7 +392,7 @@ export function StaffManagementPanel({
                     type="checkbox"
                     checked={checked}
                     onChange={() => toggleCreatePermission(perm.key)}
-                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-border accent-amber-700"
+                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-border accent-bronze"
                   />
                   <div>
                     <p className="font-bold text-ink">{perm.label}</p>
@@ -409,7 +409,7 @@ export function StaffManagementPanel({
         <button
           type="submit"
           disabled={creating}
-          className="mt-5 inline-flex items-center gap-2 rounded-[2px] bg-brand px-5 py-2.5 text-xs font-semibold text-white hover:bg-brand-hover disabled:opacity-60 sm:text-sm"
+          className="mt-5 inline-flex items-center gap-2 rounded-[3px] bg-charcoal px-5 py-2.5 text-xs font-semibold text-canvas hover:bg-charcoal-soft disabled:opacity-60 sm:text-sm"
         >
           <Plus className="h-4 w-4" aria-hidden="true" />
           <span>{creating ? "در حال ایجاد..." : "ایجاد حساب کارمند"}</span>
@@ -419,7 +419,7 @@ export function StaffManagementPanel({
       {/* Staff List */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-extrabold text-ink">
+          <h2 className="text-base font-extrabold text-charcoal">
             فهرست کارکنان و مدیریت مجوزها ({toPersianDigits(staffList.length)} نفر)
           </h2>
         </div>
@@ -445,20 +445,20 @@ export function StaffManagementPanel({
                 <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-4">
                   <div className="space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="text-base font-extrabold text-ink">
+                      <h3 className="text-base font-extrabold text-charcoal">
                         {emp.fullName}
                       </h3>
-                      <span className="rounded-[2px] bg-surface-dark px-2 py-0.5 font-mono text-xs font-bold text-amber-400">
+                      <span className="rounded-[2px] bg-charcoal px-2 py-0.5 font-mono text-xs font-bold text-bronze">
                         @{emp.username}
                       </span>
-                      <span className="rounded-[2px] bg-accent-soft px-2 py-0.5 text-xs font-bold text-accent-hover">
+                      <span className="rounded-[2px] bg-bronze-soft px-2 py-0.5 text-xs font-bold text-bronze-hover">
                         {ROLE_LABELS[emp.role]}
                       </span>
                       <span
                         className={`inline-flex items-center gap-1 rounded-[2px] px-2 py-0.5 text-xs font-bold ${
                           draft.isActive
-                            ? "bg-emerald-50 text-emerald-800"
-                            : "bg-red-50 text-red-700"
+                            ? "bg-pine-soft text-pine"
+                            : "bg-red-50 text-[#991B1B]"
                         }`}
                       >
                         {draft.isActive ? (
@@ -484,7 +484,7 @@ export function StaffManagementPanel({
                       </div>
                       <div className="mt-1.5 h-1.5 w-full overflow-hidden bg-border">
                         <div
-                          className="h-full bg-accent transition-all"
+                          className="h-full bg-bronze transition-all"
                           style={{ width: `${progressPct}%` }}
                         />
                       </div>
@@ -493,9 +493,9 @@ export function StaffManagementPanel({
                     <button
                       type="button"
                       onClick={() => onJumpToTasksForStaff(emp.id)}
-                      className="inline-flex items-center gap-1.5 rounded-[2px] border border-border bg-surface-subtle px-3 py-2 text-xs font-semibold text-ink hover:border-brand"
+                      className="inline-flex items-center gap-1.5 rounded-[2px] border border-border bg-surface-subtle px-3 py-2 text-xs font-semibold text-ink hover:border-charcoal"
                     >
-                      <ListChecks className="h-4 w-4 text-accent" aria-hidden="true" />
+                      <ListChecks className="h-4 w-4 text-bronze" aria-hidden="true" />
                       <span>افزودن وظیفه</span>
                     </button>
 
@@ -503,7 +503,7 @@ export function StaffManagementPanel({
                       type="button"
                       disabled={savingId === emp.id}
                       onClick={() => handleSaveStaff(emp)}
-                      className="inline-flex items-center gap-1.5 rounded-[2px] bg-brand px-4 py-2 text-xs font-semibold text-white hover:bg-brand-hover disabled:opacity-60"
+                      className="inline-flex items-center gap-1.5 rounded-[3px] bg-charcoal px-4 py-2 text-xs font-semibold text-canvas hover:bg-charcoal-soft disabled:opacity-60"
                     >
                       <Save className="h-4 w-4" aria-hidden="true" />
                       <span>
@@ -517,7 +517,7 @@ export function StaffManagementPanel({
                         disabled={deletingId === emp.id}
                         onClick={() => handleDeleteStaff(emp)}
                         aria-label={`حذف ${emp.fullName}`}
-                        className="inline-flex items-center gap-1 rounded-[2px] border border-border bg-surface px-3 py-2 text-xs font-semibold text-ink-muted hover:border-red-300 hover:text-red-600 disabled:opacity-50"
+                        className="inline-flex items-center gap-1 rounded-[2px] border border-border bg-surface px-3 py-2 text-xs font-semibold text-ink-muted hover:border-red-300 hover:text-[#991B1B] disabled:opacity-50"
                       >
                         <Trash2 className="h-4 w-4" aria-hidden="true" />
                         <span>حذف</span>
@@ -599,7 +599,7 @@ export function StaffManagementPanel({
                         onChange={(e) =>
                           updateDraft(emp, { isActive: e.target.checked })
                         }
-                        className="h-4 w-4 rounded border-border accent-amber-700"
+                        className="h-4 w-4 rounded border-border accent-bronze"
                       />
                     </label>
                   </div>
@@ -608,7 +608,7 @@ export function StaffManagementPanel({
                 {/* Live Editable Permission Checkboxes */}
                 <div className="mt-4">
                   <p className="flex items-center gap-1.5 text-xs font-bold text-ink">
-                    <Shield className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+                    <Shield className="h-3.5 w-3.5 text-bronze" aria-hidden="true" />
                     <span>دسترسی‌های فعال این کارمند:</span>
                   </p>
                   <div className="mt-2.5 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
@@ -621,7 +621,7 @@ export function StaffManagementPanel({
                           key={perm.key}
                           className={`flex cursor-pointer items-center gap-2 rounded-[2px] border px-3 py-2 text-xs transition-colors ${
                             checked
-                              ? "border-accent bg-accent-soft/50 font-semibold text-ink"
+                              ? "border-bronze bg-bronze-soft/50 font-semibold text-ink"
                               : "border-border bg-surface-subtle text-ink-muted"
                           }`}
                         >
@@ -630,7 +630,7 @@ export function StaffManagementPanel({
                             disabled={disabledSelfLock}
                             checked={checked}
                             onChange={() => toggleDraftPermission(emp, perm.key)}
-                            className="h-4 w-4 shrink-0 rounded border-border accent-amber-700"
+                            className="h-4 w-4 shrink-0 rounded border-border accent-bronze"
                           />
                           <span>{perm.label}</span>
                         </label>

@@ -138,17 +138,17 @@ export default async function ProductDetailPage({
           <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
             <div className="lg:col-span-6">
               <div className="flex items-center gap-3">
-                <span className="h-[2px] w-8 bg-accent" aria-hidden="true" />
-                <span className="text-xs font-bold text-brand">
+                <span className="h-[2px] w-6 bg-bronze" aria-hidden="true" />
+                <span className="text-xs font-medium text-ink-muted">
                   {product.category}
                 </span>
               </div>
 
-              <h1 className="mt-4 text-2xl font-extrabold leading-tight tracking-tight text-ink sm:text-4xl">
+              <h1 className="mt-4 text-2xl font-extrabold leading-tight tracking-tight text-charcoal sm:text-4xl">
                 {product.name}
               </h1>
 
-              <p className="mt-3 text-sm font-bold leading-7 text-brand sm:text-base">
+              <p className="mt-3 text-sm font-bold leading-7 text-bronze sm:text-base">
                 {product.tagline}
               </p>
 
@@ -163,7 +163,7 @@ export default async function ProductDetailPage({
                     className="flex items-start gap-2.5 text-sm leading-7 text-ink"
                   >
                     <CheckCircle2
-                      className="mt-1.5 h-4 w-4 shrink-0 text-eco"
+                      className="mt-1.5 h-4 w-4 shrink-0 text-bronze"
                       aria-hidden="true"
                     />
                     <span>{highlight}</span>
@@ -182,7 +182,7 @@ export default async function ProductDetailPage({
                   <>
                     <Link
                       href={`/configurator/?product=${product.configuratorKey}`}
-                      className="inline-flex items-center gap-2 rounded-[2px] bg-brand px-6 py-3.5 text-sm font-bold text-white transition-colors hover:bg-brand-hover"
+                      className="inline-flex items-center gap-2 rounded-[3px] bg-charcoal px-6 py-3.5 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft"
                     >
                       <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
                       <span>برآورد هوشمند این سیستم</span>
@@ -190,7 +190,7 @@ export default async function ProductDetailPage({
 
                     <Link
                       href="/about/#contact"
-                      className="inline-flex items-center gap-2 rounded-[2px] border border-border bg-surface px-5 py-3.5 text-sm font-bold text-ink transition-colors hover:border-brand hover:text-brand"
+                      className="inline-flex items-center gap-2 rounded-[3px] border border-border-strong bg-surface px-5 py-3.5 text-sm font-semibold text-charcoal transition-colors hover:border-charcoal"
                     >
                       <span>درخواست مشاوره کارخانه</span>
                     </Link>
@@ -199,17 +199,17 @@ export default async function ProductDetailPage({
                   <>
                     <Link
                       href="/about/#contact"
-                      className="inline-flex items-center gap-2 rounded-[2px] bg-brand px-6 py-3.5 text-sm font-bold text-white transition-colors hover:bg-brand-hover"
+                      className="inline-flex items-center gap-2 rounded-[3px] bg-charcoal px-6 py-3.5 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft"
                     >
                       <span>استعلام قیمت و سفارش تولید</span>
-                      <ArrowUpLeft className="h-4 w-4" aria-hidden="true" />
+                      <ArrowUpLeft className="h-4 w-4 text-bronze" aria-hidden="true" />
                     </Link>
 
                     <a
                       href={SITE_CONFIG.contact.phoneHref}
-                      className="inline-flex items-center gap-2 rounded-[2px] border border-border bg-surface px-5 py-3.5 text-sm font-bold text-ink transition-colors hover:border-brand hover:text-brand"
+                      className="inline-flex items-center gap-2 rounded-[3px] border border-border-strong bg-surface px-5 py-3.5 text-sm font-semibold text-charcoal transition-colors hover:border-charcoal"
                     >
-                      <Phone className="h-4 w-4 text-accent" aria-hidden="true" />
+                      <Phone className="h-4 w-4 text-bronze" aria-hidden="true" />
                       <span>تماس با واحد فروش</span>
                     </a>
                   </>
@@ -292,14 +292,14 @@ export default async function ProductDetailPage({
           <div className="mt-6 grid grid-cols-1 border-t border-s border-border lg:grid-cols-3">
             {/* Pros */}
             <div className="border-e border-b border-border bg-surface p-6">
-              <div className="flex items-center gap-2 text-sm font-extrabold text-ink">
-                <CheckCircle2 className="h-4 w-4 text-eco" aria-hidden="true" />
+              <div className="flex items-center gap-2 text-sm font-extrabold text-charcoal">
+                <CheckCircle2 className="h-4 w-4 text-bronze" aria-hidden="true" />
                 <h3>مزایا و نقاط قوت مهندسی</h3>
               </div>
               <ul className="mt-4 space-y-3 text-sm leading-7 text-ink-muted">
                 {product.pros.map((pro) => (
                   <li key={pro} className="flex items-start gap-2.5">
-                    <span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-eco" />
+                    <span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-bronze" />
                     <span>{pro}</span>
                   </li>
                 ))}
@@ -308,9 +308,9 @@ export default async function ProductDetailPage({
 
             {/* Cons */}
             <div className="border-e border-b border-border bg-surface p-6">
-              <div className="flex items-center gap-2 text-sm font-extrabold text-ink">
+              <div className="flex items-center gap-2 text-sm font-extrabold text-charcoal">
                 <AlertTriangle
-                  className="h-4 w-4 text-accent"
+                  className="h-4 w-4 text-bronze"
                   aria-hidden="true"
                 />
                 <h3>محدودیت‌ها و نکات قابل توجه</h3>
@@ -318,7 +318,7 @@ export default async function ProductDetailPage({
               <ul className="mt-4 space-y-3 text-sm leading-7 text-ink-muted">
                 {product.cons.map((con) => (
                   <li key={con} className="flex items-start gap-2.5">
-                    <span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-slate-400" />
+                    <span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-ink-subtle" />
                     <span>{con}</span>
                   </li>
                 ))}
@@ -327,14 +327,14 @@ export default async function ProductDetailPage({
 
             {/* Ideal For */}
             <div className="border-e border-b border-border bg-surface p-6">
-              <div className="flex items-center gap-2 text-sm font-extrabold text-ink">
-                <Target className="h-4 w-4 text-brand" aria-hidden="true" />
+              <div className="flex items-center gap-2 text-sm font-extrabold text-charcoal">
+                <Target className="h-4 w-4 text-charcoal" aria-hidden="true" />
                 <h3>کاربردهای پیشنهادی</h3>
               </div>
               <ul className="mt-4 space-y-3 text-sm leading-7 text-ink-muted">
                 {product.idealFor.map((useCase) => (
                   <li key={useCase} className="flex items-start gap-2.5">
-                    <span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-brand" />
+                    <span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-charcoal" />
                     <span>{useCase}</span>
                   </li>
                 ))}
@@ -355,7 +355,7 @@ export default async function ProductDetailPage({
               <div>
                 <h2
                   id="related-projects-heading"
-                  className="text-xl font-extrabold text-ink sm:text-2xl"
+                  className="text-xl font-extrabold text-charcoal sm:text-2xl"
                 >
                   پروژه‌های اجراشده با {product.shortName}
                 </h2>
@@ -365,7 +365,7 @@ export default async function ProductDetailPage({
               </div>
               <Link
                 href="/projects/"
-                className="text-sm font-semibold text-accent hover:text-accent-hover"
+                className="text-sm font-semibold text-charcoal hover:text-bronze"
               >
                 مشاهده همه پروژه‌ها
               </Link>
@@ -391,18 +391,18 @@ export default async function ProductDetailPage({
                       <div className="flex items-center justify-between gap-2 text-xs">
                         <span className="inline-flex items-center gap-1 text-ink-muted">
                           <MapPin
-                            className="h-3.5 w-3.5 text-accent"
+                            className="h-3.5 w-3.5 text-bronze"
                             aria-hidden="true"
                           />
                           <span>
                             {project.city}، {project.province}
                           </span>
                         </span>
-                        <span className="tabular-nums font-bold text-accent">
+                        <span className="tabular-nums font-bold text-charcoal">
                           {toPersianDigits(project.areaSqm)} مترمربع
                         </span>
                       </div>
-                      <h3 className="mt-2.5 text-base font-bold text-ink">
+                      <h3 className="mt-2.5 text-base font-bold text-charcoal">
                         {project.title}
                       </h3>
                     </div>
@@ -410,11 +410,11 @@ export default async function ProductDetailPage({
                     <div className="mt-4 border-t border-border pt-3">
                       <Link
                         href={`/projects/${project.slug}/`}
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink hover:text-accent"
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-charcoal hover:text-bronze"
                       >
                         <span>جزئیات پروژه</span>
                         <ArrowUpLeft
-                          className="h-4 w-4 text-accent"
+                          className="h-4 w-4 text-bronze"
                           aria-hidden="true"
                         />
                       </Link>
@@ -435,7 +435,7 @@ export default async function ProductDetailPage({
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <h2
             id="product-faq-heading"
-            className="text-xl font-extrabold text-ink sm:text-2xl"
+            className="text-xl font-extrabold text-charcoal sm:text-2xl"
           >
             پرسش‌های متداول فنی درباره {product.shortName}
           </h2>
@@ -454,13 +454,13 @@ export default async function ProductDetailPage({
           <div className="flex flex-wrap items-end justify-between gap-4">
             <h2
               id="related-products-heading"
-              className="text-xl font-extrabold text-ink sm:text-2xl"
+              className="text-xl font-extrabold text-charcoal sm:text-2xl"
             >
               سایر خطوط تولید گروه صنعتی سپنتا
             </h2>
             <Link
               href="/products/"
-              className="text-sm font-semibold text-accent hover:text-accent-hover"
+              className="text-sm font-semibold text-charcoal hover:text-bronze"
             >
               بازگشت به کاتالوگ محصولات
             </Link>
@@ -477,16 +477,16 @@ export default async function ProductDetailPage({
                   <span className="border border-border bg-surface px-2 py-0.5 text-xs font-bold text-ink-muted">
                     {rel.category}
                   </span>
-                  <h3 className="mt-3 text-base font-extrabold text-ink group-hover:text-brand">
+                  <h3 className="mt-3 text-base font-extrabold text-charcoal group-hover:text-bronze">
                     {rel.name}
                   </h3>
                   <p className="mt-2 text-xs leading-6 text-ink-muted">
                     {rel.tagline}
                   </p>
                 </div>
-                <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-brand">
+                <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-charcoal">
                   <span>مشاهده مشخصات فنی</span>
-                  <ArrowUpLeft className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+                  <ArrowUpLeft className="h-3.5 w-3.5 text-bronze" aria-hidden="true" />
                 </span>
               </Link>
             ))}

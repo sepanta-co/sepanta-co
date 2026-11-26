@@ -31,7 +31,7 @@ const STEP_3_SPAN: readonly { id: SpanWidth; label: string; note: string }[] = [
 
 const STEP_4_FINISH: readonly { id: FinishLook; label: string; hex: string }[] = [
   { id: "classic-white", label: "سفید کلاسیک", hex: "#FFFFFF" },
-  { id: "anthracite", label: "آنتراسیت و مدرن", hex: "#334155" },
+  { id: "anthracite", label: "آنتراسیت و مدرن", hex: "#262523" },
   { id: "woodgrain", label: "طرح چوب گرم", hex: "#7C4A2D" },
 ];
 
@@ -159,14 +159,14 @@ export function WindowSelectorQuiz() {
         <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border-strong pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="h-[2px] w-8 bg-accent-deep" aria-hidden="true" />
-              <p className="text-xs font-bold tracking-wide text-primary">
+              <span className="h-[2px] w-6 bg-bronze" aria-hidden="true" />
+              <p className="text-xs font-medium tracking-wide text-ink-muted">
                 ۰۲ — راهنمای ۴ گامی انتخاب پنجره مناسب
               </p>
             </div>
             <h2
               id="selector-heading"
-              className="mt-2 text-2xl font-bold text-anthracite sm:text-3xl"
+              className="mt-2 text-2xl font-bold text-charcoal sm:text-3xl"
             >
               هنوز بین سیستم‌های تولیدی مطمئن نیستید؟
             </h2>
@@ -175,7 +175,7 @@ export function WindowSelectorQuiz() {
           <button
             type="button"
             onClick={handleReset}
-            className="inline-flex items-center gap-1.5 rounded-[4px] border border-border-strong bg-surface px-3.5 py-2 text-xs font-bold text-ink transition-colors hover:border-primary hover:text-primary"
+            className="inline-flex items-center gap-1.5 rounded-[3px] border border-border-strong bg-surface px-3.5 py-2 text-xs font-semibold text-charcoal transition-colors hover:border-charcoal"
           >
             <RotateCcw className="h-3.5 w-3.5" strokeWidth={1.6} aria-hidden="true" />
             <span>بازنشانی انتخاب‌ها</span>
@@ -187,7 +187,7 @@ export function WindowSelectorQuiz() {
           <div className="space-y-6 border-e border-b border-border p-6 sm:p-8 lg:col-span-7">
             {/* Q1 */}
             <div>
-              <p className="text-xs font-bold text-primary">
+              <p className="text-xs font-bold text-charcoal">
                 ۱. نوع پروژه شما چیست؟
               </p>
               <div
@@ -204,16 +204,16 @@ export function WindowSelectorQuiz() {
                       role="radio"
                       aria-checked={active}
                       onClick={() => setProject(item.id)}
-                      className={`flex items-center justify-between gap-1.5 rounded-[4px] border px-3 py-2.5 text-start text-xs font-bold transition-colors ${
+                      className={`flex items-center justify-between gap-1.5 rounded-[3px] border px-3 py-2.5 text-start text-xs font-semibold transition-colors ${
                         active
-                          ? "border-primary bg-primary text-white"
+                          ? "border-charcoal bg-charcoal text-canvas"
                           : "border-border bg-canvas text-ink hover:border-border-strong"
                       }`}
                     >
                       <span>{item.label}</span>
                       {active && (
                         <Check
-                          className="h-3.5 w-3.5 shrink-0"
+                          className="h-3.5 w-3.5 shrink-0 text-bronze"
                           strokeWidth={2}
                           aria-hidden="true"
                         />
@@ -226,7 +226,7 @@ export function WindowSelectorQuiz() {
 
             {/* Q2 */}
             <div className="border-t border-border pt-5">
-              <p className="text-xs font-bold text-primary">
+              <p className="text-xs font-bold text-charcoal">
                 ۲. چالش اصلی محیط ساختمان کدام است؟
               </p>
               <div
@@ -243,16 +243,16 @@ export function WindowSelectorQuiz() {
                       role="radio"
                       aria-checked={active}
                       onClick={() => setChallenge(item.id)}
-                      className={`flex items-center justify-between gap-1.5 rounded-[4px] border px-3 py-2.5 text-start text-xs font-bold transition-colors ${
+                      className={`flex items-center justify-between gap-1.5 rounded-[3px] border px-3 py-2.5 text-start text-xs font-semibold transition-colors ${
                         active
-                          ? "border-primary bg-primary text-white"
+                          ? "border-charcoal bg-charcoal text-canvas"
                           : "border-border bg-canvas text-ink hover:border-border-strong"
                       }`}
                     >
                       <span>{item.label}</span>
                       {active && (
                         <Check
-                          className="h-3.5 w-3.5 shrink-0"
+                          className="h-3.5 w-3.5 shrink-0 text-bronze"
                           strokeWidth={2}
                           aria-hidden="true"
                         />
@@ -266,7 +266,7 @@ export function WindowSelectorQuiz() {
             {/* Q3 & Q4 Side by Side */}
             <div className="grid grid-cols-1 gap-6 border-t border-border pt-5 sm:grid-cols-2">
               <div>
-                <p className="text-xs font-bold text-primary">
+                <p className="text-xs font-bold text-charcoal">
                   ۳. عرض تقریبی دهانه‌ها
                 </p>
                 <div
@@ -283,9 +283,9 @@ export function WindowSelectorQuiz() {
                         role="radio"
                         aria-checked={active}
                         onClick={() => setSpan(item.id)}
-                        className={`flex items-center justify-between rounded-[4px] border px-3 py-2.5 text-start text-xs transition-colors ${
+                        className={`flex items-center justify-between rounded-[3px] border px-3 py-2.5 text-start text-xs transition-colors ${
                           active
-                            ? "border-primary bg-surface-warm font-bold text-primary"
+                            ? "border-charcoal bg-surface-warm font-bold text-charcoal"
                             : "border-border bg-canvas text-ink hover:border-border-strong"
                         }`}
                       >
@@ -297,7 +297,7 @@ export function WindowSelectorQuiz() {
                         </div>
                         {active && (
                           <Check
-                            className="h-4 w-4 shrink-0 text-primary"
+                            className="h-4 w-4 shrink-0 text-bronze"
                             strokeWidth={2}
                             aria-hidden="true"
                           />
@@ -309,7 +309,7 @@ export function WindowSelectorQuiz() {
               </div>
 
               <div>
-                <p className="text-xs font-bold text-primary">
+                <p className="text-xs font-bold text-charcoal">
                   ۴. اولویت ظاهری و رنگ فریم
                 </p>
                 <div
@@ -326,9 +326,9 @@ export function WindowSelectorQuiz() {
                         role="radio"
                         aria-checked={active}
                         onClick={() => setFinish(item.id)}
-                        className={`flex items-center justify-between rounded-[4px] border px-3 py-2 text-start text-xs transition-colors ${
+                        className={`flex items-center justify-between rounded-[3px] border px-3 py-2 text-start text-xs transition-colors ${
                           active
-                            ? "border-primary bg-surface-warm font-bold text-primary"
+                            ? "border-charcoal bg-surface-warm font-bold text-charcoal"
                             : "border-border bg-canvas text-ink hover:border-border-strong"
                         }`}
                       >
@@ -342,7 +342,7 @@ export function WindowSelectorQuiz() {
                         </span>
                         {active && (
                           <Check
-                            className="h-3.5 w-3.5 shrink-0 text-primary"
+                            className="h-3.5 w-3.5 shrink-0 text-bronze"
                             strokeWidth={2}
                             aria-hidden="true"
                           />
@@ -356,38 +356,38 @@ export function WindowSelectorQuiz() {
           </div>
 
           {/* Grounded Engineering Recommendation Output (5 cols) */}
-          <div className="flex flex-col justify-between border-e border-b border-border bg-anthracite p-6 text-ink-inverse sm:p-8 lg:col-span-5">
+          <div className="flex flex-col justify-between border-e border-b border-border bg-charcoal p-6 text-canvas sm:p-8 lg:col-span-5">
             <div>
               <div className="flex items-center justify-between gap-2 border-b border-border-dark pb-3">
-                <span className="text-xs font-bold text-amber-400">
+                <span className="text-xs font-bold text-bronze">
                   جمع‌بندی پیشنهاد مهندسی سپنتا
                 </span>
                 <span
                   dir="ltr"
-                  className="font-mono text-[11px] font-bold text-slate-400"
+                  className="font-mono text-[11px] font-bold text-ink-subtle"
                 >
                   {recommendation.systemKey}
                 </span>
               </div>
 
-              <h3 className="mt-4 text-lg font-bold leading-8 text-white sm:text-xl">
+              <h3 className="mt-4 text-lg font-bold leading-8 text-canvas sm:text-xl">
                 {recommendation.systemTitle}
               </h3>
 
-              <p className="mt-3 text-sm leading-7 text-slate-300">
+              <p className="mt-3 text-sm leading-7 text-border-strong">
                 {recommendation.rationale}
               </p>
 
               <dl className="mt-5 space-y-3 border-t border-border-dark pt-4 text-xs">
                 <div>
-                  <dt className="font-bold text-slate-400">شیشه و پوشش پیشنهادی:</dt>
-                  <dd className="mt-1 font-semibold text-white">
+                  <dt className="font-bold text-ink-subtle">شیشه و پوشش پیشنهادی:</dt>
+                  <dd className="mt-1 font-semibold text-canvas">
                     {recommendation.glassSpec}
                   </dd>
                 </div>
                 <div>
-                  <dt className="font-bold text-slate-400">شاخص عملکرد فنی:</dt>
-                  <dd className="tabular-nums mt-1 font-bold text-emerald-300">
+                  <dt className="font-bold text-ink-subtle">شاخص عملکرد فنی:</dt>
+                  <dd className="tabular-nums mt-1 font-bold text-canvas">
                     {recommendation.uValueNote}
                   </dd>
                 </div>
@@ -397,7 +397,7 @@ export function WindowSelectorQuiz() {
             <div className="mt-7 flex flex-col gap-2.5 border-t border-border-dark pt-5">
               <Link
                 href={recommendation.href}
-                className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[4px] bg-accent px-5 py-3 text-xs font-bold text-white transition-colors hover:bg-accent-deep sm:text-sm"
+                className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[3px] bg-canvas px-5 py-3 text-xs font-semibold text-charcoal transition-colors hover:bg-surface-warm sm:text-sm"
               >
                 <SlidersHorizontal
                   className="h-4 w-4 shrink-0"
@@ -406,7 +406,7 @@ export function WindowSelectorQuiz() {
                 />
                 <span>ورود مستقیم به پیکربندی این سیستم</span>
                 <ArrowUpLeft
-                  className="h-4 w-4 shrink-0"
+                  className="h-4 w-4 shrink-0 text-bronze"
                   strokeWidth={1.6}
                   aria-hidden="true"
                 />

@@ -22,7 +22,7 @@ function FlagshipPlate({
           fill
           className="transition-transform duration-300 group-hover:scale-[1.02]"
         />
-        <span className="font-display tabular-nums absolute top-3 start-3 border border-border-strong bg-surface/95 px-2.5 py-1 text-xs font-extrabold text-anthracite">
+        <span className="font-display tabular-nums absolute top-3 start-3 border border-border-strong bg-surface/95 px-2.5 py-1 text-xs font-bold text-charcoal">
           {toPersianDigits(index + 1).padStart(2, "۰")}
         </span>
       </div>
@@ -30,13 +30,13 @@ function FlagshipPlate({
       <div className="flex flex-1 flex-col justify-between p-6 sm:p-7">
         <div>
           <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-            <span className="border border-eco/25 bg-eco-soft px-2.5 py-0.5 font-bold text-eco">
+            <span className="border border-border bg-surface-warm px-2.5 py-0.5 font-semibold text-ink-muted">
               {product.category}
             </span>
-            <span className="font-bold text-primary">خط تولید اصلی کارخانه</span>
+            <span className="font-semibold text-bronze">خط تولید اصلی کارخانه</span>
           </div>
 
-          <h3 className="mt-3 text-xl font-bold text-anthracite">
+          <h3 className="mt-3 text-xl font-bold text-charcoal">
             {product.name}
           </h3>
           <p className="mt-2 text-sm leading-7 text-ink-muted">
@@ -53,7 +53,7 @@ function FlagshipPlate({
                 <dt className="shrink-0 font-bold text-ink-muted">
                   {toPersianDigits(spec.label)}:
                 </dt>
-                <dd className="tabular-nums text-end font-semibold text-anthracite">
+                <dd className="tabular-nums text-end font-semibold text-charcoal">
                   {toPersianDigits(spec.value)}
                 </dd>
               </div>
@@ -64,7 +64,7 @@ function FlagshipPlate({
         <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-border pt-5">
           <Link
             href={`/products/${product.slug}/`}
-            className="inline-flex min-h-[42px] items-center gap-1.5 rounded-[4px] border border-primary bg-surface px-4 py-2 text-xs font-bold text-primary transition-colors hover:bg-primary hover:text-white sm:text-sm"
+            className="inline-flex min-h-[42px] items-center gap-1.5 rounded-[3px] border border-border-strong bg-surface px-4 py-2 text-xs font-semibold text-charcoal transition-colors hover:border-charcoal sm:text-sm"
           >
             <span>جزئیات فنی</span>
             <ArrowUpLeft className="h-4 w-4" strokeWidth={1.6} aria-hidden="true" />
@@ -73,7 +73,7 @@ function FlagshipPlate({
           {product.configuratorEligible && product.configuratorKey && (
             <Link
               href={`/configurator/?product=${product.configuratorKey}`}
-              className="inline-flex min-h-[42px] items-center gap-1.5 rounded-[4px] bg-accent px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-accent-deep sm:text-sm"
+              className="inline-flex min-h-[42px] items-center gap-1.5 rounded-[3px] bg-charcoal px-4 py-2 text-xs font-semibold text-canvas transition-colors hover:bg-charcoal-soft sm:text-sm"
             >
               <SlidersHorizontal
                 className="h-3.5 w-3.5"
@@ -107,7 +107,7 @@ function SupportingIndexItem({
             fill
             className="transition-transform duration-300 group-hover:scale-[1.02]"
           />
-          <span className="font-display tabular-nums absolute top-2.5 start-2.5 border border-border-strong bg-surface/95 px-2 py-0.5 text-[11px] font-extrabold text-anthracite">
+          <span className="font-display tabular-nums absolute top-2.5 start-2.5 border border-border-strong bg-surface/95 px-2 py-0.5 text-[11px] font-bold text-charcoal">
             {toPersianDigits(index + 1).padStart(2, "۰")}
           </span>
         </div>
@@ -116,7 +116,7 @@ function SupportingIndexItem({
           {product.category}
         </span>
 
-        <h3 className="mt-2.5 text-base font-bold text-anthracite sm:text-lg">
+        <h3 className="mt-2.5 text-base font-bold text-charcoal sm:text-lg">
           {product.name}
         </h3>
         <p className="mt-2 line-clamp-2 text-xs leading-6 text-ink-muted sm:text-sm">
@@ -143,19 +143,19 @@ function SupportingIndexItem({
       <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4">
         <Link
           href={`/products/${product.slug}/`}
-          className="inline-flex items-center gap-1 text-xs font-bold text-primary transition-colors hover:text-accent-deep sm:text-sm"
+          className="inline-flex items-center gap-1 text-xs font-semibold text-charcoal transition-colors hover:text-bronze sm:text-sm"
         >
           <span>مشخصات فنی</span>
-          <ArrowUpLeft className="h-3.5 w-3.5" strokeWidth={1.6} aria-hidden="true" />
+          <ArrowUpLeft className="h-3.5 w-3.5 text-bronze" strokeWidth={1.6} aria-hidden="true" />
         </Link>
 
         {product.configuratorEligible && product.configuratorKey ? (
           <Link
             href={`/configurator/?product=${product.configuratorKey}`}
-            className="inline-flex items-center gap-1 rounded-[4px] border border-border bg-canvas px-2.5 py-1.5 text-xs font-bold text-anthracite transition-colors hover:border-primary hover:text-primary"
+            className="inline-flex items-center gap-1 rounded-[3px] border border-border bg-canvas px-2.5 py-1.5 text-xs font-semibold text-charcoal transition-colors hover:border-charcoal"
           >
             <SlidersHorizontal
-              className="h-3 w-3 text-accent-deep"
+              className="h-3 w-3 text-bronze"
               strokeWidth={1.6}
               aria-hidden="true"
             />
@@ -164,7 +164,7 @@ function SupportingIndexItem({
         ) : (
           <Link
             href="/about/#contact"
-            className="text-xs font-bold text-ink-muted transition-colors hover:text-primary"
+            className="text-xs font-semibold text-ink-muted transition-colors hover:text-charcoal"
           >
             استعلام سفارش کارخانه
           </Link>
@@ -187,14 +187,14 @@ export function ProductsGridSection() {
         <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="h-[2px] w-8 bg-accent-deep" aria-hidden="true" />
-              <p className="text-xs font-bold tracking-wide text-primary">
+              <span className="h-[2px] w-6 bg-bronze" aria-hidden="true" />
+              <p className="text-xs font-medium tracking-wide text-ink-muted">
                 ۰۱ — فهرست خطوط تولید کارخانه سپنتا
               </p>
             </div>
             <h2
               id="products-heading"
-              className="mt-2 text-2xl font-bold text-anthracite sm:text-3xl"
+              className="mt-2 text-2xl font-bold text-charcoal sm:text-3xl"
             >
               ۷ سیستم تولید مستقیم درب، پنجره و حفاظت ساختمان
             </h2>
@@ -207,11 +207,11 @@ export function ProductsGridSection() {
 
           <Link
             href="/products/"
-            className="inline-flex min-h-[42px] items-center gap-1.5 rounded-[4px] border border-border-strong bg-canvas px-4 py-2 text-sm font-bold text-anthracite transition-colors hover:border-primary hover:text-primary"
+            className="inline-flex min-h-[42px] items-center gap-1.5 rounded-[3px] border border-border-strong bg-canvas px-4 py-2 text-sm font-semibold text-charcoal transition-colors hover:border-charcoal"
           >
             <span>کاتالوگ کامل و تعرفه روز خطوط تولید</span>
             <ArrowUpLeft
-              className="h-4 w-4 text-accent-deep"
+              className="h-4 w-4 text-bronze"
               strokeWidth={1.6}
               aria-hidden="true"
             />
@@ -236,15 +236,15 @@ export function ProductsGridSection() {
           ))}
 
           {/* Symmetrical Closing Specification Index Cell */}
-          <div className="flex flex-col justify-between border-e border-b border-border bg-anthracite p-6 text-ink-inverse">
+          <div className="flex flex-col justify-between border-e border-b border-border bg-charcoal p-6 text-canvas">
             <div>
-              <span className="font-display text-xs font-bold text-amber-400">
+              <span className="font-display text-xs font-bold text-bronze">
                 سفارش یکپارچه کارخانه
               </span>
-              <h3 className="mt-3 text-lg font-bold text-white">
+              <h3 className="mt-3 text-lg font-bold text-canvas">
                 نیاز به برآورد هم‌زمان چند خط تولید دارید؟
               </h3>
-              <p className="mt-2 text-xs leading-7 text-slate-300">
+              <p className="mt-2 text-xs leading-7 text-border-strong">
                 جدول بازشوها یا فایل نقشه معماری پروژه را ثبت کنید تا برآورد
                 کارشناسی و زمان‌بندی تحویل کارخانه زنجان صادر شود.
               </p>
@@ -253,7 +253,7 @@ export function ProductsGridSection() {
             <div className="mt-6 flex flex-col gap-2.5 border-t border-border-dark pt-5">
               <Link
                 href="/configurator/"
-                className="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-[4px] bg-accent px-4 py-2.5 text-xs font-bold text-white transition-colors hover:bg-accent-deep"
+                className="inline-flex min-h-[42px] items-center justify-center gap-2 rounded-[3px] bg-canvas px-4 py-2.5 text-xs font-semibold text-charcoal transition-colors hover:bg-surface-warm"
               >
                 <SlidersHorizontal
                   className="h-4 w-4"
@@ -264,7 +264,7 @@ export function ProductsGridSection() {
               </Link>
               <Link
                 href="/about/#contact"
-                className="inline-flex min-h-[42px] items-center justify-center rounded-[4px] border border-border-dark px-4 py-2.5 text-xs font-bold text-slate-200 transition-colors hover:border-amber-400 hover:text-white"
+                className="inline-flex min-h-[42px] items-center justify-center rounded-[3px] border border-border-dark px-4 py-2.5 text-xs font-semibold text-border-strong transition-colors hover:border-bronze hover:text-canvas"
               >
                 ارسال نقشه به دفتر فنی زنجان
               </Link>

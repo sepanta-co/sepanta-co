@@ -1,12 +1,16 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #18181b;
+@font-face {
+  font-family: "Estedad-FD";
+  src: url("/fonts/Estedad-FD.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: system-ui, -apple-system, Tahoma, Arial, sans-serif;
+@layer base {
+  html,
+  body {
+    font-family: "Estedad-FD", Tahoma, sans-serif;
+  }
 }

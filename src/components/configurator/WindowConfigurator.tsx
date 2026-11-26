@@ -37,6 +37,7 @@ import {
   type PricableInquiryItem,
   type PricingRuleRow,
 } from "@/lib/pricing-calculator";
+import { DrawingAttachmentInput } from "@/components/ui/DrawingAttachmentInput";
 import { SITE_CONFIG } from "@/lib/site-config";
 import { WindowSvgPreview } from "./WindowSvgPreview";
 
@@ -176,6 +177,8 @@ function WindowConfiguratorInner({
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
   const [inquiryNotes, setInquiryNotes] = useState("");
+  const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
+  const [attachmentError, setAttachmentError] = useState<string | null>(null);
   const [honeypot, setHoneypot] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -503,22 +506,35 @@ function WindowConfiguratorInner({
         quantity: item.quantity,
       }));
 
-      const res = await fetch("/api/inquiries/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          customerName: customerName.trim(),
-          phone: normalizedPhone,
-          city: city.trim(),
-          projectType:
-            effectiveItems.length > 1
-              ? "پکیج چندقلمی کانفیگوریتور"
-              : SYSTEM_RULES[effectiveItems[0].system].label,
-          notes: inquiryNotes.trim(),
-          items: payloadItems,
-          website: honeypot,
-        }),
-      });
+      const payloadObject = {
+        customerName: customerName.trim(),
+        phone: normalizedPhone,
+        city: city.trim(),
+        projectType:
+          effectiveItems.length > 1
+            ? "پکیج چندقلمی کانفیگوریتور"
+            : SYSTEM_RULES[effectiveItems[0].system].label,
+        notes: inquiryNotes.trim(),
+        items: payloadItems,
+        website: honeypot,
+      };
+
+      let res: Response;
+      if (attachmentFile) {
+        const formData = new FormData();
+        formData.append("payload", JSON.stringify(payloadObject));
+        formData.append("attachment", attachmentFile);
+        res = await fetch("/api/inquiries/", {
+          method: "POST",
+          body: formData,
+        });
+      } else {
+        res = await fetch("/api/inquiries/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payloadObject),
+        });
+      }
 
       const data = (await res.json()) as {
         ok?: boolean;
@@ -1306,6 +1322,16 @@ function WindowConfiguratorInner({
                 className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
               />
             </div>
+
+            <DrawingAttachmentInput
+              id="cfg-attachment"
+              file={attachmentFile}
+              error={attachmentError}
+              onFileChange={(file, err) => {
+                setAttachmentFile(file);
+                setAttachmentError(err);
+              }}
+            />
 
             {submitError && (
               <div

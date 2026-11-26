@@ -79,8 +79,15 @@ export const PRODUCT_NAV_LINKS: readonly ProductNavLink[] = [
   },
 ] as const;
 
+export const PORTAL_NAV_LINKS: readonly NavItem[] = [
+  { label: "پیگیری سفارش", href: "/track/" },
+  { label: "اصالت گارانتی و رگلاژ", href: "/warranty/" },
+] as const;
+
 export const FOOTER_UTILITY_LINKS: readonly NavItem[] = [
   { label: "کانفیگوریتور هوشمند ابعاد و برآورد", href: "/configurator/" },
+  { label: "پیگیری وضعیت سفارش", href: "/track/" },
+  { label: "اصالت گارانتی و رگلاژ", href: "/warranty/" },
   { label: "نمونه پروژه‌های اجرایی", href: "/projects/" },
   { label: "معرفی کارخانه زنجان", href: "/about/" },
   { label: "ارتباط با واحد فروش و فنی", href: "/about/#contact" },

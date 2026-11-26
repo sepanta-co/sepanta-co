@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Check, Copy, ExternalLink, RotateCcw, Send } from "lucide-react";
+import { DrawingAttachmentInput } from "@/components/ui/DrawingAttachmentInput";
 import { toLatinDigits, toPersianDigits } from "@/lib/persian-seo";
 import { SITE_CONFIG } from "@/lib/site-config";
 
@@ -38,6 +39,8 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>(
     {}
   );
+  const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
+  const [attachmentError, setAttachmentError] = useState<string | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submittedData, setSubmittedData] = useState<{
@@ -85,19 +88,32 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
 
     setSubmitting(true);
     try {
-      const response = await fetch("/api/inquiries/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          customerName: form.fullName.trim(),
-          phone: normalizedPhone,
-          city: form.city.trim(),
-          projectType: form.needType,
-          notes: combinedNotes,
-          items: [],
-          website: form.website,
-        }),
-      });
+      const payloadObject = {
+        customerName: form.fullName.trim(),
+        phone: normalizedPhone,
+        city: form.city.trim(),
+        projectType: form.needType,
+        notes: combinedNotes,
+        items: [],
+        website: form.website,
+      };
+
+      let response: Response;
+      if (attachmentFile) {
+        const formData = new FormData();
+        formData.append("payload", JSON.stringify(payloadObject));
+        formData.append("attachment", attachmentFile);
+        response = await fetch("/api/inquiries/", {
+          method: "POST",
+          body: formData,
+        });
+      } else {
+        response = await fetch("/api/inquiries/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payloadObject),
+        });
+      }
 
       const data = (await response.json()) as {
         ok?: boolean;
@@ -417,6 +433,16 @@ export function StaticInquiryForm({ productOptions }: StaticInquiryFormProps) {
           className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-slate-400 focus:border-accent focus:outline-none"
         />
       </div>
+
+      <DrawingAttachmentInput
+        id="about-attachment"
+        file={attachmentFile}
+        error={attachmentError}
+        onFileChange={(file, err) => {
+          setAttachmentFile(file);
+          setAttachmentError(err);
+        }}
+      />
 
       {serverError && (
         <div

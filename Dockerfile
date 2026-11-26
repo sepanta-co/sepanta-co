@@ -18,7 +18,8 @@ ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     PORT=3000 \
     HOSTNAME="0.0.0.0" \
-    DATABASE_PATH="/app/data/sepanta.db"
+    DATABASE_PATH="/app/data/sepanta.db" \
+    UPLOADS_DIR="/app/uploads"
 
 RUN addgroup -S -g 1001 nodejs \
     && adduser -S -u 1001 -G nodejs nextjs \

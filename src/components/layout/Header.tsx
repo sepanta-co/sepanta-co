@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, Phone, SlidersHorizontal, X } from "lucide-react";
-import { NAV_ITEMS, SITE_CONFIG } from "@/lib/site-config";
+import { NAV_ITEMS, PORTAL_NAV_LINKS, SITE_CONFIG } from "@/lib/site-config";
 import { BrandMark } from "./BrandMark";
 
 function isRouteActive(pathname: string, href: string): boolean {
@@ -181,6 +181,33 @@ export function Header() {
                   );
                 })}
               </ul>
+
+              <div className="mt-5 border-t border-border pt-4">
+                <p className="px-2 text-xs font-bold text-ink-muted">
+                  خدمات مشتریان و پیگیری
+                </p>
+                <ul className="mt-2 space-y-1">
+                  {PORTAL_NAV_LINKS.map((portal) => {
+                    const active = isRouteActive(pathname, portal.href);
+                    return (
+                      <li key={portal.href}>
+                        <Link
+                          href={portal.href}
+                          onClick={() => setDrawerOpen(false)}
+                          aria-current={active ? "page" : undefined}
+                          className={`flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-medium transition-colors ${
+                            active
+                              ? "bg-accent-soft text-accent-hover font-semibold"
+                              : "text-ink hover:bg-surface-subtle"
+                          }`}
+                        >
+                          <span>{portal.label}</span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
 
               <div className="mt-6 rounded-xl border border-border bg-surface-subtle p-4">
                 <p className="text-xs font-medium text-ink-muted">

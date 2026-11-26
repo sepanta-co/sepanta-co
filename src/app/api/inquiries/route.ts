@@ -17,6 +17,11 @@ import {
 } from "@/lib/pricing-calculator";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { sendInquiryNotifications } from "@/lib/sms";
+import {
+  deleteUploadedFile,
+  saveValidatedDrawing,
+  UploadValidationError,
+} from "@/lib/uploads";
 
 export const dynamic = "force-dynamic";
 
@@ -60,14 +65,39 @@ export async function POST(request: Request) {
   }
 
   let body: Record<string, unknown>;
-  try {
-    const parsed = await request.json();
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-      return badRequest("ساختار اطلاعات ارسالی معتبر نیست.");
+  let attachmentFile: File | null = null;
+
+  const contentType = request.headers.get("content-type") || "";
+  if (contentType.includes("multipart/form-data")) {
+    try {
+      const formData = await request.formData();
+      const rawPayload = formData.get("payload");
+      if (typeof rawPayload !== "string") {
+        return badRequest("بخش اطلاعات فرم (payload) یافت نشد.");
+      }
+      const parsed = JSON.parse(rawPayload);
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+        return badRequest("ساختار اطلاعات ارسالی معتبر نیست.");
+      }
+      body = parsed as Record<string, unknown>;
+
+      const rawAttachment = formData.get("attachment");
+      if (rawAttachment instanceof File && rawAttachment.size > 0) {
+        attachmentFile = rawAttachment;
+      }
+    } catch {
+      return badRequest("فرمت داده‌های ارسالی نامعتبر است.");
     }
-    body = parsed as Record<string, unknown>;
-  } catch {
-    return badRequest("فرمت JSON درخواست نامعتبر است.");
+  } else {
+    try {
+      const parsed = await request.json();
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+        return badRequest("ساختار اطلاعات ارسالی معتبر نیست.");
+      }
+      body = parsed as Record<string, unknown>;
+    } catch {
+      return badRequest("فرمت JSON درخواست نامعتبر است.");
+    }
   }
 
   // Honeypot field check: silently accept without saving or sending SMS
@@ -78,9 +108,7 @@ export async function POST(request: Request) {
   const customerName =
     typeof body.customerName === "string" ? body.customerName.trim() : "";
   if (customerName.length < 2 || customerName.length > 100) {
-    return badRequest(
-      "نام و نام خانوادگی باید بین ۲ تا ۱۰۰ کاراکتر باشد."
-    );
+    return badRequest("نام و نام خانوادگی باید بین ۲ تا ۱۰۰ کاراکتر باشد.");
   }
 
   const rawPhone = typeof body.phone === "string" ? body.phone : "";
@@ -108,7 +136,7 @@ export async function POST(request: Request) {
     return badRequest("توضیحات نباید بیشتر از ۱۰۰۰ کاراکتر باشد.");
   }
 
-  // Validate configurator items if present
+  // Validate configurator items BEFORE touching disk for attachment
   const validatedItems: PricableInquiryItem[] = [];
   if (body.items !== undefined) {
     if (!Array.isArray(body.items)) {
@@ -130,24 +158,14 @@ export async function POST(request: Request) {
       }
       const rule = SYSTEM_RULES[sysRaw];
 
-      const widthCm = Number(
-        toLatinDigits(String(rawItem.widthCm ?? ""))
-      );
-      const heightCm = Number(
-        toLatinDigits(String(rawItem.heightCm ?? ""))
-      );
+      const widthCm = Number(toLatinDigits(String(rawItem.widthCm ?? "")));
+      const heightCm = Number(toLatinDigits(String(rawItem.heightCm ?? "")));
       const panelCount = Number(
         toLatinDigits(String(rawItem.panelCount ?? rule.defaultPanels))
       );
-      const quantity = Number(
-        toLatinDigits(String(rawItem.quantity ?? 1))
-      );
+      const quantity = Number(toLatinDigits(String(rawItem.quantity ?? 1)));
 
-      if (
-        !Number.isInteger(quantity) ||
-        quantity < 1 ||
-        quantity > 100
-      ) {
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > 100) {
         return badRequest(
           `تعداد در ردیف ${i + 1} باید عدد صحیح بین ۱ تا ۱۰۰ باشد.`
         );
@@ -161,7 +179,9 @@ export async function POST(request: Request) {
             : rule.defaultGlass;
 
       if (!rule.allowedGlasses.includes(rawGlass as GlassOptionKey)) {
-        return badRequest(`نوع شیشه در ردیف ${i + 1} برای این سیستم مجاز نیست.`);
+        return badRequest(
+          `نوع شیشه در ردیف ${i + 1} برای این سیستم مجاز نیست.`
+        );
       }
       const glassType = rawGlass as GlassOptionKey;
 
@@ -196,7 +216,8 @@ export async function POST(request: Request) {
 
       if (!validation.isValid) {
         return badRequest(
-          validation.errors[0] || `ابعاد ردیف ${i + 1} خارج از محدوده مجاز است.`
+          validation.errors[0] ||
+            `ابعاد ردیف ${i + 1} خارج از محدوده مجاز است.`
         );
       }
 
@@ -218,6 +239,23 @@ export async function POST(request: Request) {
         includeMesh,
         quantity,
       });
+    }
+  }
+
+  // Validate & persist attachment after input validation passes
+  let attachmentPath: string | null = null;
+  let attachmentOriginalName: string | null = null;
+
+  if (attachmentFile) {
+    try {
+      const saved = await saveValidatedDrawing(attachmentFile);
+      attachmentPath = saved.storedFilename;
+      attachmentOriginalName = saved.originalName;
+    } catch (err) {
+      if (err instanceof UploadValidationError) {
+        return badRequest(err.message);
+      }
+      return badRequest("خطا در پردازش فایل پیوست.");
     }
   }
 
@@ -252,6 +290,8 @@ export async function POST(request: Request) {
       items_json,
       estimated_total_irr,
       notes,
+      attachment_path,
+      attachment_original_name,
       status,
       created_at,
       updated_at
@@ -264,6 +304,8 @@ export async function POST(request: Request) {
       @items_json,
       @estimated_total_irr,
       @notes,
+      @attachment_path,
+      @attachment_original_name,
       'new',
       @created_at,
       @updated_at
@@ -273,35 +315,43 @@ export async function POST(request: Request) {
   let trackingCode = "";
   let inserted = false;
 
-  for (let attempt = 0; attempt < 5; attempt += 1) {
-    trackingCode = generateTrackingCode();
-    try {
-      insertStmt.run({
-        tracking_code: trackingCode,
-        customer_name: customerName,
-        phone,
-        city,
-        project_type: projectType,
-        items_json: persistedItemsJson,
-        estimated_total_irr: estimatedTotalIrr,
-        notes: notes || null,
-        created_at: nowIso,
-        updated_at: nowIso,
-      });
-      inserted = true;
-      break;
-    } catch (err) {
-      if (
-        err instanceof Error &&
-        err.message.includes("UNIQUE constraint failed")
-      ) {
-        continue;
+  try {
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      trackingCode = generateTrackingCode();
+      try {
+        insertStmt.run({
+          tracking_code: trackingCode,
+          customer_name: customerName,
+          phone,
+          city,
+          project_type: projectType,
+          items_json: persistedItemsJson,
+          estimated_total_irr: estimatedTotalIrr,
+          notes: notes || null,
+          attachment_path: attachmentPath,
+          attachment_original_name: attachmentOriginalName,
+          created_at: nowIso,
+          updated_at: nowIso,
+        });
+        inserted = true;
+        break;
+      } catch (err) {
+        if (
+          err instanceof Error &&
+          err.message.includes("UNIQUE constraint failed")
+        ) {
+          continue;
+        }
+        throw err;
       }
-      throw err;
     }
+  } catch (err) {
+    deleteUploadedFile(attachmentPath);
+    throw err;
   }
 
   if (!inserted) {
+    deleteUploadedFile(attachmentPath);
     return NextResponse.json(
       { ok: false, error: "خطا در تولید کد رهگیری؛ لطفاً دوباره تلاش کنید." },
       { status: 500 }
@@ -328,6 +378,8 @@ export async function POST(request: Request) {
       estimatedTotalIrr,
       estimatedTotalToman,
       itemCount,
+      hasAttachment: Boolean(attachmentPath),
+      attachmentName: attachmentOriginalName,
       createdAt: nowIso,
     },
     { status: 201 }

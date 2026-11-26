@@ -10,6 +10,7 @@ import {
   type OpeningType,
 } from "@/lib/configurator-rules";
 import { getDb, type PricingRuleRow } from "@/lib/db";
+import { syncUsdRate } from "@/lib/fx-sync";
 import { toLatinDigits } from "@/lib/persian-seo";
 import {
   calculateInquiryTotals,
@@ -259,7 +260,8 @@ export async function POST(request: Request) {
     }
   }
 
-  // Server-authoritative price calculation from SQLite pricing_rules
+  // Server-authoritative price calculation from SQLite pricing_rules + cached/live FX
+  await syncUsdRate();
   const db = getDb();
   const pricingRows = db
     .prepare("SELECT * FROM pricing_rules")

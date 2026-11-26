@@ -1,18 +1,16 @@
 import { NextResponse } from "next/server";
-import { getDb, type PricingRuleRow } from "@/lib/db";
+import { syncUsdRate, toPublicFxSummary } from "@/lib/fx-sync";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const db = getDb();
-    const rules = db
-      .prepare("SELECT * FROM pricing_rules ORDER BY id ASC")
-      .all() as PricingRuleRow[];
+    const { fx, rules } = await syncUsdRate();
 
     return NextResponse.json(
       {
         ok: true,
+        fx: toPublicFxSummary(fx),
         rules,
       },
       {
@@ -26,7 +24,10 @@ export async function GET() {
     return NextResponse.json(
       {
         ok: false,
-        error: error instanceof Error ? error.message : "Failed to load pricing rules",
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to load pricing rules",
       },
       { status: 500 }
     );

@@ -36,7 +36,9 @@ import {
   formatToman,
   type PricableInquiryItem,
   type PricingRuleRow,
+  type PublicFxSummary,
 } from "@/lib/pricing-calculator";
+import { formatFxTimestamp, getFxSourceLabel } from "@/lib/fx-labels";
 import { DrawingAttachmentInput } from "@/components/ui/DrawingAttachmentInput";
 import { SITE_CONFIG } from "@/lib/site-config";
 import { WindowSvgPreview } from "./WindowSvgPreview";
@@ -166,10 +168,11 @@ function WindowConfiguratorInner({
   const [quantity, setQuantity] = useState<number>(1);
   const [copied, setCopied] = useState(false);
 
-  // Live SQLite pricing rules
+  // Live SQLite pricing rules & FX status
   const [rulesMap, setRulesMap] = useState<Record<string, PricingRuleRow> | null>(
     null
   );
+  const [fxSummary, setFxSummary] = useState<PublicFxSummary | null>(null);
   const [pricingLoading, setPricingLoading] = useState(true);
 
   // Official inquiry submission state
@@ -197,6 +200,7 @@ function WindowConfiguratorInner({
         if (!res.ok) throw new Error("Failed to fetch pricing rules");
         const data = (await res.json()) as {
           ok?: boolean;
+          fx?: PublicFxSummary;
           rules?: PricingRuleRow[];
         };
         if (!cancelled && data.ok && Array.isArray(data.rules)) {
@@ -204,6 +208,9 @@ function WindowConfiguratorInner({
             data.rules.map((r) => [r.system_key, r])
           );
           setRulesMap(map);
+          if (data.fx) {
+            setFxSummary(data.fx);
+          }
         }
       })
       .catch(() => {
@@ -583,14 +590,30 @@ function WindowConfiguratorInner({
   return (
     <div className="space-y-10">
       {/* Honest Pricing Transparency Banner */}
-      <div className="no-print flex items-start gap-3 rounded-2xl border border-amber-200 bg-accent-soft p-4 text-xs leading-6 text-accent-hover sm:p-5 sm:text-sm">
-        <Info className="mt-1 h-5 w-5 shrink-0" aria-hidden="true" />
-        <p>
-          <strong>برآورد قیمت هوشمند بر اساس تعرفه روز کارخانه سپنتا محاسبه
-          می‌شود؛</strong>{" "}
-          مبلغ قطعی پس از اندازه‌گیری دقیق لیزری در محل پروژه و تایید نهایی نوع
-          یراق‌آلات اعلام می‌گردد.
-        </p>
+      <div className="no-print space-y-3 rounded-2xl border border-amber-200 bg-accent-soft p-4 text-xs leading-6 text-accent-hover sm:p-5 sm:text-sm">
+        <div className="flex items-start gap-3">
+          <Info className="mt-1 h-5 w-5 shrink-0" aria-hidden="true" />
+          <p>
+            <strong>برآورد قیمت هوشمند بر اساس تعرفه روز کارخانه سپنتا و نرخ
+            لحظه‌ای ارز محاسبه می‌شود؛</strong>{" "}
+            مبلغ قطعی پس از اندازه‌گیری دقیق لیزری در محل پروژه و تایید نهایی نوع
+            یراق‌آلات اعلام می‌گردد.
+          </p>
+        </div>
+
+        {fxSummary && (
+          <div className="flex flex-wrap items-center gap-2 border-t border-amber-300/60 pt-3 text-[11px] sm:text-xs">
+            <span className="tabular-nums rounded-lg bg-surface px-2.5 py-1 font-bold text-ink">
+              نرخ مبنای دلار: {formatToman(fxSummary.activeUsdIrr)}
+            </span>
+            <span className="rounded-lg bg-surface/80 px-2.5 py-1 font-semibold text-ink-muted">
+              منبع: {getFxSourceLabel(fxSummary.sourceUsed)}
+            </span>
+            <span className="rounded-lg bg-surface/80 px-2.5 py-1 text-ink-muted">
+              آخرین بروزرسانی: {formatFxTimestamp(fxSummary.lastSyncedAt)}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Main Configurator Workspace */}
@@ -952,6 +975,9 @@ function WindowConfiguratorInner({
                 <p className="tabular-nums mt-1.5 text-[11px] text-slate-400">
                   شامل پروفیل، شیشه، نصب و رگلاژ استاندارد • مساحت مبنای محاسبه:{" "}
                   {toPersianDigits(activePriceBreakdown.billableAreaSqm)} مترمربع
+                  {fxSummary
+                    ? ` • نرخ مبنا: ${formatToman(fxSummary.activeUsdIrr)}`
+                    : ""}
                 </p>
               </div>
             ) : null}

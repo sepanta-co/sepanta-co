@@ -5,6 +5,35 @@ import type {
 } from "./configurator-rules";
 import { toPersianDigits } from "./persian-seo";
 
+export type FxMode = "auto" | "manual";
+
+export interface FxSettingsRow {
+  id: number;
+  mode: FxMode;
+  manual_usd_irr: number;
+  active_usd_irr: number;
+  source_used: string;
+  last_synced_at: string | null;
+  last_error: string | null;
+  sync_interval_minutes: number;
+  updated_at: string;
+}
+
+export interface FxRateHistoryRow {
+  id: number;
+  usd_irr: number;
+  source: string;
+  recorded_at: string;
+}
+
+export interface PublicFxSummary {
+  mode: FxMode;
+  activeUsdIrr: number;
+  sourceUsed: string;
+  lastSyncedAt: string | null;
+  syncIntervalMinutes: number;
+}
+
 export interface PricingRuleRow {
   id: number;
   system_key: string;
@@ -18,7 +47,22 @@ export interface PricingRuleRow {
   color_surcharge_percent: number;
   pleated_mesh_per_sqm: number;
   installation_percent: number;
+  usd_units_per_sqm: number;
+  formula_multiplier: number;
+  fixed_surcharge_irr: number;
+  rounding_step_irr: number;
+  computed_price_per_sqm: number;
+  formula_expression: string;
   updated_at: string;
+}
+
+export interface FormulaParams {
+  usdIrr: number;
+  usdUnitsPerSqm: number;
+  formulaMultiplier: number;
+  fixedSurchargeIrr: number;
+  roundingStepIrr: number;
+  fallbackBasePricePerSqm: number;
 }
 
 export interface PricableInquiryItem {
@@ -53,8 +97,72 @@ export type PricedInquiryItem<T extends PricableInquiryItem = PricableInquiryIte
     breakdown: PricingBreakdown;
   };
 
-function roundToNearest10k(amount: number): number {
-  return Math.round(amount / 10000) * 10000;
+export const DEFAULT_FORMULA_EXPRESSION =
+  "(usd_irr * usd_units_per_sqm * formula_multiplier) + fixed_surcharge_irr";
+
+export const CATALOG_PRICING_KEYS = [
+  "upvc",
+  "thermal-break",
+  "balcony-glass",
+  "pleated-mesh",
+  "security-door",
+  "wooden-door",
+  "metal-frame",
+] as const;
+
+export type CatalogPricingKey = (typeof CATALOG_PRICING_KEYS)[number];
+
+export function isValidPricingKey(
+  value: string | null | undefined
+): value is CatalogPricingKey {
+  return (
+    typeof value === "string" &&
+    (CATALOG_PRICING_KEYS as readonly string[]).includes(value)
+  );
+}
+
+export function roundToStep(amount: number, stepIrr = 10000): number {
+  const safeStep =
+    Number.isFinite(stepIrr) && stepIrr >= 1000 ? Math.round(stepIrr) : 1000;
+  return Math.max(0, Math.round(amount / safeStep) * safeStep);
+}
+
+export function evaluateItemFormula(params: FormulaParams): number {
+  const usdIrr =
+    Number.isFinite(params.usdIrr) && params.usdIrr > 0 ? params.usdIrr : 0;
+  const units = Number.isFinite(params.usdUnitsPerSqm)
+    ? params.usdUnitsPerSqm
+    : 0;
+  const multiplier =
+    Number.isFinite(params.formulaMultiplier) && params.formulaMultiplier >= 0
+      ? params.formulaMultiplier
+      : 1;
+  const fixedSurcharge = Number.isFinite(params.fixedSurchargeIrr)
+    ? params.fixedSurchargeIrr
+    : 0;
+  const fallbackBase =
+    Number.isFinite(params.fallbackBasePricePerSqm) &&
+    params.fallbackBasePricePerSqm >= 0
+      ? params.fallbackBasePricePerSqm
+      : 0;
+
+  const rawIrr =
+    units > 0 && usdIrr > 0
+      ? usdIrr * units * multiplier + fixedSurcharge
+      : fallbackBase * multiplier + fixedSurcharge;
+
+  return roundToStep(Math.max(0, rawIrr), params.roundingStepIrr);
+}
+
+export function resolveEffectiveBasePricePerSqm(rule: PricingRuleRow): number {
+  if (
+    typeof rule.computed_price_per_sqm === "number" &&
+    Number.isFinite(rule.computed_price_per_sqm) &&
+    rule.computed_price_per_sqm > 0
+  ) {
+    return rule.computed_price_per_sqm;
+  }
+  return rule.base_price_per_sqm;
 }
 
 function resolveGlassPricePerSqm(
@@ -87,7 +195,8 @@ export function calculateItemPrice(
     Math.max(realAreaSqm, rule.min_billable_sqm).toFixed(4)
   );
 
-  const baseCostIrr = billableAreaSqm * rule.base_price_per_sqm;
+  const effectiveBasePerSqm = resolveEffectiveBasePricePerSqm(rule);
+  const baseCostIrr = billableAreaSqm * effectiveBasePerSqm;
   const glassPerSqm = resolveGlassPricePerSqm(item.glassType, rule);
   const glassCostIrr = billableAreaSqm * glassPerSqm;
   const colorSurchargeIrr =
@@ -99,13 +208,18 @@ export function calculateItemPrice(
       ? billableAreaSqm * rule.pleated_mesh_per_sqm
       : 0;
 
-  const subtotalIrr = baseCostIrr + glassCostIrr + colorSurchargeIrr + meshCostIrr;
+  const subtotalIrr =
+    baseCostIrr + glassCostIrr + colorSurchargeIrr + meshCostIrr;
   const installationIrr = subtotalIrr * (rule.installation_percent / 100);
   const unitRawIrr = subtotalIrr + installationIrr;
 
   const qty = Math.max(1, Math.round(item.quantity));
-  const unitTotalIrr = roundToNearest10k(unitRawIrr);
-  const totalIrr = roundToNearest10k(unitRawIrr * qty);
+  const roundingStep =
+    Number.isFinite(rule.rounding_step_irr) && rule.rounding_step_irr >= 1000
+      ? rule.rounding_step_irr
+      : 10000;
+  const unitTotalIrr = roundToStep(unitRawIrr, roundingStep);
+  const totalIrr = roundToStep(unitRawIrr * qty, roundingStep);
   const totalToman = Math.round(totalIrr / 10);
 
   return {
@@ -157,4 +271,11 @@ export function formatToman(irrAmount: number): string {
   const toman = Math.round(irrAmount / 10);
   const formatted = toman.toLocaleString("en-US").replace(/,/g, "٬");
   return `${toPersianDigits(formatted)} تومان`;
+}
+
+export function formatIrr(irrAmount: number): string {
+  const formatted = Math.round(irrAmount)
+    .toLocaleString("en-US")
+    .replace(/,/g, "٬");
+  return `${toPersianDigits(formatted)} ریال`;
 }

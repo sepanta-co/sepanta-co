@@ -15,6 +15,7 @@ import { FaqAccordion } from "@/components/sections/FaqAccordion";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { PictureImage } from "@/components/ui/PictureImage";
+import { ProductLivePriceCard } from "@/components/products/ProductLivePriceCard";
 import { IMAGE_MANIFEST } from "@/data/image-manifest";
 import { getProductBySlug, PRODUCTS } from "@/data/products";
 import { PROJECTS } from "@/data/projects";
@@ -166,6 +167,12 @@ export default async function ProductDetailPage({
                   </li>
                 ))}
               </ul>
+
+              <ProductLivePriceCard
+                productSlug={product.slug}
+                configuratorEligible={product.configuratorEligible}
+                configuratorKey={product.configuratorKey}
+              />
 
               <div className="mt-8 flex flex-wrap items-center gap-3.5">
                 {product.configuratorEligible && product.configuratorKey ? (

@@ -1,20 +1,78 @@
 import fs from "node:fs";
 import path from "node:path";
 import Database from "better-sqlite3";
-import type { PricingRuleRow } from "./pricing-calculator";
+import {
+  DEFAULT_FORMULA_EXPRESSION,
+  evaluateItemFormula,
+  type FxRateHistoryRow,
+  type FxSettingsRow,
+  type PricingRuleRow,
+} from "./pricing-calculator";
 
-export type { PricingRuleRow };
+export type { FxRateHistoryRow, FxSettingsRow, PricingRuleRow };
 
 const DB_PATH =
   process.env.DATABASE_PATH || path.join(process.cwd(), "data", "sepanta.db");
+
+const DEFAULT_SEED_USD_IRR = 700000;
 
 const globalForDb = globalThis as unknown as {
   __sepantaDb?: Database.Database;
 };
 
+interface TableColumnInfo {
+  name: string;
+}
+
+const PRICING_RULE_COLUMNS: readonly { name: string; ddl: string }[] = [
+  {
+    name: "usd_units_per_sqm",
+    ddl: "usd_units_per_sqm REAL NOT NULL DEFAULT 1.0",
+  },
+  {
+    name: "formula_multiplier",
+    ddl: "formula_multiplier REAL NOT NULL DEFAULT 1.0",
+  },
+  {
+    name: "fixed_surcharge_irr",
+    ddl: "fixed_surcharge_irr INTEGER NOT NULL DEFAULT 0",
+  },
+  {
+    name: "rounding_step_irr",
+    ddl: "rounding_step_irr INTEGER NOT NULL DEFAULT 10000",
+  },
+  {
+    name: "computed_price_per_sqm",
+    ddl: "computed_price_per_sqm INTEGER NOT NULL DEFAULT 0",
+  },
+  {
+    name: "formula_expression",
+    ddl: `formula_expression TEXT NOT NULL DEFAULT '${DEFAULT_FORMULA_EXPRESSION}'`,
+  },
+];
+
 function initSchema(db: Database.Database): void {
   const runMigrations = db.transaction(() => {
     db.exec(`
+      CREATE TABLE IF NOT EXISTS fx_settings (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        mode TEXT NOT NULL DEFAULT 'auto',
+        manual_usd_irr INTEGER NOT NULL DEFAULT 700000,
+        active_usd_irr INTEGER NOT NULL DEFAULT 700000,
+        source_used TEXT NOT NULL DEFAULT 'seed',
+        last_synced_at TEXT,
+        last_error TEXT,
+        sync_interval_minutes INTEGER NOT NULL DEFAULT 10,
+        updated_at TEXT NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS fx_rate_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        usd_irr INTEGER NOT NULL,
+        source TEXT NOT NULL,
+        recorded_at TEXT NOT NULL
+      );
+
       CREATE TABLE IF NOT EXISTS pricing_rules (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         system_key TEXT UNIQUE NOT NULL,
@@ -28,6 +86,12 @@ function initSchema(db: Database.Database): void {
         color_surcharge_percent REAL NOT NULL DEFAULT 15,
         pleated_mesh_per_sqm INTEGER NOT NULL DEFAULT 0,
         installation_percent REAL NOT NULL DEFAULT 12,
+        usd_units_per_sqm REAL NOT NULL DEFAULT 1.0,
+        formula_multiplier REAL NOT NULL DEFAULT 1.0,
+        fixed_surcharge_irr INTEGER NOT NULL DEFAULT 0,
+        rounding_step_irr INTEGER NOT NULL DEFAULT 10000,
+        computed_price_per_sqm INTEGER NOT NULL DEFAULT 0,
+        formula_expression TEXT NOT NULL DEFAULT '${DEFAULT_FORMULA_EXPRESSION}',
         updated_at TEXT NOT NULL
       );
 
@@ -77,103 +141,265 @@ function initSchema(db: Database.Database): void {
 
     const nowIso = new Date().toISOString();
 
-    const pricingCount = db
-      .prepare("SELECT COUNT(*) as count FROM pricing_rules")
-      .get() as { count: number };
+    db.prepare(
+      `INSERT OR IGNORE INTO fx_settings (
+         id,
+         mode,
+         manual_usd_irr,
+         active_usd_irr,
+         source_used,
+         last_synced_at,
+         last_error,
+         sync_interval_minutes,
+         updated_at
+       ) VALUES (1, 'auto', ?, ?, 'seed', NULL, NULL, 10, ?)`
+    ).run(DEFAULT_SEED_USD_IRR, DEFAULT_SEED_USD_IRR, nowIso);
 
-    if (pricingCount.count === 0) {
-      const insertPricing = db.prepare(`
-        INSERT INTO pricing_rules (
-          system_key,
-          label,
-          base_price_per_sqm,
-          min_billable_sqm,
-          glass_standard_per_sqm,
-          glass_acoustic_per_sqm,
-          glass_triple_per_sqm,
-          glass_tempered_per_sqm,
-          color_surcharge_percent,
-          pleated_mesh_per_sqm,
-          installation_percent,
-          updated_at
-        ) VALUES (
-          @system_key,
-          @label,
-          @base_price_per_sqm,
-          @min_billable_sqm,
-          @glass_standard_per_sqm,
-          @glass_acoustic_per_sqm,
-          @glass_triple_per_sqm,
-          @glass_tempered_per_sqm,
-          @color_surcharge_percent,
-          @pleated_mesh_per_sqm,
-          @installation_percent,
-          @updated_at
-        )
+    const existingCols = new Set(
+      (
+        db
+          .prepare("PRAGMA table_info(pricing_rules)")
+          .all() as TableColumnInfo[]
+      ).map((col) => col.name)
+    );
+
+    let addedFormulaColumns = false;
+    for (const col of PRICING_RULE_COLUMNS) {
+      if (!existingCols.has(col.name)) {
+        db.exec(`ALTER TABLE pricing_rules ADD COLUMN ${col.ddl}`);
+        addedFormulaColumns = true;
+      }
+    }
+
+    const fxRow = db
+      .prepare("SELECT * FROM fx_settings WHERE id = 1")
+      .get() as FxSettingsRow;
+    const activeUsdIrr =
+      fxRow.mode === "manual" ? fxRow.manual_usd_irr : fxRow.active_usd_irr;
+
+    if (addedFormulaColumns) {
+      const existingRows = db
+        .prepare("SELECT * FROM pricing_rules ORDER BY id ASC")
+        .all() as PricingRuleRow[];
+      const backfillStmt = db.prepare(`
+        UPDATE pricing_rules
+        SET usd_units_per_sqm = @usd_units_per_sqm,
+            formula_multiplier = @formula_multiplier,
+            fixed_surcharge_irr = @fixed_surcharge_irr,
+            rounding_step_irr = @rounding_step_irr,
+            computed_price_per_sqm = @computed_price_per_sqm,
+            formula_expression = @formula_expression,
+            updated_at = @updated_at
+        WHERE system_key = @system_key
       `);
 
-      const seedPricing = [
-        {
-          system_key: "upvc",
-          label: "پنجره دوجداره uPVC",
-          base_price_per_sqm: 48000000,
-          min_billable_sqm: 1.2,
-          glass_standard_per_sqm: 12000000,
-          glass_acoustic_per_sqm: 22000000,
-          glass_triple_per_sqm: 26000000,
-          glass_tempered_per_sqm: 18000000,
-          color_surcharge_percent: 15,
-          pleated_mesh_per_sqm: 7500000,
-          installation_percent: 12,
-          updated_at: nowIso,
-        },
-        {
-          system_key: "thermal-break",
-          label: "پنجره آلومینیوم ترمال بریک",
-          base_price_per_sqm: 82000000,
-          min_billable_sqm: 1.2,
-          glass_standard_per_sqm: 12000000,
-          glass_acoustic_per_sqm: 22000000,
-          glass_triple_per_sqm: 26000000,
-          glass_tempered_per_sqm: 18000000,
-          color_surcharge_percent: 18,
-          pleated_mesh_per_sqm: 8500000,
-          installation_percent: 12,
-          updated_at: nowIso,
-        },
-        {
-          system_key: "balcony-glass",
-          label: "شیشه بالکنی تاشو",
-          base_price_per_sqm: 56000000,
-          min_billable_sqm: 1.5,
-          glass_standard_per_sqm: 0,
-          glass_acoustic_per_sqm: 0,
-          glass_triple_per_sqm: 0,
-          glass_tempered_per_sqm: 15000000,
-          color_surcharge_percent: 15,
-          pleated_mesh_per_sqm: 0,
-          installation_percent: 14,
-          updated_at: nowIso,
-        },
-        {
-          system_key: "pleated-mesh",
-          label: "توری کشویی و پلیسه",
-          base_price_per_sqm: 14500000,
-          min_billable_sqm: 1.0,
-          glass_standard_per_sqm: 0,
-          glass_acoustic_per_sqm: 0,
-          glass_triple_per_sqm: 0,
-          glass_tempered_per_sqm: 0,
-          color_surcharge_percent: 12,
-          pleated_mesh_per_sqm: 0,
-          installation_percent: 10,
-          updated_at: nowIso,
-        },
-      ];
+      for (const row of existingRows) {
+        const derivedUnits =
+          row.base_price_per_sqm > 0 && activeUsdIrr > 0
+            ? Number((row.base_price_per_sqm / activeUsdIrr).toFixed(2))
+            : 1.0;
+        const computed = evaluateItemFormula({
+          usdIrr: activeUsdIrr,
+          usdUnitsPerSqm: derivedUnits,
+          formulaMultiplier: 1.0,
+          fixedSurchargeIrr: 0,
+          roundingStepIrr: 10000,
+          fallbackBasePricePerSqm: row.base_price_per_sqm,
+        });
 
-      for (const row of seedPricing) {
-        insertPricing.run(row);
+        backfillStmt.run({
+          system_key: row.system_key,
+          usd_units_per_sqm: derivedUnits,
+          formula_multiplier: 1.0,
+          fixed_surcharge_irr: 0,
+          rounding_step_irr: 10000,
+          computed_price_per_sqm: computed,
+          formula_expression: DEFAULT_FORMULA_EXPRESSION,
+          updated_at: nowIso,
+        });
       }
+    }
+
+    const insertPricing = db.prepare(`
+      INSERT OR IGNORE INTO pricing_rules (
+        system_key,
+        label,
+        base_price_per_sqm,
+        min_billable_sqm,
+        glass_standard_per_sqm,
+        glass_acoustic_per_sqm,
+        glass_triple_per_sqm,
+        glass_tempered_per_sqm,
+        color_surcharge_percent,
+        pleated_mesh_per_sqm,
+        installation_percent,
+        usd_units_per_sqm,
+        formula_multiplier,
+        fixed_surcharge_irr,
+        rounding_step_irr,
+        computed_price_per_sqm,
+        formula_expression,
+        updated_at
+      ) VALUES (
+        @system_key,
+        @label,
+        @base_price_per_sqm,
+        @min_billable_sqm,
+        @glass_standard_per_sqm,
+        @glass_acoustic_per_sqm,
+        @glass_triple_per_sqm,
+        @glass_tempered_per_sqm,
+        @color_surcharge_percent,
+        @pleated_mesh_per_sqm,
+        @installation_percent,
+        @usd_units_per_sqm,
+        @formula_multiplier,
+        @fixed_surcharge_irr,
+        @rounding_step_irr,
+        @computed_price_per_sqm,
+        @formula_expression,
+        @updated_at
+      )
+    `);
+
+    const seedSpecs = [
+      {
+        system_key: "upvc",
+        label: "پنجره دوجداره uPVC",
+        base_price_per_sqm: 48000000,
+        min_billable_sqm: 1.2,
+        glass_standard_per_sqm: 12000000,
+        glass_acoustic_per_sqm: 22000000,
+        glass_triple_per_sqm: 26000000,
+        glass_tempered_per_sqm: 18000000,
+        color_surcharge_percent: 15,
+        pleated_mesh_per_sqm: 7500000,
+        installation_percent: 12,
+        usd_units_per_sqm: 68.57,
+        formula_multiplier: 1.0,
+        fixed_surcharge_irr: 0,
+        rounding_step_irr: 10000,
+      },
+      {
+        system_key: "thermal-break",
+        label: "پنجره آلومینیوم ترمال بریک",
+        base_price_per_sqm: 82000000,
+        min_billable_sqm: 1.2,
+        glass_standard_per_sqm: 12000000,
+        glass_acoustic_per_sqm: 22000000,
+        glass_triple_per_sqm: 26000000,
+        glass_tempered_per_sqm: 18000000,
+        color_surcharge_percent: 18,
+        pleated_mesh_per_sqm: 8500000,
+        installation_percent: 12,
+        usd_units_per_sqm: 117.14,
+        formula_multiplier: 1.0,
+        fixed_surcharge_irr: 0,
+        rounding_step_irr: 10000,
+      },
+      {
+        system_key: "balcony-glass",
+        label: "شیشه بالکنی تاشو",
+        base_price_per_sqm: 56000000,
+        min_billable_sqm: 1.5,
+        glass_standard_per_sqm: 0,
+        glass_acoustic_per_sqm: 0,
+        glass_triple_per_sqm: 0,
+        glass_tempered_per_sqm: 15000000,
+        color_surcharge_percent: 15,
+        pleated_mesh_per_sqm: 0,
+        installation_percent: 14,
+        usd_units_per_sqm: 80,
+        formula_multiplier: 1.0,
+        fixed_surcharge_irr: 0,
+        rounding_step_irr: 10000,
+      },
+      {
+        system_key: "pleated-mesh",
+        label: "توری کشویی و پلیسه",
+        base_price_per_sqm: 14500000,
+        min_billable_sqm: 1.0,
+        glass_standard_per_sqm: 0,
+        glass_acoustic_per_sqm: 0,
+        glass_triple_per_sqm: 0,
+        glass_tempered_per_sqm: 0,
+        color_surcharge_percent: 12,
+        pleated_mesh_per_sqm: 0,
+        installation_percent: 10,
+        usd_units_per_sqm: 20.71,
+        formula_multiplier: 1.0,
+        fixed_surcharge_irr: 0,
+        rounding_step_irr: 10000,
+      },
+      {
+        system_key: "security-door",
+        label: "درب ضد سرقت آپارتمانی و ویلایی",
+        base_price_per_sqm: 126000000,
+        min_billable_sqm: 1.0,
+        glass_standard_per_sqm: 0,
+        glass_acoustic_per_sqm: 0,
+        glass_triple_per_sqm: 0,
+        glass_tempered_per_sqm: 0,
+        color_surcharge_percent: 0,
+        pleated_mesh_per_sqm: 0,
+        installation_percent: 0,
+        usd_units_per_sqm: 180,
+        formula_multiplier: 1.0,
+        fixed_surcharge_irr: 0,
+        rounding_step_irr: 100000,
+      },
+      {
+        system_key: "wooden-door",
+        label: "درب چوبی ساختمانی",
+        base_price_per_sqm: 59500000,
+        min_billable_sqm: 1.0,
+        glass_standard_per_sqm: 0,
+        glass_acoustic_per_sqm: 0,
+        glass_triple_per_sqm: 0,
+        glass_tempered_per_sqm: 0,
+        color_surcharge_percent: 0,
+        pleated_mesh_per_sqm: 0,
+        installation_percent: 0,
+        usd_units_per_sqm: 85,
+        formula_multiplier: 1.0,
+        fixed_surcharge_irr: 0,
+        rounding_step_irr: 100000,
+      },
+      {
+        system_key: "metal-frame",
+        label: "چهارچوب فلزی صنعتی",
+        base_price_per_sqm: 31500000,
+        min_billable_sqm: 1.0,
+        glass_standard_per_sqm: 0,
+        glass_acoustic_per_sqm: 0,
+        glass_triple_per_sqm: 0,
+        glass_tempered_per_sqm: 0,
+        color_surcharge_percent: 0,
+        pleated_mesh_per_sqm: 0,
+        installation_percent: 0,
+        usd_units_per_sqm: 45,
+        formula_multiplier: 1.0,
+        fixed_surcharge_irr: 0,
+        rounding_step_irr: 50000,
+      },
+    ];
+
+    for (const row of seedSpecs) {
+      const computed = evaluateItemFormula({
+        usdIrr: activeUsdIrr,
+        usdUnitsPerSqm: row.usd_units_per_sqm,
+        formulaMultiplier: row.formula_multiplier,
+        fixedSurchargeIrr: row.fixed_surcharge_irr,
+        roundingStepIrr: row.rounding_step_irr,
+        fallbackBasePricePerSqm: row.base_price_per_sqm,
+      });
+
+      insertPricing.run({
+        ...row,
+        computed_price_per_sqm: computed,
+        formula_expression: DEFAULT_FORMULA_EXPRESSION,
+        updated_at: nowIso,
+      });
     }
 
     const warrantyCount = db

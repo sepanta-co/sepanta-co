@@ -2,9 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import {
+  AlertTriangle,
   CheckCircle2,
   ChevronDown,
+  DollarSign,
   Download,
+  History,
   Lock,
   LogOut,
   Plus,
@@ -18,13 +21,27 @@ import {
 import {
   FRAME_FINISHES,
   GLASS_OPTIONS,
+  isValidSystemKey,
   SYSTEM_RULES,
   type ConfiguratorSystemKey,
   type FrameFinishKey,
   type GlassOptionKey,
 } from "@/lib/configurator-rules";
+import {
+  formatFxTimestamp,
+  getFxSourceLabel,
+  getPricingUnitLabel,
+} from "@/lib/fx-labels";
 import { toPersianDigits } from "@/lib/persian-seo";
-import { formatToman, type PricingRuleRow } from "@/lib/pricing-calculator";
+import {
+  evaluateItemFormula,
+  formatIrr,
+  formatToman,
+  type FxMode,
+  type FxRateHistoryRow,
+  type FxSettingsRow,
+  type PricingRuleRow,
+} from "@/lib/pricing-calculator";
 import {
   INQUIRY_STATUS_LABELS,
   SERVICE_REQUEST_TYPE_LABELS,
@@ -131,9 +148,16 @@ export function AdminDashboard({
   const [draftNotes, setDraftNotes] = useState<Record<number, string>>({});
   const [savingInquiryId, setSavingInquiryId] = useState<number | null>(null);
 
-  // Pricing rules state
+  // Pricing rules & FX state
   const [pricingRules, setPricingRules] = useState<PricingRuleRow[]>([]);
   const [savingPricingKey, setSavingPricingKey] = useState<string | null>(null);
+  const [fxSettings, setFxSettings] = useState<FxSettingsRow | null>(null);
+  const [fxHistory, setFxHistory] = useState<FxRateHistoryRow[]>([]);
+  const [fxModeDraft, setFxModeDraft] = useState<FxMode>("auto");
+  const [manualUsdDraft, setManualUsdDraft] = useState<string>("700000");
+  const [syncIntervalDraft, setSyncIntervalDraft] = useState<string>("10");
+  const [savingFx, setSavingFx] = useState(false);
+  const [syncingFx, setSyncingFx] = useState(false);
 
   // Warranties & service requests state
   const [warranties, setWarranties] = useState<AdminWarranty[]>([]);
@@ -203,10 +227,39 @@ export function AdminDashboard({
     }
     const data = (await res.json()) as {
       ok?: boolean;
+      fx?: FxSettingsRow;
       rules?: PricingRuleRow[];
     };
     if (data.ok && data.rules) {
       setPricingRules(data.rules);
+    }
+    if (data.ok && data.fx) {
+      setFxSettings(data.fx);
+      setFxModeDraft(data.fx.mode);
+      setManualUsdDraft(String(data.fx.manual_usd_irr));
+      setSyncIntervalDraft(String(data.fx.sync_interval_minutes));
+    }
+  }, []);
+
+  const loadFx = useCallback(async () => {
+    const res = await fetch("/api/admin/fx/", { cache: "no-store" });
+    if (res.status === 401) {
+      setSession({ authenticated: false });
+      return;
+    }
+    const data = (await res.json()) as {
+      ok?: boolean;
+      fx?: FxSettingsRow;
+      history?: FxRateHistoryRow[];
+    };
+    if (data.ok && data.fx) {
+      setFxSettings(data.fx);
+      setFxModeDraft(data.fx.mode);
+      setManualUsdDraft(String(data.fx.manual_usd_irr));
+      setSyncIntervalDraft(String(data.fx.sync_interval_minutes));
+    }
+    if (data.ok && data.history) {
+      setFxHistory(data.history);
     }
   }, []);
 
@@ -235,22 +288,25 @@ export function AdminDashboard({
       fetch("/api/admin/inquiries/", { cache: "no-store" }),
       fetch("/api/admin/pricing-rules/", { cache: "no-store" }),
       fetch("/api/admin/warranties/", { cache: "no-store" }),
+      fetch("/api/admin/fx/", { cache: "no-store" }),
     ])
-      .then(async ([inqRes, priceRes, warRes]) => {
+      .then(async ([inqRes, priceRes, warRes, fxRes]) => {
         if (!active) return;
         if (
           inqRes.status === 401 ||
           priceRes.status === 401 ||
-          warRes.status === 401
+          warRes.status === 401 ||
+          fxRes.status === 401
         ) {
           setSession({ authenticated: false });
           return;
         }
 
-        const [inqData, priceData, warData] = (await Promise.all([
+        const [inqData, priceData, warData, fxData] = (await Promise.all([
           inqRes.json(),
           priceRes.json(),
           warRes.json(),
+          fxRes.json(),
         ])) as [
           {
             ok?: boolean;
@@ -262,6 +318,11 @@ export function AdminDashboard({
             ok?: boolean;
             warranties?: AdminWarranty[];
             serviceRequests?: AdminServiceRequest[];
+          },
+          {
+            ok?: boolean;
+            fx?: FxSettingsRow;
+            history?: FxRateHistoryRow[];
           },
         ];
 
@@ -287,6 +348,16 @@ export function AdminDashboard({
         if (warData.ok) {
           setWarranties(warData.warranties ?? []);
           setServiceRequests(warData.serviceRequests ?? []);
+        }
+
+        if (fxData.ok && fxData.fx) {
+          setFxSettings(fxData.fx);
+          setFxModeDraft(fxData.fx.mode);
+          setManualUsdDraft(String(fxData.fx.manual_usd_irr));
+          setSyncIntervalDraft(String(fxData.fx.sync_interval_minutes));
+        }
+        if (fxData.ok && fxData.history) {
+          setFxHistory(fxData.history);
         }
       })
       .catch(() => {
@@ -398,25 +469,126 @@ export function AdminDashboard({
         ok?: boolean;
         error?: string;
         rule?: PricingRuleRow;
+        rules?: PricingRuleRow[];
       };
       if (!res.ok || !data.ok || !data.rule) {
         setFeedback({
           type: "error",
-          text: data.error || "خطا در بروزرسانی تعرفه.",
+          text: data.error || "خطا در بروزرسانی تعرفه و فرمول.",
         });
         return;
       }
-      setPricingRules((prev) =>
-        prev.map((r) => (r.system_key === data.rule!.system_key ? data.rule! : r))
-      );
+      if (Array.isArray(data.rules)) {
+        setPricingRules(data.rules);
+      } else {
+        setPricingRules((prev) =>
+          prev.map((r) => (r.system_key === data.rule!.system_key ? data.rule! : r))
+        );
+      }
       setFeedback({
         type: "success",
-        text: `تعرفه «${rule.label}» بروزرسانی شد و بلافاصله در کانفیگوریتور اعمال گردید.`,
+        text: `فرمول و تعرفه «${rule.label}» ذخیره شد (${formatToman(data.rule.computed_price_per_sqm)}).`,
       });
     } catch {
       setFeedback({ type: "error", text: "خطا در ارتباط با سرور." });
     } finally {
       setSavingPricingKey(null);
+    }
+  };
+
+  const handleSaveFxSettings = async () => {
+    setSavingFx(true);
+    setFeedback(null);
+    try {
+      const res = await fetch("/api/admin/fx/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: fxModeDraft,
+          manualUsdIrr: manualUsdDraft,
+          syncIntervalMinutes: syncIntervalDraft,
+        }),
+      });
+      const data = (await res.json()) as {
+        ok?: boolean;
+        error?: string;
+        fx?: FxSettingsRow;
+        history?: FxRateHistoryRow[];
+        rules?: PricingRuleRow[];
+      };
+      if (!res.ok || !data.ok || !data.fx) {
+        setFeedback({
+          type: "error",
+          text: data.error || "خطا در ذخیره تنظیمات نرخ ارز.",
+        });
+        return;
+      }
+      setFxSettings(data.fx);
+      setFxModeDraft(data.fx.mode);
+      setManualUsdDraft(String(data.fx.manual_usd_irr));
+      setSyncIntervalDraft(String(data.fx.sync_interval_minutes));
+      if (data.history) setFxHistory(data.history);
+      if (data.rules) setPricingRules(data.rules);
+
+      setFeedback({
+        type: "success",
+        text: `تنظیمات ارز ذخیره شد (نرخ فعال: ${formatToman(data.fx.active_usd_irr)}) و قیمت تمامی محصولات بازمحاسبه گردید.`,
+      });
+    } catch {
+      setFeedback({ type: "error", text: "خطا در ارتباط با سرور." });
+    } finally {
+      setSavingFx(false);
+    }
+  };
+
+  const handleSyncFxNow = async () => {
+    setSyncingFx(true);
+    setFeedback(null);
+    try {
+      const res = await fetch("/api/admin/fx/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "sync_now" }),
+      });
+      const data = (await res.json()) as {
+        ok?: boolean;
+        error?: string;
+        fx?: FxSettingsRow;
+        history?: FxRateHistoryRow[];
+        rules?: PricingRuleRow[];
+      };
+      if (!res.ok || !data.ok || !data.fx) {
+        setFeedback({
+          type: "error",
+          text: data.error || "خطا در همگام‌سازی لحظه‌ای نرخ دلار.",
+        });
+        return;
+      }
+      setFxSettings(data.fx);
+      setFxModeDraft(data.fx.mode);
+      if (data.history) setFxHistory(data.history);
+      if (data.rules) setPricingRules(data.rules);
+
+      if (data.fx.mode === "manual") {
+        setFeedback({
+          type: "success",
+          text: `حالت فعلی روی «نرخ دستی مدیر» است؛ قیمت محصولات با نرخ دستی (${formatToman(data.fx.active_usd_irr)}) بروزرسانی شد.`,
+        });
+      } else if (data.fx.source_used === "cached" && data.fx.last_error) {
+        setFeedback({
+          type: "error",
+          text: `سرویس‌های نرخ ارز در دسترس نبودند؛ نرخ کش ذخیره‌شده (${formatToman(data.fx.active_usd_irr)}) حفظ شد.`,
+        });
+      } else {
+        setFeedback({
+          type: "success",
+          text: `نرخ دلار لحظه‌ای از «${getFxSourceLabel(data.fx.source_used)}» دریافت شد (${formatToman(data.fx.active_usd_irr)}) و قیمت محصولات بروزرسانی گردید.`,
+        });
+      }
+    } catch {
+      setFeedback({ type: "error", text: "خطا در ارتباط با سرور." });
+    } finally {
+      setSyncingFx(false);
     }
   };
 
@@ -592,6 +764,7 @@ export function AdminDashboard({
               loadInquiries();
               loadPricing();
               loadWarranties();
+              loadFx();
             }}
             className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-surface-subtle px-3.5 py-2 text-xs font-semibold text-ink hover:border-accent"
           >
@@ -658,7 +831,7 @@ export function AdminDashboard({
           }`}
         >
           <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
-          <span>تعرفه و ضرایب قیمت روز</span>
+          <span>نرخ دلار و فرمول قیمت محصولات</span>
         </button>
 
         <button
@@ -925,221 +1098,601 @@ export function AdminDashboard({
         </div>
       )}
 
-      {/* TAB 2: Live Pricing Editor */}
+      {/* TAB 2: Live FX & Formula Pricing Editor */}
       {activeTab === "pricing" && (
-        <div className="space-y-4">
-          <p className="text-xs leading-6 text-ink-muted sm:text-sm">
-            تمامی مبالغ تعرفه بر حسب <strong>ریال</strong> هستند. ذخیره هر ردیف،
-            محاسبه قیمت آنلاین در <span dir="ltr">/configurator/</span> و محاسبات
-            سمت سرور را بلافاصله بروزرسانی می‌کند.
-          </p>
+        <div className="space-y-6">
+          {/* FX Control Panel */}
+          <section className="rounded-2xl border border-amber-200 bg-surface p-5 shadow-xs sm:p-6">
+            <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <DollarSign
+                    className="h-5 w-5 text-accent"
+                    aria-hidden="true"
+                  />
+                  <h2 className="text-base font-extrabold text-ink sm:text-lg">
+                    مدیریت نرخ لحظه‌ای دلار و همگام‌سازی سرور
+                  </h2>
+                </div>
+                <p className="mt-1 text-xs leading-6 text-ink-muted">
+                  با تغییر نرخ دلار (خودکار یا دستی)، قیمت پایه تمامی محصولات در{" "}
+                  <span dir="ltr">/products/</span> و محاسبه‌گر{" "}
+                  <span dir="ltr">/configurator/</span> به‌صورت اتمیک و فوری
+                  بازمحاسبه می‌شوند.
+                </p>
+              </div>
 
-          <div className="space-y-4">
-            {pricingRules.map((rule) => (
-              <div
-                key={rule.system_key}
-                className="rounded-2xl border border-border bg-surface p-5 sm:p-6"
+              <button
+                type="button"
+                disabled={syncingFx}
+                onClick={handleSyncFxNow}
+                className="inline-flex items-center gap-2 rounded-xl bg-surface-dark px-4 py-2.5 text-xs font-semibold text-ink-inverse transition-colors hover:bg-surface-elevated disabled:opacity-60"
               >
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
-                  <div>
-                    <h2 className="text-base font-bold text-ink">{rule.label}</h2>
-                    <p dir="ltr" className="font-mono text-xs text-ink-muted">
-                      {rule.system_key}
+                <RefreshCw
+                  className={`h-4 w-4 text-amber-400 ${
+                    syncingFx ? "animate-spin" : ""
+                  }`}
+                  aria-hidden="true"
+                />
+                <span>
+                  {syncingFx
+                    ? "در حال دریافت نرخ..."
+                    : "بروزرسانی لحظه‌ای نرخ دلار"}
+                </span>
+              </button>
+            </div>
+
+            {fxSettings && (
+              <div className="mt-5 space-y-5">
+                {/* Active Rate Summary */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <div className="rounded-xl border border-amber-200 bg-accent-soft/60 p-4">
+                    <p className="text-xs font-semibold text-accent-hover">
+                      نرخ فعال مبنای محاسبه
+                    </p>
+                    <p className="tabular-nums mt-1.5 text-xl font-extrabold text-ink">
+                      {formatToman(fxSettings.active_usd_irr)}
+                    </p>
+                    <p className="tabular-nums mt-0.5 text-[11px] text-ink-muted">
+                      معادل {formatIrr(fxSettings.active_usd_irr)}
                     </p>
                   </div>
 
-                  <button
-                    type="button"
-                    disabled={savingPricingKey === rule.system_key}
-                    onClick={() => handleSavePricingRule(rule)}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-accent px-4 py-2 text-xs font-semibold text-white hover:bg-accent-hover disabled:opacity-60"
-                  >
-                    <Save className="h-4 w-4" aria-hidden="true" />
+                  <div className="rounded-xl border border-border bg-surface-subtle p-4">
+                    <p className="text-xs font-semibold text-ink-muted">
+                      منبع و وضعیت فعلی
+                    </p>
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      <span className="rounded-lg bg-surface-dark px-2.5 py-1 text-xs font-bold text-amber-400">
+                        {getFxSourceLabel(fxSettings.source_used)}
+                      </span>
+                      <span className="rounded-lg border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-ink">
+                        {fxSettings.mode === "auto"
+                          ? "حالت خودکار"
+                          : "حالت دستی"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-border bg-surface-subtle p-4">
+                    <p className="text-xs font-semibold text-ink-muted">
+                      آخرین همگام‌سازی موفق
+                    </p>
+                    <p className="mt-1.5 text-sm font-bold text-ink">
+                      {formatFxTimestamp(fxSettings.last_synced_at)}
+                    </p>
+                    <p className="mt-0.5 text-[11px] text-ink-muted">
+                      کش خودکار هر{" "}
+                      {toPersianDigits(fxSettings.sync_interval_minutes)} دقیقه
+                    </p>
+                  </div>
+                </div>
+
+                {fxSettings.last_error && (
+                  <div className="flex items-start gap-2 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs text-amber-900">
+                    <AlertTriangle
+                      className="mt-0.5 h-4 w-4 shrink-0 text-amber-700"
+                      aria-hidden="true"
+                    />
                     <span>
-                      {savingPricingKey === rule.system_key
-                        ? "در حال ذخیره..."
-                        : "ذخیره تعرفه"}
+                      <strong>گزارش آخرین تلاش همگام‌سازی:</strong>{" "}
+                      <span dir="ltr" className="font-mono">
+                        {fxSettings.last_error}
+                      </span>
                     </span>
-                  </button>
-                </div>
+                  </div>
+                )}
 
-                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-                  <div>
-                    <label className="block text-[11px] font-semibold text-ink-muted">
-                      تعرفه پایه مترمربع (ریال)
+                {/* Mode & Manual Override Form */}
+                <div className="grid grid-cols-1 gap-4 rounded-xl border border-border bg-surface-subtle p-4 md:grid-cols-12">
+                  <div className="md:col-span-4">
+                    <p className="text-xs font-semibold text-ink">
+                      حالت دریافت نرخ دلار
+                    </p>
+                    <div className="mt-2 grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setFxModeDraft("auto")}
+                        aria-pressed={fxModeDraft === "auto"}
+                        className={`rounded-xl px-3 py-2 text-xs font-bold transition-colors ${
+                          fxModeDraft === "auto"
+                            ? "bg-accent text-white shadow-xs"
+                            : "border border-border bg-surface text-ink-muted hover:text-ink"
+                        }`}
+                      >
+                        خودکار از سرور
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFxModeDraft("manual")}
+                        aria-pressed={fxModeDraft === "manual"}
+                        className={`rounded-xl px-3 py-2 text-xs font-bold transition-colors ${
+                          fxModeDraft === "manual"
+                            ? "bg-accent text-white shadow-xs"
+                            : "border border-border bg-surface text-ink-muted hover:text-ink"
+                        }`}
+                      >
+                        نرخ دستی مدیر
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-3">
+                    <label
+                      htmlFor="fx-manual-usd"
+                      className="block text-xs font-semibold text-ink"
+                    >
+                      نرخ دلار دستی (ریال)
                     </label>
                     <input
+                      id="fx-manual-usd"
                       type="number"
+                      min={100000}
+                      step={10000}
                       dir="ltr"
-                      value={rule.base_price_per_sqm}
-                      onChange={(e) =>
-                        handlePricingFieldChange(
-                          rule.system_key,
-                          "base_price_per_sqm",
-                          e.target.value
-                        )
-                      }
-                      className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                      value={manualUsdDraft}
+                      onChange={(e) => setManualUsdDraft(e.target.value)}
+                      className="tabular-nums mt-2 w-full rounded-xl border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink focus:border-accent focus:outline-none"
+                    />
+                    <p className="tabular-nums mt-1 text-[11px] text-ink-muted">
+                      معادل:{" "}
+                      {Number.isFinite(Number(manualUsdDraft)) &&
+                      Number(manualUsdDraft) > 0
+                        ? formatToman(Number(manualUsdDraft))
+                        : "—"}
+                    </p>
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label
+                      htmlFor="fx-sync-interval"
+                      className="block text-xs font-semibold text-ink"
+                    >
+                      بازه کش (دقیقه)
+                    </label>
+                    <input
+                      id="fx-sync-interval"
+                      type="number"
+                      min={1}
+                      max={1440}
+                      dir="ltr"
+                      value={syncIntervalDraft}
+                      onChange={(e) => setSyncIntervalDraft(e.target.value)}
+                      className="tabular-nums mt-2 w-full rounded-xl border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink focus:border-accent focus:outline-none"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-[11px] font-semibold text-ink-muted">
-                      حداقل متراژ محاسبه (م²)
-                    </label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      dir="ltr"
-                      value={rule.min_billable_sqm}
-                      onChange={(e) =>
-                        handlePricingFieldChange(
-                          rule.system_key,
-                          "min_billable_sqm",
-                          e.target.value
-                        )
-                      }
-                      className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-semibold text-ink-muted">
-                      شیشه دوجداره استاندارد (ریال)
-                    </label>
-                    <input
-                      type="number"
-                      dir="ltr"
-                      value={rule.glass_standard_per_sqm}
-                      onChange={(e) =>
-                        handlePricingFieldChange(
-                          rule.system_key,
-                          "glass_standard_per_sqm",
-                          e.target.value
-                        )
-                      }
-                      className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-semibold text-ink-muted">
-                      شیشه لمینت صوتی (ریال)
-                    </label>
-                    <input
-                      type="number"
-                      dir="ltr"
-                      value={rule.glass_acoustic_per_sqm}
-                      onChange={(e) =>
-                        handlePricingFieldChange(
-                          rule.system_key,
-                          "glass_acoustic_per_sqm",
-                          e.target.value
-                        )
-                      }
-                      className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-semibold text-ink-muted">
-                      شیشه سه‌جداره حرارتی (ریال)
-                    </label>
-                    <input
-                      type="number"
-                      dir="ltr"
-                      value={rule.glass_triple_per_sqm}
-                      onChange={(e) =>
-                        handlePricingFieldChange(
-                          rule.system_key,
-                          "glass_triple_per_sqm",
-                          e.target.value
-                        )
-                      }
-                      className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-semibold text-ink-muted">
-                      شیشه سکوریت ۸ میل (ریال)
-                    </label>
-                    <input
-                      type="number"
-                      dir="ltr"
-                      value={rule.glass_tempered_per_sqm}
-                      onChange={(e) =>
-                        handlePricingFieldChange(
-                          rule.system_key,
-                          "glass_tempered_per_sqm",
-                          e.target.value
-                        )
-                      }
-                      className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-semibold text-ink-muted">
-                      توری پلیسه همرنگ (ریال/م²)
-                    </label>
-                    <input
-                      type="number"
-                      dir="ltr"
-                      value={rule.pleated_mesh_per_sqm}
-                      onChange={(e) =>
-                        handlePricingFieldChange(
-                          rule.system_key,
-                          "pleated_mesh_per_sqm",
-                          e.target.value
-                        )
-                      }
-                      className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-semibold text-ink-muted">
-                      ضریب رنگ/لمینت (درصد)
-                    </label>
-                    <input
-                      type="number"
-                      step="0.5"
-                      dir="ltr"
-                      value={rule.color_surcharge_percent}
-                      onChange={(e) =>
-                        handlePricingFieldChange(
-                          rule.system_key,
-                          "color_surcharge_percent",
-                          e.target.value
-                        )
-                      }
-                      className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-semibold text-ink-muted">
-                      هزینه نصب و رگلاژ (درصد)
-                    </label>
-                    <input
-                      type="number"
-                      step="0.5"
-                      dir="ltr"
-                      value={rule.installation_percent}
-                      onChange={(e) =>
-                        handlePricingFieldChange(
-                          rule.system_key,
-                          "installation_percent",
-                          e.target.value
-                        )
-                      }
-                      className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
-                    />
+                  <div className="flex items-end md:col-span-3">
+                    <button
+                      type="button"
+                      disabled={savingFx}
+                      onClick={handleSaveFxSettings}
+                      className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-accent px-4 py-2.5 text-xs font-semibold text-white hover:bg-accent-hover disabled:opacity-60"
+                    >
+                      <Save className="h-4 w-4" aria-hidden="true" />
+                      <span>
+                        {savingFx
+                          ? "در حال ذخیره..."
+                          : "ذخیره تنظیمات ارز و بازمحاسبه"}
+                      </span>
+                    </button>
                   </div>
                 </div>
+
+                {/* Recent FX Rate History */}
+                {fxHistory.length > 0 && (
+                  <div className="rounded-xl border border-border bg-surface-subtle p-4">
+                    <div className="flex items-center gap-2 text-xs font-bold text-ink">
+                      <History
+                        className="h-4 w-4 text-accent"
+                        aria-hidden="true"
+                      />
+                      <span>
+                        تاریخچه تغییرات نرخ دلار (
+                        {toPersianDigits(fxHistory.length)} مورد اخیر)
+                      </span>
+                    </div>
+                    <div className="mt-3 max-h-44 divide-y divide-border overflow-y-auto rounded-xl border border-border bg-surface text-xs">
+                      {fxHistory.map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex flex-wrap items-center justify-between gap-2 px-3 py-2"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="rounded-md bg-surface-subtle px-2 py-0.5 font-semibold text-ink">
+                              {getFxSourceLabel(item.source)}
+                            </span>
+                            <span className="text-ink-muted">
+                              {formatFxTimestamp(item.recorded_at)}
+                            </span>
+                          </div>
+                          <span className="tabular-nums font-bold text-ink">
+                            {formatToman(item.usd_irr)} (
+                            {formatIrr(item.usd_irr)})
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            ))}
+            )}
+          </section>
+
+          <p className="text-xs leading-6 text-ink-muted sm:text-sm">
+            فرمول قیمت‌گذاری هر کالا بر اساس{" "}
+            <span dir="ltr" className="font-mono font-semibold text-ink">
+              (نرخ دلار × ضریب ارزی × ضریب فرمول) + هزینه ثابت
+            </span>{" "}
+            محاسبه و بر اساس گام رندسازی به ریال گرد می‌شود. تمامی مبالغ ورودی
+            فرمول بر حسب <strong>ریال</strong> هستند.
+          </p>
+
+          <div className="space-y-4">
+            {pricingRules.map((rule) => {
+              const activeUsdIrr =
+                fxSettings?.mode === "manual"
+                  ? fxSettings.manual_usd_irr
+                  : (fxSettings?.active_usd_irr ?? 700000);
+              const previewIrr = evaluateItemFormula({
+                usdIrr: activeUsdIrr,
+                usdUnitsPerSqm: rule.usd_units_per_sqm,
+                formulaMultiplier: rule.formula_multiplier,
+                fixedSurchargeIrr: rule.fixed_surcharge_irr,
+                roundingStepIrr: rule.rounding_step_irr,
+                fallbackBasePricePerSqm: rule.base_price_per_sqm,
+              });
+              const unitLabel = getPricingUnitLabel(rule.system_key);
+              const isConfiguratorSys = isValidSystemKey(rule.system_key);
+
+              return (
+                <div
+                  key={rule.system_key}
+                  className="rounded-2xl border border-border bg-surface p-5 sm:p-6"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <h2 className="text-base font-bold text-ink">
+                          {rule.label}
+                        </h2>
+                        <span className="rounded-md bg-surface-subtle px-2 py-0.5 text-[11px] font-semibold text-ink-muted">
+                          {unitLabel}
+                        </span>
+                      </div>
+                      <p dir="ltr" className="font-mono text-xs text-ink-muted">
+                        {rule.system_key}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div className="rounded-xl border border-amber-200 bg-accent-soft/60 px-3.5 py-2 text-end text-xs">
+                        <p className="text-[11px] text-accent-hover">
+                          پیش‌نمایش قیمت فرمول ({unitLabel})
+                        </p>
+                        <p className="tabular-nums font-extrabold text-ink">
+                          {formatToman(previewIrr)}
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        disabled={savingPricingKey === rule.system_key}
+                        onClick={() => handleSavePricingRule(rule)}
+                        className="inline-flex items-center gap-1.5 rounded-xl bg-accent px-4 py-2.5 text-xs font-semibold text-white hover:bg-accent-hover disabled:opacity-60"
+                      >
+                        <Save className="h-4 w-4" aria-hidden="true" />
+                        <span>
+                          {savingPricingKey === rule.system_key
+                            ? "در حال ذخیره..."
+                            : "ذخیره فرمول و تعرفه"}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Formula Parameters */}
+                  <div className="mt-4 rounded-xl border border-border bg-surface-subtle/70 p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                      <span className="font-bold text-ink">
+                        پارامترهای فرمول متصل به دلار
+                      </span>
+                      <span className="tabular-nums text-[11px] text-ink-muted">
+                        مقدار ذخیره‌شده فعلی:{" "}
+                        <strong className="text-ink">
+                          {formatToman(rule.computed_price_per_sqm)}
+                        </strong>
+                      </span>
+                    </div>
+
+                    <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+                      <div>
+                        <label className="block text-[11px] font-semibold text-ink-muted">
+                          ضریب ارزی (واحد دلار)
+                        </label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min={0}
+                          dir="ltr"
+                          value={rule.usd_units_per_sqm}
+                          onChange={(e) =>
+                            handlePricingFieldChange(
+                              rule.system_key,
+                              "usd_units_per_sqm",
+                              e.target.value
+                            )
+                          }
+                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-ink-muted">
+                          ضریب فرمول مدیر
+                        </label>
+                        <input
+                          type="number"
+                          step="0.05"
+                          min={0}
+                          dir="ltr"
+                          value={rule.formula_multiplier}
+                          onChange={(e) =>
+                            handlePricingFieldChange(
+                              rule.system_key,
+                              "formula_multiplier",
+                              e.target.value
+                            )
+                          }
+                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-ink-muted">
+                          هزینه ثابت ساخت/یراق (ریال)
+                        </label>
+                        <input
+                          type="number"
+                          step={10000}
+                          dir="ltr"
+                          value={rule.fixed_surcharge_irr}
+                          onChange={(e) =>
+                            handlePricingFieldChange(
+                              rule.system_key,
+                              "fixed_surcharge_irr",
+                              e.target.value
+                            )
+                          }
+                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-ink-muted">
+                          گام رند کردن قیمت (ریال)
+                        </label>
+                        <input
+                          type="number"
+                          min={1000}
+                          step={1000}
+                          dir="ltr"
+                          value={rule.rounding_step_irr}
+                          onChange={(e) =>
+                            handlePricingFieldChange(
+                              rule.system_key,
+                              "rounding_step_irr",
+                              e.target.value
+                            )
+                          }
+                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-ink-muted">
+                          تعرفه پایه جایگزین (ریال)
+                        </label>
+                        <input
+                          type="number"
+                          min={0}
+                          dir="ltr"
+                          value={rule.base_price_per_sqm}
+                          onChange={(e) =>
+                            handlePricingFieldChange(
+                              rule.system_key,
+                              "base_price_per_sqm",
+                              e.target.value
+                            )
+                          }
+                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2 text-end text-sm font-bold text-ink"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Technical Configurator Surcharges */}
+                  {isConfiguratorSys && (
+                    <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                      <div>
+                        <label className="block text-[11px] font-semibold text-ink-muted">
+                          حداقل متراژ محاسبه (م²)
+                        </label>
+                        <input
+                          type="number"
+                          step="0.1"
+                          dir="ltr"
+                          value={rule.min_billable_sqm}
+                          onChange={(e) =>
+                            handlePricingFieldChange(
+                              rule.system_key,
+                              "min_billable_sqm",
+                              e.target.value
+                            )
+                          }
+                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-ink-muted">
+                          شیشه دوجداره استاندارد (ریال)
+                        </label>
+                        <input
+                          type="number"
+                          dir="ltr"
+                          value={rule.glass_standard_per_sqm}
+                          onChange={(e) =>
+                            handlePricingFieldChange(
+                              rule.system_key,
+                              "glass_standard_per_sqm",
+                              e.target.value
+                            )
+                          }
+                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-ink-muted">
+                          شیشه لمینت صوتی (ریال)
+                        </label>
+                        <input
+                          type="number"
+                          dir="ltr"
+                          value={rule.glass_acoustic_per_sqm}
+                          onChange={(e) =>
+                            handlePricingFieldChange(
+                              rule.system_key,
+                              "glass_acoustic_per_sqm",
+                              e.target.value
+                            )
+                          }
+                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-ink-muted">
+                          شیشه سه‌جداره حرارتی (ریال)
+                        </label>
+                        <input
+                          type="number"
+                          dir="ltr"
+                          value={rule.glass_triple_per_sqm}
+                          onChange={(e) =>
+                            handlePricingFieldChange(
+                              rule.system_key,
+                              "glass_triple_per_sqm",
+                              e.target.value
+                            )
+                          }
+                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-ink-muted">
+                          شیشه سکوریت ۸ میل (ریال)
+                        </label>
+                        <input
+                          type="number"
+                          dir="ltr"
+                          value={rule.glass_tempered_per_sqm}
+                          onChange={(e) =>
+                            handlePricingFieldChange(
+                              rule.system_key,
+                              "glass_tempered_per_sqm",
+                              e.target.value
+                            )
+                          }
+                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-ink-muted">
+                          توری پلیسه همرنگ (ریال/م²)
+                        </label>
+                        <input
+                          type="number"
+                          dir="ltr"
+                          value={rule.pleated_mesh_per_sqm}
+                          onChange={(e) =>
+                            handlePricingFieldChange(
+                              rule.system_key,
+                              "pleated_mesh_per_sqm",
+                              e.target.value
+                            )
+                          }
+                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-ink-muted">
+                          ضریب رنگ/لمینت (درصد)
+                        </label>
+                        <input
+                          type="number"
+                          step="0.5"
+                          dir="ltr"
+                          value={rule.color_surcharge_percent}
+                          onChange={(e) =>
+                            handlePricingFieldChange(
+                              rule.system_key,
+                              "color_surcharge_percent",
+                              e.target.value
+                            )
+                          }
+                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-ink-muted">
+                          هزینه نصب و رگلاژ (درصد)
+                        </label>
+                        <input
+                          type="number"
+                          step="0.5"
+                          dir="ltr"
+                          value={rule.installation_percent}
+                          onChange={(e) =>
+                            handlePricingFieldChange(
+                              rule.system_key,
+                              "installation_percent",
+                              e.target.value
+                            )
+                          }
+                          className="tabular-nums mt-1 w-full rounded-xl border border-border bg-surface-subtle px-3 py-2 text-end text-sm font-bold text-ink"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

@@ -6,3 +6,4 @@ out
 README.md
 *.log
 .env*
+assets-raw/

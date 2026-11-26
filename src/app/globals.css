@@ -1,16 +1,47 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Estedad-FD";
-  src: url("/fonts/Estedad-FD.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
+@theme inline {
+  --font-sans: var(--font-estedad), Tahoma, sans-serif;
+
+  --color-surface: #FFFFFF;
+  --color-surface-subtle: #F8F9FA;
+  --color-surface-dark: #0B0E11;
+  --color-surface-elevated: #141920;
+
+  --color-ink: #0F172A;
+  --color-ink-muted: #475569;
+  --color-ink-inverse: #F8FAFC;
+
+  --color-accent: #B45309;
+  --color-accent-hover: #92400E;
+  --color-accent-soft: #FEF3C7;
+
+  --color-border: #E2E8F0;
+  --color-border-dark: #1E293B;
 }
 
 @layer base {
-  html,
-  body {
-    font-family: "Estedad-FD", Tahoma, sans-serif;
+  html {
+    scroll-behavior: smooth;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    overflow-x: clip;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }

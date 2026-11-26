@@ -65,7 +65,7 @@ export default function ConfiguratorPage() {
     <>
       <JsonLd data={jsonLd} />
       <section className="no-print border-b border-border bg-surface-subtle">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6 md:py-9 lg:px-8">
           <Breadcrumb
             items={[
               { label: "صفحه اصلی", href: "/" },
@@ -73,21 +73,20 @@ export default function ConfiguratorPage() {
             ]}
           />
 
-          <h1 className="max-w-3xl text-2xl font-extrabold leading-tight tracking-tight text-ink sm:text-4xl">
-            پیکربندی و برآورد فنی درب و پنجره
+          <h1 className="max-w-3xl text-2xl font-extrabold leading-tight tracking-tight text-ink sm:text-3xl">
+            استودیو پیکربندی و برآورد فنی درب و پنجره
           </h1>
 
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-ink-muted sm:text-base">
-            سیستم تولیدی، ابعاد دهانه، تعداد لنگه و نوع بازشو را انتخاب کنید تا
-            نقشه شماتیک، مساحت دقیق و لیست استعلام پروژه آماده ارسال به کارخانه
-            زنجان شود.
+          <p className="mt-2 max-w-2xl text-sm leading-7 text-ink-muted">
+            سیستم تولیدی، ابعاد دهانه، نوع بازشو و رنگ پروفیل را انتخاب کنید تا
+            نقشه مهندسی، مساحت دقیق و برآورد لحظه‌ای کارخانه زنجان محاسبه شود.
           </p>
         </div>
       </section>
 
       <section
         aria-label="ابزار پیکربندی درب و پنجره"
-        className="bg-canvas py-10 md:py-14 print:bg-white print:py-0"
+        className="bg-canvas py-8 md:py-10 print:bg-white print:py-0"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 print:max-w-none print:px-0">
           <Suspense

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ChevronDown,
   Download,
@@ -61,13 +61,15 @@ export function AuditLogPanel({
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const searchDebounceRef = useRef<number | null>(null);
 
   const buildQueryString = useCallback(
     (
       targetPage: number,
       includeFormatCsv = false,
       actorOverride = actorFilter,
-      entityOverride = entityFilter
+      entityOverride = entityFilter,
+      queryOverride = searchQuery
     ) => {
       const params = new URLSearchParams();
       if (actorOverride && actorOverride !== "all") {
@@ -76,7 +78,7 @@ export function AuditLogPanel({
       if (entityOverride && entityOverride !== "all") {
         params.set("entityType", entityOverride);
       }
-      if (searchQuery.trim()) params.set("q", searchQuery.trim());
+      if (queryOverride.trim()) params.set("q", queryOverride.trim());
       if (includeFormatCsv) {
         params.set("format", "csv");
       } else {
@@ -92,7 +94,8 @@ export function AuditLogPanel({
     async (
       targetPage = page,
       actorOverride = actorFilter,
-      entityOverride = entityFilter
+      entityOverride = entityFilter,
+      queryOverride = searchQuery
     ) => {
       setLoading(true);
       try {
@@ -100,7 +103,8 @@ export function AuditLogPanel({
           targetPage,
           false,
           actorOverride,
-          entityOverride
+          entityOverride,
+          queryOverride
         );
         const res = await fetch(`/api/admin/audit-logs/?${qs}`, {
           cache: "no-store",
@@ -136,7 +140,15 @@ export function AuditLogPanel({
         setLoading(false);
       }
     },
-    [actorFilter, buildQueryString, entityFilter, onFeedback, onUnauthorized, page]
+    [
+      actorFilter,
+      buildQueryString,
+      entityFilter,
+      onFeedback,
+      onUnauthorized,
+      page,
+      searchQuery,
+    ]
   );
 
   useEffect(() => {
@@ -185,25 +197,38 @@ export function AuditLogPanel({
 
     return () => {
       active = false;
+      if (searchDebounceRef.current) {
+        window.clearTimeout(searchDebounceRef.current);
+      }
     };
   }, [onFeedback, onUnauthorized]);
+
+  const handleSearchChange = (nextQuery: string) => {
+    setSearchQuery(nextQuery);
+    if (searchDebounceRef.current) {
+      window.clearTimeout(searchDebounceRef.current);
+    }
+    searchDebounceRef.current = window.setTimeout(() => {
+      loadLogs(1, actorFilter, entityFilter, nextQuery);
+    }, 260);
+  };
 
   const csvDownloadUrl = `/api/admin/audit-logs/?${buildQueryString(1, true)}`;
 
   return (
-    <div className="space-y-6">
-      {/* Header & Filter Bar */}
-      <div className="border border-border bg-surface p-5 sm:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
+    <div className="space-y-5">
+      {/* Header & Instant Filter Bar */}
+      <div className="overflow-hidden rounded-[4px] border border-[#E6E2D8] bg-[#FFFFFF]">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#E6E2D8] bg-[#FAF9F6] px-5 py-4">
           <div className="flex items-center gap-2.5">
-            <FileText className="h-5 w-5 text-bronze" aria-hidden="true" />
+            <FileText className="h-4 w-4 text-[#9A6B3F]" aria-hidden="true" />
             <div>
-              <h2 className="text-base font-extrabold text-charcoal sm:text-lg">
+              <h2 className="font-display text-sm font-bold text-[#141413] sm:text-base">
                 گزارش وقایع و تاریخچه عملکرد (Append-Only)
               </h2>
-              <p className="text-xs text-ink-muted">
-                تمامی عملیات حساس مدیر و کارکنان با زمان، آدرس IP و جزئیات
-                تغییرات بدون امکان حذف یا دستکاری ثبت می‌شوند.
+              <p className="text-xs text-[#5C5852]">
+                تمامی عملیات حساس با زمان، IP و جزئیات تغییرات بدون امکان حذف
+                ثبت می‌شوند.
               </p>
             </div>
           </div>
@@ -212,7 +237,7 @@ export function AuditLogPanel({
             <button
               type="button"
               onClick={() => loadLogs(page)}
-              className="inline-flex items-center gap-1.5 rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2 text-xs font-semibold text-ink hover:border-charcoal"
+              className="inline-flex items-center gap-1.5 rounded-[3px] border border-[#E6E2D8] bg-[#FFFFFF] px-3 py-1.5 text-xs font-medium text-[#141413] hover:border-[#141413]"
             >
               <RefreshCw
                 className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`}
@@ -223,31 +248,37 @@ export function AuditLogPanel({
 
             <a
               href={csvDownloadUrl}
-              className="inline-flex items-center gap-1.5 rounded-[3px] bg-charcoal px-4 py-2 text-xs font-semibold text-canvas hover:bg-charcoal-soft"
+              className="inline-flex items-center gap-1.5 rounded-[3px] border border-[#CEC8BA] bg-[#FFFFFF] px-3.5 py-1.5 text-xs font-semibold text-[#141413] hover:border-[#141413]"
             >
-              <Download className="h-3.5 w-3.5 text-bronze" aria-hidden="true" />
-              <span>خروجی اکسل (CSV)</span>
+              <Download
+                className="h-3.5 w-3.5 text-[#9A6B3F]"
+                aria-hidden="true"
+              />
+              <span>خروجی CSV</span>
             </a>
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-12">
-          <div className="relative md:col-span-5">
+        <div className="grid grid-cols-1 gap-3 p-3.5 md:grid-cols-12">
+          <div className="relative md:col-span-6">
             <Search
-              className="pointer-events-none absolute top-1/2 start-3.5 h-4 w-4 -translate-y-1/2 text-ink-muted"
+              className="pointer-events-none absolute top-1/2 start-3 h-4 w-4 -translate-y-1/2 text-[#5C5852]"
               aria-hidden="true"
             />
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  loadLogs(1);
+                  if (searchDebounceRef.current) {
+                    window.clearTimeout(searchDebounceRef.current);
+                  }
+                  loadLogs(1, actorFilter, entityFilter, searchQuery);
                 }
               }}
-              placeholder="جستجو در شرح واقعه، شناسه، نام یا نام کاربری..."
-              className="w-full rounded-[2px] border border-border bg-surface-subtle py-2.5 ps-10 pe-3.5 text-xs text-ink focus:border-bronze focus:outline-none sm:text-sm"
+              placeholder="جستجوی فوری در شرح واقعه، شناسه، نام یا نام کاربری..."
+              className="w-full rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] py-2 ps-9 pe-3 text-xs text-[#141413] focus:border-[#9A6B3F] focus:bg-[#FFFFFF] focus:outline-none sm:text-sm"
             />
           </div>
 
@@ -257,10 +288,10 @@ export function AuditLogPanel({
               onChange={(e) => {
                 const nextActor = e.target.value;
                 setActorFilter(nextActor);
-                loadLogs(1, nextActor, entityFilter);
+                loadLogs(1, nextActor, entityFilter, searchQuery);
               }}
               aria-label="فیلتر کاربر"
-              className="w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2.5 text-xs font-semibold text-ink focus:border-bronze focus:outline-none sm:text-sm"
+              className="w-full rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] px-3 py-2 text-xs font-semibold text-[#141413] focus:border-[#9A6B3F] focus:bg-[#FFFFFF] focus:outline-none sm:text-sm"
             >
               <option value="all">همه کاربران</option>
               {actors.map((username) => (
@@ -271,16 +302,16 @@ export function AuditLogPanel({
             </select>
           </div>
 
-          <div className="md:col-span-2">
+          <div className="md:col-span-3">
             <select
               value={entityFilter}
               onChange={(e) => {
                 const nextEntity = e.target.value;
                 setEntityFilter(nextEntity);
-                loadLogs(1, actorFilter, nextEntity);
+                loadLogs(1, actorFilter, nextEntity, searchQuery);
               }}
               aria-label="فیلتر بخش"
-              className="w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2.5 text-xs font-semibold text-ink focus:border-bronze focus:outline-none sm:text-sm"
+              className="w-full rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] px-3 py-2 text-xs font-semibold text-[#141413] focus:border-[#9A6B3F] focus:bg-[#FFFFFF] focus:outline-none sm:text-sm"
             >
               <option value="all">همه بخش‌ها</option>
               {Object.entries(AUDIT_ENTITY_LABELS).map(([key, label]) => (
@@ -290,40 +321,28 @@ export function AuditLogPanel({
               ))}
             </select>
           </div>
-
-          <div className="md:col-span-2">
-            <button
-              type="button"
-              onClick={() => loadLogs(1)}
-              className="w-full rounded-[3px] bg-charcoal px-4 py-2.5 text-xs font-semibold text-canvas hover:bg-charcoal-soft sm:text-sm"
-            >
-              جستجو
-            </button>
-          </div>
         </div>
       </div>
 
-      {/* Audit Log Timeline / Table */}
-      <div className="overflow-hidden border border-border bg-surface">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-surface-subtle px-5 py-3 text-xs">
-          <span className="font-bold text-ink">
-            مجموع وقایع ثبت‌شده: {toPersianDigits(total)} مورد
-          </span>
-          <span className="tabular-nums text-ink-muted">
+      {/* Audit Log Ledger */}
+      <div className="overflow-hidden rounded-[4px] border border-[#E6E2D8] bg-[#FFFFFF]">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E6E2D8] bg-[#FAF9F6] px-5 py-2.5 text-[11px] font-medium text-[#5C5852]">
+          <span>مجموع وقایع ثبت‌شده: {toPersianDigits(total)} مورد</span>
+          <span className="tabular-nums">
             صفحه {toPersianDigits(page)} از {toPersianDigits(totalPages)}
           </span>
         </div>
 
         {loading && logs.length === 0 ? (
-          <div className="p-8 text-center text-sm text-ink-muted">
+          <div className="p-8 text-center text-sm text-[#5C5852]">
             در حال بارگذاری گزارش وقایع...
           </div>
         ) : logs.length === 0 ? (
-          <div className="p-8 text-center text-sm text-ink-muted">
+          <div className="p-8 text-center text-sm text-[#5C5852]">
             هیچ واقعه‌ای مطابق فیلتر انتخاب‌شده یافت نشد.
           </div>
         ) : (
-          <div className="divide-y divide-border">
+          <div className="divide-y divide-[#E6E2D8]">
             {logs.map((log) => {
               const isExpanded = expandedId === log.id;
               const actionLabel =
@@ -333,28 +352,31 @@ export function AuditLogPanel({
                 log.entityType;
 
               return (
-                <div key={log.id} className="p-4 transition-colors hover:bg-surface-subtle/50 sm:px-5">
+                <div
+                  key={log.id}
+                  className="p-4 transition-colors hover:bg-[#FAF9F6] sm:px-5"
+                >
                   <div className="flex flex-col justify-between gap-3 lg:flex-row lg:items-center">
                     <div className="space-y-1.5">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="rounded-[2px] bg-charcoal px-2 py-0.5 text-[11px] font-bold text-bronze">
+                        <span className="rounded-[2px] border border-[#E7D3B5] bg-[#FBF5EC] px-2 py-0.5 text-[11px] font-semibold text-[#8A5A2B]">
                           {actionLabel}
                         </span>
-                        <span className="rounded-[2px] bg-bronze-soft px-2 py-0.5 text-[11px] font-bold text-bronze-hover">
+                        <span className="rounded-[2px] border border-[#DFDBD0] bg-[#F1EFEA] px-2 py-0.5 text-[11px] font-medium text-[#3F3D39]">
                           {entityLabel}
                         </span>
                         {log.entityId && (
                           <span
                             dir="ltr"
-                            className="rounded-[2px] border border-border bg-surface-subtle px-2 py-0.5 font-mono text-[11px] font-semibold text-ink"
+                            className="rounded-[2px] border border-[#DFDBD0] bg-[#FAF9F6] px-2 py-0.5 font-mono text-[11px] font-medium text-[#141413]"
                           >
                             {log.entityId}
                           </span>
                         )}
-                        <span className="text-xs font-bold text-ink">
+                        <span className="text-xs font-bold text-[#141413]">
                           {log.actorFullName}
                         </span>
-                        <span className="rounded-[2px] bg-surface-subtle px-2 py-0.5 text-[11px] text-ink-muted">
+                        <span className="text-[11px] text-[#5C5852]">
                           {ROLE_LABELS[log.actorRole] ?? log.actorRole} (
                           <span dir="ltr" className="font-mono">
                             @{log.actorUsername}
@@ -363,14 +385,14 @@ export function AuditLogPanel({
                         </span>
                       </div>
 
-                      <p className="text-xs leading-6 font-medium text-ink sm:text-sm">
+                      <p className="text-xs leading-6 font-medium text-[#141413] sm:text-sm">
                         {log.summary}
                       </p>
                     </div>
 
                     <div className="flex flex-wrap items-center justify-between gap-3 lg:justify-end">
-                      <div className="tabular-nums text-start text-[11px] text-ink-muted lg:text-end">
-                        <p className="font-semibold text-ink">
+                      <div className="tabular-nums text-start text-[11px] text-[#5C5852] lg:text-end">
+                        <p className="font-semibold text-[#141413]">
                           {formatAuditDateTime(log.createdAt)}
                         </p>
                         <p dir="ltr" className="font-mono">
@@ -385,9 +407,9 @@ export function AuditLogPanel({
                             setExpandedId(isExpanded ? null : log.id)
                           }
                           aria-expanded={isExpanded}
-                          className="inline-flex items-center gap-1 rounded-[2px] border border-border bg-surface-subtle px-3 py-1.5 text-xs font-semibold text-ink hover:border-charcoal"
+                          className="inline-flex items-center gap-1 rounded-[3px] border border-[#E6E2D8] bg-[#FFFFFF] px-3 py-1.5 text-xs font-medium text-[#141413] hover:border-[#141413]"
                         >
-                          <span>جزئیات تغییرات</span>
+                          <span>جزئیات</span>
                           <ChevronDown
                             className={`h-3.5 w-3.5 transition-transform ${
                               isExpanded ? "rotate-180" : ""
@@ -400,13 +422,13 @@ export function AuditLogPanel({
                   </div>
 
                   {isExpanded && log.details && (
-                    <div className="mt-3 rounded-[2px] border border-border bg-surface-subtle p-3.5">
-                      <p className="mb-2 text-[11px] font-bold text-ink-muted">
+                    <div className="mt-3 rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] p-3.5">
+                      <p className="mb-2 text-[11px] font-bold text-[#5C5852]">
                         جزئیات تغییرات (قبل / بعد):
                       </p>
                       <pre
                         dir="ltr"
-                        className="overflow-x-auto text-start font-mono text-xs leading-5 text-ink"
+                        className="overflow-x-auto text-start font-mono text-xs leading-5 text-[#141413]"
                       >
                         {JSON.stringify(log.details, null, 2)}
                       </pre>
@@ -420,17 +442,17 @@ export function AuditLogPanel({
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between border-t border-border bg-surface-subtle px-5 py-3 text-xs">
+          <div className="flex items-center justify-between border-t border-[#E6E2D8] bg-[#FAF9F6] px-5 py-3 text-xs">
             <button
               type="button"
               disabled={page <= 1 || loading}
               onClick={() => loadLogs(page - 1)}
-              className="rounded-[2px] border border-border bg-surface px-3.5 py-2 font-semibold text-ink hover:border-charcoal disabled:opacity-50"
+              className="rounded-[3px] border border-[#E6E2D8] bg-[#FFFFFF] px-3.5 py-1.5 font-semibold text-[#141413] hover:border-[#141413] disabled:opacity-50"
             >
               صفحه قبل
             </button>
 
-            <span className="tabular-nums font-bold text-ink">
+            <span className="tabular-nums font-bold text-[#141413]">
               صفحه {toPersianDigits(page)} از {toPersianDigits(totalPages)}
             </span>
 
@@ -438,7 +460,7 @@ export function AuditLogPanel({
               type="button"
               disabled={page >= totalPages || loading}
               onClick={() => loadLogs(page + 1)}
-              className="rounded-[2px] border border-border bg-surface px-3.5 py-2 font-semibold text-ink hover:border-charcoal disabled:opacity-50"
+              className="rounded-[3px] border border-[#E6E2D8] bg-[#FFFFFF] px-3.5 py-1.5 font-semibold text-[#141413] hover:border-[#141413] disabled:opacity-50"
             >
               صفحه بعد
             </button>

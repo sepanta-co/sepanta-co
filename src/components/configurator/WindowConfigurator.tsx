@@ -9,10 +9,11 @@ import {
   CheckCircle2,
   Copy,
   ExternalLink,
-  Info,
+  Minus,
   Plus,
   Printer,
   Send,
+  ShieldCheck,
   Trash2,
 } from "lucide-react";
 import {
@@ -20,7 +21,6 @@ import {
   GLASS_OPTIONS,
   isValidSystemKey,
   OPENING_LABELS,
-  STANDARD_PRESET_SIZES,
   SYSTEM_LIST,
   SYSTEM_RULES,
   validateConfiguration,
@@ -45,6 +45,18 @@ import { WindowSvgPreview } from "./WindowSvgPreview";
 
 const STORAGE_KEY = "sepanta_inquiry_items_v1";
 const STORAGE_EVENT = "sepanta-inquiry-change";
+
+const ROOM_ARCHITECTURAL_PRESETS: readonly {
+  title: string;
+  sizeLabel: string;
+  width: number;
+  height: number;
+}[] = [
+  { title: "اتاق خواب", sizeLabel: "۱۰۰ × ۱۲۰", width: 100, height: 120 },
+  { title: "پذیرایی استاندارد", sizeLabel: "۱۵۰ × ۱۴۰", width: 150, height: 140 },
+  { title: "درب بالکنی", sizeLabel: "۲۰۰ × ۲۲۰", width: 200, height: 220 },
+  { title: "قدی و ویلایی", sizeLabel: "۳۰۰ × ۲۲۰", width: 300, height: 220 },
+];
 
 interface InquiryItem {
   id: string;
@@ -121,6 +133,142 @@ function writeInquiryStore(nextItems: InquiryItem[]) {
   }
 }
 
+function SystemSilhouetteIcon({
+  systemKey,
+  active,
+}: {
+  systemKey: ConfiguratorSystemKey;
+  active: boolean;
+}) {
+  const stroke = active ? "#141413" : "#5C5852";
+  const accent = "#9A6B3F";
+
+  if (systemKey === "upvc") {
+    return (
+      <svg
+        viewBox="0 0 36 36"
+        fill="none"
+        className="h-9 w-9 shrink-0"
+        aria-hidden="true"
+      >
+        <rect x="4" y="5" width="28" height="26" stroke={stroke} strokeWidth="1.5" />
+        <rect x="7" y="8" width="22" height="20" stroke={stroke} strokeWidth="1" strokeOpacity="0.45" />
+        <line x1="18" y1="5" x2="18" y2="31" stroke={stroke} strokeWidth="1.5" />
+        <path d="M9 10 L16 18 L9 26" stroke={accent} strokeWidth="1.2" strokeDasharray="2 2" />
+      </svg>
+    );
+  }
+
+  if (systemKey === "thermal-break") {
+    return (
+      <svg
+        viewBox="0 0 36 36"
+        fill="none"
+        className="h-9 w-9 shrink-0"
+        aria-hidden="true"
+      >
+        <rect x="3" y="4" width="30" height="28" stroke={stroke} strokeWidth="1.5" />
+        <line x1="18" y1="4" x2="18" y2="32" stroke={stroke} strokeWidth="1.2" />
+        <line x1="11" y1="18" x2="16" y2="18" stroke={accent} strokeWidth="1.4" />
+        <polyline points="14,15.5 16.5,18 14,20.5" stroke={accent} strokeWidth="1.3" />
+        <rect x="5" y="6" width="26" height="24" stroke={stroke} strokeWidth="0.8" strokeOpacity="0.4" />
+      </svg>
+    );
+  }
+
+  if (systemKey === "balcony-glass") {
+    return (
+      <svg
+        viewBox="0 0 36 36"
+        fill="none"
+        className="h-9 w-9 shrink-0"
+        aria-hidden="true"
+      >
+        <rect x="4" y="6" width="28" height="24" stroke={stroke} strokeWidth="1.5" />
+        <line x1="11" y1="6" x2="11" y2="30" stroke={stroke} strokeWidth="1.1" />
+        <line x1="18" y1="6" x2="18" y2="30" stroke={stroke} strokeWidth="1.1" />
+        <line x1="25" y1="6" x2="25" y2="30" stroke={stroke} strokeWidth="1.1" />
+        <polyline points="6,20 11,16 16,20" stroke={accent} strokeWidth="1.2" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg
+      viewBox="0 0 36 36"
+      fill="none"
+      className="h-9 w-9 shrink-0"
+      aria-hidden="true"
+    >
+      <rect x="5" y="5" width="26" height="26" stroke={stroke} strokeWidth="1.5" />
+      <path
+        d="M10 7 V29 M14 7 V29 M18 7 V29 M22 7 V29 M26 7 V29"
+        stroke={stroke}
+        strokeWidth="1"
+        strokeOpacity="0.55"
+      />
+      <line x1="8" y1="18" x2="28" y2="18" stroke={accent} strokeWidth="1.3" strokeDasharray="2 2" />
+    </svg>
+  );
+}
+
+function OpeningSchematicIcon({ opening }: { opening: OpeningType }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      className="h-6 w-6 shrink-0"
+      aria-hidden="true"
+    >
+      <rect x="3" y="3" width="18" height="18" stroke="#5C5852" strokeWidth="1.4" />
+      {opening === "fixed" && (
+        <g stroke="#5C5852" strokeWidth="1.3">
+          <line x1="9" y1="9" x2="15" y2="15" />
+          <line x1="15" y1="9" x2="9" y2="15" />
+        </g>
+      )}
+      {opening === "casement" && (
+        <path
+          d="M5 5 L19 12 L5 19"
+          stroke="#141413"
+          strokeWidth="1.3"
+          strokeDasharray="2.5 2"
+        />
+      )}
+      {opening === "tilt-turn" && (
+        <>
+          <path
+            d="M5 5 L19 12 L5 19"
+            stroke="#141413"
+            strokeWidth="1.2"
+            strokeDasharray="2.5 2"
+          />
+          <path
+            d="M5 19 L12 5 L19 19"
+            stroke="#9A6B3F"
+            strokeWidth="1.2"
+            strokeDasharray="2.5 2"
+          />
+        </>
+      )}
+      {opening === "sliding" && (
+        <g stroke="#141413" strokeWidth="1.4">
+          <line x1="7" y1="12" x2="17" y2="12" />
+          <polyline points="14,9 17,12 14,15" />
+        </g>
+      )}
+      {opening === "folding" && (
+        <polyline
+          points="5,9 12,14 19,9"
+          stroke="#9A6B3F"
+          strokeWidth="1.3"
+          strokeDasharray="2 2"
+        />
+      )}
+    </svg>
+  );
+}
+
 export function WindowConfigurator() {
   const searchParams = useSearchParams();
   const productParam = searchParams.get("product");
@@ -167,6 +315,7 @@ function WindowConfiguratorInner({
   );
   const [quantity, setQuantity] = useState<number>(1);
   const [copied, setCopied] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
 
   // Live SQLite pricing rules & FX status
   const [rulesMap, setRulesMap] = useState<Record<string, PricingRuleRow> | null>(
@@ -274,6 +423,30 @@ function WindowConfiguratorInner({
     );
   };
 
+  const adjustWidthBy = (delta: number) => {
+    const base =
+      Number.isFinite(widthCm) && widthCm > 0
+        ? widthCm
+        : activeRule.defaultWidth;
+    const clamped = Math.max(
+      activeRule.minWidth,
+      Math.min(activeRule.maxWidth, base + delta)
+    );
+    setWidthCm(clamped);
+  };
+
+  const adjustHeightBy = (delta: number) => {
+    const base =
+      Number.isFinite(heightCm) && heightCm > 0
+        ? heightCm
+        : activeRule.defaultHeight;
+    const clamped = Math.max(
+      activeRule.minHeight,
+      Math.min(activeRule.maxHeight, base + delta)
+    );
+    setHeightCm(clamped);
+  };
+
   const validation = validateConfiguration({
     system,
     widthCm,
@@ -340,6 +513,8 @@ function WindowConfiguratorInner({
     };
 
     writeInquiryStore([...items, nextItem]);
+    setJustAdded(true);
+    window.setTimeout(() => setJustAdded(false), 1800);
   };
 
   const handleRemoveItem = (id: string) => {
@@ -433,7 +608,7 @@ function WindowConfiguratorInner({
         item.quantity
       )} عدد): ${sysLabel} | ابعاد ${toPersianDigits(
         item.widthCm
-      )}×${toPersianDigits(item.heightCm)} سم | ${toPersianDigits(
+      )}×${toPersianDigits(item.heightCm)} سانتی‌متر | ${toPersianDigits(
         item.panelCount
       )} لنگه (${opsLabel}) | شیشه: ${glassLabel} | رنگ: ${finishLabel}${meshNote} | مساحت کل: ${toPersianDigits(
         Number((item.areaSqm * item.quantity).toFixed(2))
@@ -587,406 +762,625 @@ function WindowConfiguratorInner({
     buildPlainTextSummary()
   )}`;
 
+  const sliderWidthValue = Math.min(
+    activeRule.maxWidth,
+    Math.max(activeRule.minWidth, widthCm || activeRule.minWidth)
+  );
+  const sliderHeightValue = Math.min(
+    activeRule.maxHeight,
+    Math.max(activeRule.minHeight, heightCm || activeRule.minHeight)
+  );
+
+  const visiblePresets = ROOM_ARCHITECTURAL_PRESETS.filter(
+    (p) =>
+      p.width >= activeRule.minWidth &&
+      p.width <= activeRule.maxWidth &&
+      p.height >= activeRule.minHeight &&
+      p.height <= activeRule.maxHeight
+  );
+
   return (
     <div className="space-y-10">
-      {/* Honest Pricing Transparency Banner */}
-      <div className="no-print space-y-3 border border-border border-s-2 border-s-bronze bg-surface p-4 text-xs leading-6 text-ink sm:p-5 sm:text-sm">
-        <div className="flex items-start gap-3">
-          <Info className="mt-1 h-5 w-5 shrink-0 text-bronze" strokeWidth={1.6} aria-hidden="true" />
-          <p>
-            <strong>برآورد قیمت هوشمند بر اساس تعرفه روز کارخانه سپنتا و نرخ
-            لحظه‌ای ارز محاسبه می‌شود؛</strong>{" "}
-            مبلغ قطعی پس از اندازه‌گیری دقیق لیزری در محل پروژه و تایید نهایی نوع
-            یراق‌آلات اعلام می‌گردد.
-          </p>
-        </div>
-
-        {fxSummary && (
-          <div className="flex flex-wrap items-center gap-2 border-t border-border pt-3 text-[11px] sm:text-xs">
-            <span className="tabular-nums border border-bronze/30 bg-bronze-soft px-2.5 py-1 font-bold text-bronze-hover">
-              نرخ مبنای دلار: {formatToman(fxSummary.activeUsdIrr)}
-            </span>
-            <span className="border border-border bg-canvas px-2.5 py-1 font-bold text-ink">
-              منبع: {getFxSourceLabel(fxSummary.sourceUsed)}
-            </span>
-            <span className="border border-border bg-canvas px-2.5 py-1 text-ink-muted">
-              آخرین بروزرسانی: {formatFxTimestamp(fxSummary.lastSyncedAt)}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Main Configurator Workspace */}
-      <div className="no-print grid grid-cols-1 gap-8 lg:grid-cols-12">
-        {/* Controls Column */}
-        <div className="space-y-6 lg:col-span-7">
-          {/* Step 1: System Selection */}
-          <div className="border border-border bg-surface p-5 sm:p-6">
-            <h2 className="text-base font-bold text-charcoal">
-              ۱. انتخاب سیستم تولیدی
-            </h2>
-            <div
-              role="group"
-              aria-label="انتخاب سیستم درب و پنجره"
-              className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2"
+      {/* Main 12-Column Architectural Studio Workbench */}
+      <div className="no-print grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
+        {/* Right/Start: Unified Architectural Specification Sheet (7 cols) */}
+        <div className="lg:col-span-7">
+          <div className="overflow-hidden rounded-[4px] border border-[#E6E2D8] bg-[#FFFFFF] divide-y divide-[#E6E2D8]">
+            {/* Slim Architectural Step Index Header */}
+            <nav
+              aria-label="فهرست مراحل پیکربندی"
+              className="flex flex-wrap items-center justify-between gap-2 bg-[#FAF9F6] px-5 py-3.5 text-xs"
             >
-              {SYSTEM_LIST.map((sys) => {
-                const active = system === sys.key;
-                return (
-                  <button
-                    key={sys.key}
-                    type="button"
-                    onClick={() => handleSystemChange(sys.key)}
-                    aria-pressed={active}
-                    className={`rounded-[3px] border p-3.5 text-start transition-colors ${
-                      active
-                        ? "border-charcoal bg-surface-warm text-charcoal"
-                        : "border-border bg-canvas text-ink-muted hover:border-border-strong hover:text-ink"
-                    }`}
-                  >
-                    <p className="text-sm font-bold text-ink">{sys.label}</p>
-                    <p className="mt-1 text-xs leading-5 text-ink-muted">
-                      {sys.description}
-                    </p>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+              <div className="flex flex-wrap items-center gap-3 font-medium text-[#5C5852]">
+                <a
+                  href="#step-system"
+                  className="inline-flex items-center gap-1.5 text-[#141413] transition-colors hover:text-[#9A6B3F]"
+                >
+                  <span className="font-display font-bold text-[#9A6B3F]">۰۱</span>
+                  <span>سیستم</span>
+                </a>
+                <span className="text-[#CEC8BA]" aria-hidden="true">
+                  ·
+                </span>
+                <a
+                  href="#step-dimensions"
+                  className="inline-flex items-center gap-1.5 transition-colors hover:text-[#141413]"
+                >
+                  <span className="font-display font-bold text-[#9A6B3F]">۰۲</span>
+                  <span>ابعاد</span>
+                </a>
+                <span className="text-[#CEC8BA]" aria-hidden="true">
+                  ·
+                </span>
+                <a
+                  href="#step-openings"
+                  className="inline-flex items-center gap-1.5 transition-colors hover:text-[#141413]"
+                >
+                  <span className="font-display font-bold text-[#9A6B3F]">۰۳</span>
+                  <span>بازشو و شیشه</span>
+                </a>
+                <span className="text-[#CEC8BA]" aria-hidden="true">
+                  ·
+                </span>
+                <a
+                  href="#official-submit-heading"
+                  className="inline-flex items-center gap-1.5 transition-colors hover:text-[#141413]"
+                >
+                  <span className="font-display font-bold text-[#9A6B3F]">۰۴</span>
+                  <span>ثبت و نقشه</span>
+                </a>
+              </div>
 
-          {/* Step 2: Dimensions & Location */}
-          <div className="border border-border bg-surface p-5 sm:p-6">
-            <h2 className="text-base font-bold text-ink">
-              ۲. ابعاد دهانه و موقعیت در ساختمان
-            </h2>
+              <span className="hidden text-[11px] text-[#5C5852] sm:inline">
+                برگه مشخصات مهندسی کارخانه زنجان
+              </span>
+            </nav>
 
-            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <div className="sm:col-span-1">
+            {/* Section 01: System Selection */}
+            <section id="step-system" className="p-5 sm:p-6">
+              <div className="flex items-center gap-2.5">
+                <span className="font-display inline-flex h-6 w-6 items-center justify-center rounded-[3px] bg-[#F1EFEA] text-xs font-bold text-[#9A6B3F]">
+                  ۰۱
+                </span>
+                <h2 className="font-display text-base font-bold text-[#141413]">
+                  انتخاب سیستم تولیدی
+                </h2>
+              </div>
+
+              <div
+                role="group"
+                aria-label="انتخاب سیستم درب و پنجره"
+                className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2"
+              >
+                {SYSTEM_LIST.map((sys) => {
+                  const active = system === sys.key;
+                  return (
+                    <button
+                      key={sys.key}
+                      type="button"
+                      onClick={() => handleSystemChange(sys.key)}
+                      aria-pressed={active}
+                      className={`relative flex items-start gap-3 rounded-[4px] border p-4 text-start transition-colors ${
+                        active
+                          ? "border-[#141413] bg-[#FAF9F6] text-[#141413]"
+                          : "border-[#E6E2D8] bg-[#FFFFFF] text-[#5C5852] hover:border-[#CEC8BA] hover:text-[#141413]"
+                      }`}
+                    >
+                      {active && (
+                        <span
+                          className="absolute top-3 end-3 h-2 w-2 rounded-full bg-[#9A6B3F]"
+                          aria-hidden="true"
+                        />
+                      )}
+                      <SystemSilhouetteIcon systemKey={sys.key} active={active} />
+                      <div className="min-w-0 flex-1 pe-2">
+                        <p className="font-display text-sm font-bold text-[#141413]">
+                          {sys.label}
+                        </p>
+                        <p className="mt-1 line-clamp-2 text-xs leading-5 text-[#5C5852]">
+                          {sys.description}
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* Section 02: Humanized Dimensions & Presets */}
+            <section id="step-dimensions" className="space-y-5 p-5 sm:p-6">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2.5">
+                  <span className="font-display inline-flex h-6 w-6 items-center justify-center rounded-[3px] bg-[#F1EFEA] text-xs font-bold text-[#9A6B3F]">
+                    ۰۲
+                  </span>
+                  <h2 className="font-display text-base font-bold text-[#141413]">
+                    ابعاد دهانه و موقعیت در ساختمان
+                  </h2>
+                </div>
+                <span className="text-xs text-[#5C5852]">
+                  مقیاس به سانتی‌متر
+                </span>
+              </div>
+
+              {/* Location Name */}
+              <div>
                 <label
                   htmlFor="cfg-location"
-                  className="block text-xs font-semibold text-ink"
+                  className="block text-xs font-semibold text-[#141413]"
                 >
-                  موقعیت دهانه
+                  عنوان یا موقعیت دهانه در نقشه
                 </label>
                 <input
                   id="cfg-location"
                   type="text"
                   value={locationName}
                   onChange={(e) => setLocationName(e.target.value)}
-                  placeholder="مثلاً: پنجره پذیرایی"
-                  className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none"
+                  placeholder="مثلاً: پنجره پذیرایی جنوبی"
+                  className="mt-1.5 w-full rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] px-3.5 py-2.5 text-sm text-[#141413] transition-colors focus:border-[#9A6B3F] focus:bg-[#FFFFFF] focus:outline-none"
                 />
               </div>
 
-              <div>
-                <label
-                  htmlFor="cfg-width"
-                  className="block text-xs font-semibold text-ink"
-                >
-                  عرض دهانه (سانتی‌متر)
-                </label>
-                <input
-                  id="cfg-width"
-                  type="text"
-                  inputMode="numeric"
-                  dir="ltr"
-                  value={widthCm || ""}
-                  onChange={(e) => setWidthCm(parseDimensionInput(e.target.value))}
-                  className="tabular-nums mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-end text-sm font-semibold text-ink focus:border-bronze focus:outline-none"
-                />
-                <p className="mt-1 text-[11px] text-ink-muted tabular-nums">
-                  محدوده مجاز: {toPersianDigits(activeRule.minWidth)} تا{" "}
-                  {toPersianDigits(activeRule.maxWidth)} سم
-                </p>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="cfg-height"
-                  className="block text-xs font-semibold text-ink"
-                >
-                  ارتفاع دهانه (سانتی‌متر)
-                </label>
-                <input
-                  id="cfg-height"
-                  type="text"
-                  inputMode="numeric"
-                  dir="ltr"
-                  value={heightCm || ""}
-                  onChange={(e) => setHeightCm(parseDimensionInput(e.target.value))}
-                  className="tabular-nums mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-end text-sm font-semibold text-ink focus:border-bronze focus:outline-none"
-                />
-                <p className="mt-1 text-[11px] text-ink-muted tabular-nums">
-                  محدوده مجاز: {toPersianDigits(activeRule.minHeight)} تا{" "}
-                  {toPersianDigits(activeRule.maxHeight)} سم
-                </p>
-              </div>
-            </div>
-
-            {/* Quick Standard Architectural Presets */}
-            <div className="mt-4">
-              <p className="text-xs font-medium text-ink-muted">
-                سایزهای سریع استاندارد ساختمانی (سانتی‌متر):
-              </p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {STANDARD_PRESET_SIZES.filter(
-                  (p) =>
-                    p.width >= activeRule.minWidth &&
-                    p.width <= activeRule.maxWidth &&
-                    p.height >= activeRule.minHeight &&
-                    p.height <= activeRule.maxHeight
-                ).map((preset) => (
-                  <button
-                    key={preset.label}
-                    type="button"
-                    onClick={() => {
-                      setWidthCm(preset.width);
-                      setHeightCm(preset.height);
-                    }}
-                    className="tabular-nums rounded-[2px] border border-border bg-surface-subtle px-3 py-1.5 text-xs font-semibold text-ink transition-colors hover:border-charcoal hover:text-bronze"
-                  >
-                    {preset.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Step 3: Panels, Openings, Glass, Finish & Mesh */}
-          <div className="space-y-5 border border-border bg-surface p-5 sm:p-6">
-            <h2 className="text-base font-bold text-ink">
-              ۳. تعداد لنگه، نوع بازشو، شیشه و رنگ پروفیل
-            </h2>
-
-            {/* Panel Count */}
-            <div>
-              <p className="text-xs font-semibold text-ink">تعداد لنگه / پنل</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {Array.from(
-                  { length: activeRule.maxPanels - activeRule.minPanels + 1 },
-                  (_, i) => activeRule.minPanels + i
-                ).map((count) => {
-                  const active = panelCount === count;
-                  return (
-                    <button
-                      key={count}
-                      type="button"
-                      onClick={() => handlePanelCountChange(count)}
-                      aria-pressed={active}
-                      className={`tabular-nums rounded-[2px] px-4 py-2 text-xs font-bold transition-colors ${
-                        active
-                          ? "bg-charcoal text-canvas"
-                          : "border border-border bg-surface-subtle text-ink hover:border-charcoal"
-                      }`}
-                    >
-                      {toPersianDigits(count)} لنگه
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Per-Panel Opening Type */}
-            <div>
-              <p className="text-xs font-semibold text-ink">
-                نوع بازشوی هر لنگه (از راست به چپ)
-              </p>
-              <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {Array.from({ length: panelCount }).map((_, idx) => (
-                  <div key={idx}>
+              {/* Ergonomic Width & Height Steppers + Range Sliders */}
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                {/* Width Control */}
+                <div>
+                  <div className="flex items-center justify-between">
                     <label
-                      htmlFor={`panel-opening-${idx}`}
-                      className="block text-[11px] text-ink-muted"
+                      htmlFor="cfg-width"
+                      className="text-xs font-semibold text-[#141413]"
                     >
-                      لنگه {toPersianDigits(idx + 1)}
+                      عرض دهانه
                     </label>
-                    <select
-                      id={`panel-opening-${idx}`}
-                      value={openings[idx] ?? activeRule.defaultOpening}
-                      onChange={(e) =>
-                        handleOpeningChange(idx, e.target.value as OpeningType)
-                      }
-                      disabled={activeRule.allowedOpenings.length === 1}
-                      className="mt-1 w-full rounded-[2px] border border-border bg-surface-subtle px-3 py-2 text-xs font-semibold text-ink focus:border-bronze focus:outline-none disabled:opacity-75"
-                    >
-                      {activeRule.allowedOpenings.map((op) => (
-                        <option key={op} value={op}>
-                          {OPENING_LABELS[op]}
-                        </option>
-                      ))}
-                    </select>
+                    <span className="tabular-nums text-[11px] text-[#5C5852]">
+                      {toPersianDigits(activeRule.minWidth)} تا{" "}
+                      {toPersianDigits(activeRule.maxWidth)} سانتی‌متر
+                    </span>
                   </div>
-                ))}
-              </div>
-            </div>
 
-            {/* Glass Type */}
-            <div>
-              <label
-                htmlFor="cfg-glass"
-                className="block text-xs font-semibold text-ink"
-              >
-                نوع شیشه مصرفی
-              </label>
-              <select
-                id="cfg-glass"
-                value={glass}
-                onChange={(e) => setGlass(e.target.value as GlassOptionKey)}
-                disabled={activeRule.allowedGlasses.length === 1}
-                className="mt-1.5 w-full rounded-[2px] border border-border bg-surface-subtle px-3.5 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none disabled:opacity-75"
-              >
-                {activeRule.allowedGlasses.map((gKey) => (
-                  <option key={gKey} value={gKey}>
-                    {GLASS_OPTIONS[gKey].label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Profile Frame Finishes */}
-            <div>
-              <p className="text-xs font-semibold text-ink">رنگ و پوشش پروفیل</p>
-              <div className="mt-2 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-                {(Object.keys(FRAME_FINISHES) as FrameFinishKey[]).map((fKey) => {
-                  const swatch = FRAME_FINISHES[fKey];
-                  const active = finish === fKey;
-                  return (
+                  <div className="mt-1.5 flex items-stretch overflow-hidden rounded-[3px] border border-[#E6E2D8] bg-[#FFFFFF] focus-within:border-[#9A6B3F]">
                     <button
-                      key={fKey}
                       type="button"
-                      onClick={() => setFinish(fKey)}
-                      aria-pressed={active}
-                      className={`flex items-center gap-2.5 rounded-[3px] border p-2.5 text-start text-xs font-bold transition-colors ${
-                        active
-                          ? "border-charcoal bg-surface-warm text-charcoal"
-                          : "border-border bg-surface text-ink-muted hover:border-border-strong hover:text-ink"
-                      }`}
+                      onClick={() => adjustWidthBy(-5)}
+                      aria-label="کاهش عرض ۵ سانتی‌متر"
+                      className="inline-flex items-center justify-center border-e border-[#E6E2D8] bg-[#FAF9F6] px-3 text-xs font-bold text-[#141413] transition-colors hover:bg-[#F1EFEA]"
                     >
-                      <span
-                        className="h-5 w-5 shrink-0 rounded-full border border-border-strong"
-                        style={{ backgroundColor: swatch.hex }}
-                        aria-hidden="true"
-                      />
-                      <span>{swatch.label}</span>
+                      - ۵
                     </button>
-                  );
-                })}
-              </div>
-            </div>
+                    <input
+                      id="cfg-width"
+                      type="text"
+                      inputMode="numeric"
+                      dir="ltr"
+                      value={widthCm || ""}
+                      onChange={(e) =>
+                        setWidthCm(parseDimensionInput(e.target.value))
+                      }
+                      className="tabular-nums min-w-0 flex-1 bg-transparent px-2 py-2.5 text-center text-sm font-bold text-[#141413] focus:outline-none"
+                    />
+                    <span className="flex items-center border-s border-[#E6E2D8] bg-[#FAF9F6] px-2.5 text-[11px] font-medium text-[#5C5852]">
+                      سانتی‌متر
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => adjustWidthBy(5)}
+                      aria-label="افزایش عرض ۵ سانتی‌متر"
+                      className="inline-flex items-center justify-center border-s border-[#E6E2D8] bg-[#FAF9F6] px-3 text-xs font-bold text-[#141413] transition-colors hover:bg-[#F1EFEA]"
+                    >
+                      + ۵
+                    </button>
+                  </div>
 
-            {/* Quantity & Optional Matching Mesh */}
-            <div className="flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
-              <div className="flex items-center gap-3">
-                <label
-                  htmlFor="cfg-qty"
-                  className="text-xs font-semibold text-ink"
-                >
-                  تعداد این دهانه:
-                </label>
-                <input
-                  id="cfg-qty"
-                  type="number"
-                  min={1}
-                  max={50}
-                  dir="ltr"
-                  value={quantity}
-                  onChange={(e) =>
-                    setQuantity(
-                      Math.max(1, Math.min(50, Number(e.target.value) || 1))
-                    )
-                  }
-                  className="tabular-nums w-20 rounded-[2px] border border-border bg-surface px-3 py-2 text-center text-sm font-bold text-ink focus:border-bronze focus:outline-none"
-                />
-              </div>
-
-              {activeRule.supportsMesh && (
-                <label className="inline-flex cursor-pointer items-center gap-2.5 text-xs font-semibold text-ink sm:text-sm">
                   <input
-                    type="checkbox"
-                    checked={includeMesh}
-                    onChange={(e) => setIncludeMesh(e.target.checked)}
-                    className="h-4 w-4 rounded border-border accent-bronze"
+                    type="range"
+                    aria-label="اسلایدر تنظیم عرض دهانه"
+                    min={activeRule.minWidth}
+                    max={activeRule.maxWidth}
+                    step={1}
+                    value={sliderWidthValue}
+                    onChange={(e) => setWidthCm(Number(e.target.value))}
+                    className="mt-2.5 h-1.5 w-full cursor-pointer accent-[#141413]"
                   />
-                  <span>افزودن توری پلیسه همرنگ</span>
-                </label>
+                </div>
+
+                {/* Height Control */}
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label
+                      htmlFor="cfg-height"
+                      className="text-xs font-semibold text-[#141413]"
+                    >
+                      ارتفاع دهانه
+                    </label>
+                    <span className="tabular-nums text-[11px] text-[#5C5852]">
+                      {toPersianDigits(activeRule.minHeight)} تا{" "}
+                      {toPersianDigits(activeRule.maxHeight)} سانتی‌متر
+                    </span>
+                  </div>
+
+                  <div className="mt-1.5 flex items-stretch overflow-hidden rounded-[3px] border border-[#E6E2D8] bg-[#FFFFFF] focus-within:border-[#9A6B3F]">
+                    <button
+                      type="button"
+                      onClick={() => adjustHeightBy(-5)}
+                      aria-label="کاهش ارتفاع ۵ سانتی‌متر"
+                      className="inline-flex items-center justify-center border-e border-[#E6E2D8] bg-[#FAF9F6] px-3 text-xs font-bold text-[#141413] transition-colors hover:bg-[#F1EFEA]"
+                    >
+                      - ۵
+                    </button>
+                    <input
+                      id="cfg-height"
+                      type="text"
+                      inputMode="numeric"
+                      dir="ltr"
+                      value={heightCm || ""}
+                      onChange={(e) =>
+                        setHeightCm(parseDimensionInput(e.target.value))
+                      }
+                      className="tabular-nums min-w-0 flex-1 bg-transparent px-2 py-2.5 text-center text-sm font-bold text-[#141413] focus:outline-none"
+                    />
+                    <span className="flex items-center border-s border-[#E6E2D8] bg-[#FAF9F6] px-2.5 text-[11px] font-medium text-[#5C5852]">
+                      سانتی‌متر
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => adjustHeightBy(5)}
+                      aria-label="افزایش ارتفاع ۵ سانتی‌متر"
+                      className="inline-flex items-center justify-center border-s border-[#E6E2D8] bg-[#FAF9F6] px-3 text-xs font-bold text-[#141413] transition-colors hover:bg-[#F1EFEA]"
+                    >
+                      + ۵
+                    </button>
+                  </div>
+
+                  <input
+                    type="range"
+                    aria-label="اسلایدر تنظیم ارتفاع دهانه"
+                    min={activeRule.minHeight}
+                    max={activeRule.maxHeight}
+                    step={1}
+                    value={sliderHeightValue}
+                    onChange={(e) => setHeightCm(Number(e.target.value))}
+                    className="mt-2.5 h-1.5 w-full cursor-pointer accent-[#141413]"
+                  />
+                </div>
+              </div>
+
+              {/* Iranian Architectural Room Presets */}
+              {visiblePresets.length > 0 && (
+                <div>
+                  <p className="text-xs font-medium text-[#5C5852]">
+                    ابعاد متداول فضاهای مسکونی و ویلایی (سانتی‌متر):
+                  </p>
+                  <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    {visiblePresets.map((preset) => {
+                      const isPresetActive =
+                        widthCm === preset.width && heightCm === preset.height;
+                      return (
+                        <button
+                          key={preset.title}
+                          type="button"
+                          onClick={() => {
+                            setWidthCm(preset.width);
+                            setHeightCm(preset.height);
+                          }}
+                          className={`rounded-[3px] border px-3 py-2 text-start transition-colors ${
+                            isPresetActive
+                              ? "border-[#141413] bg-[#FAF9F6] text-[#141413]"
+                              : "border-[#E6E2D8] bg-[#FFFFFF] text-[#5C5852] hover:border-[#CEC8BA] hover:text-[#141413]"
+                          }`}
+                        >
+                          <span className="block text-xs font-bold text-[#141413]">
+                            {preset.title}
+                          </span>
+                          <span className="tabular-nums mt-0.5 block text-[11px] text-[#5C5852]">
+                            {preset.sizeLabel}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               )}
-            </div>
+
+              {/* Warm Human Reassurance Note */}
+              <div className="flex items-start gap-2.5 rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] px-3.5 py-2.5 text-xs leading-6 text-[#5C5852]">
+                <ShieldCheck
+                  className="mt-0.5 h-4 w-4 shrink-0 text-[#2C5E4F]"
+                  strokeWidth={1.6}
+                  aria-hidden="true"
+                />
+                <p>
+                  نگران دقت میلی‌متری نباشید؛ پیش از ساخت، کارشناس سپنتا دهانه‌ها
+                  را با متر لیزری اندازه‌گیری می‌کند.
+                </p>
+              </div>
+            </section>
+
+            {/* Section 03: Sashes, Opening Types, Glass & Finish */}
+            <section id="step-openings" className="space-y-6 p-5 sm:p-6">
+              <div className="flex items-center gap-2.5">
+                <span className="font-display inline-flex h-6 w-6 items-center justify-center rounded-[3px] bg-[#F1EFEA] text-xs font-bold text-[#9A6B3F]">
+                  ۰۳
+                </span>
+                <h2 className="font-display text-base font-bold text-[#141413]">
+                  تعداد لنگه، نوع بازشو، شیشه و رنگ پروفیل
+                </h2>
+              </div>
+
+              {/* Panel Count */}
+              <div>
+                <p className="text-xs font-semibold text-[#141413]">
+                  تعداد لنگه / پنل
+                </p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {Array.from(
+                    { length: activeRule.maxPanels - activeRule.minPanels + 1 },
+                    (_, i) => activeRule.minPanels + i
+                  ).map((count) => {
+                    const active = panelCount === count;
+                    return (
+                      <button
+                        key={count}
+                        type="button"
+                        onClick={() => handlePanelCountChange(count)}
+                        aria-pressed={active}
+                        className={`tabular-nums rounded-[3px] px-4 py-2 text-xs font-bold transition-colors ${
+                          active
+                            ? "bg-[#141413] text-[#FAF9F6]"
+                            : "border border-[#E6E2D8] bg-[#FAF9F6] text-[#141413] hover:border-[#141413]"
+                        }`}
+                      >
+                        {toPersianDigits(count)} لنگه
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Per-Panel Opening Type with Schematic Icons */}
+              <div>
+                <p className="text-xs font-semibold text-[#141413]">
+                  نوع بازشوی هر لنگه (از راست به چپ)
+                </p>
+                <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {Array.from({ length: panelCount }).map((_, idx) => {
+                    const currentOpening =
+                      openings[idx] ?? activeRule.defaultOpening;
+                    return (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-3 rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] p-2.5"
+                      >
+                        <OpeningSchematicIcon opening={currentOpening} />
+                        <div className="min-w-0 flex-1">
+                          <label
+                            htmlFor={`panel-opening-${idx}`}
+                            className="block text-[11px] font-medium text-[#5C5852]"
+                          >
+                            لنگه {toPersianDigits(idx + 1)}
+                          </label>
+                          <select
+                            id={`panel-opening-${idx}`}
+                            value={currentOpening}
+                            onChange={(e) =>
+                              handleOpeningChange(
+                                idx,
+                                e.target.value as OpeningType
+                              )
+                            }
+                            disabled={activeRule.allowedOpenings.length === 1}
+                            className="mt-0.5 w-full rounded-[2px] border border-[#E6E2D8] bg-[#FFFFFF] px-2.5 py-1.5 text-xs font-semibold text-[#141413] focus:border-[#9A6B3F] focus:outline-none disabled:opacity-75"
+                          >
+                            {activeRule.allowedOpenings.map((op) => (
+                              <option key={op} value={op}>
+                                {OPENING_LABELS[op]}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Glass Type */}
+              <div>
+                <label
+                  htmlFor="cfg-glass"
+                  className="block text-xs font-semibold text-[#141413]"
+                >
+                  نوع شیشه مصرفی
+                </label>
+                <select
+                  id="cfg-glass"
+                  value={glass}
+                  onChange={(e) => setGlass(e.target.value as GlassOptionKey)}
+                  disabled={activeRule.allowedGlasses.length === 1}
+                  className="mt-1.5 w-full rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] px-3.5 py-2.5 text-sm text-[#141413] focus:border-[#9A6B3F] focus:bg-[#FFFFFF] focus:outline-none disabled:opacity-75"
+                >
+                  {activeRule.allowedGlasses.map((gKey) => (
+                    <option key={gKey} value={gKey}>
+                      {GLASS_OPTIONS[gKey].label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Tactile Profile Frame Finish Tiles */}
+              <div>
+                <p className="text-xs font-semibold text-[#141413]">
+                  رنگ و پوشش پروفیل
+                </p>
+                <div className="mt-2 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                  {(Object.keys(FRAME_FINISHES) as FrameFinishKey[]).map(
+                    (fKey) => {
+                      const swatch = FRAME_FINISHES[fKey];
+                      const active = finish === fKey;
+                      return (
+                        <button
+                          key={fKey}
+                          type="button"
+                          onClick={() => setFinish(fKey)}
+                          aria-pressed={active}
+                          className={`flex items-center gap-2.5 rounded-[3px] border p-2.5 text-start text-xs font-bold transition-all ${
+                            active
+                              ? "border-[#141413] bg-[#FAF9F6] text-[#141413] ring-1 ring-[#141413]"
+                              : "border-[#E6E2D8] bg-[#FFFFFF] text-[#5C5852] hover:border-[#CEC8BA] hover:text-[#141413]"
+                          }`}
+                        >
+                          <span
+                            className="h-5 w-5 shrink-0 rounded-full border border-[#CEC8BA]"
+                            style={{ backgroundColor: swatch.hex }}
+                            aria-hidden="true"
+                          />
+                          <span className="truncate">{swatch.label}</span>
+                        </button>
+                      );
+                    }
+                  )}
+                </div>
+              </div>
+
+              {/* Quantity & Optional Matching Mesh */}
+              <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#E6E2D8] pt-4">
+                <div className="flex items-center gap-3">
+                  <label
+                    htmlFor="cfg-qty"
+                    className="text-xs font-semibold text-[#141413]"
+                  >
+                    تعداد این دهانه:
+                  </label>
+                  <div className="flex items-stretch overflow-hidden rounded-[3px] border border-[#E6E2D8] bg-[#FFFFFF]">
+                    <button
+                      type="button"
+                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                      aria-label="کاهش تعداد"
+                      className="inline-flex items-center justify-center border-e border-[#E6E2D8] bg-[#FAF9F6] px-2.5 text-[#141413] hover:bg-[#F1EFEA]"
+                    >
+                      <Minus className="h-3.5 w-3.5" aria-hidden="true" />
+                    </button>
+                    <input
+                      id="cfg-qty"
+                      type="number"
+                      min={1}
+                      max={50}
+                      dir="ltr"
+                      value={quantity}
+                      onChange={(e) =>
+                        setQuantity(
+                          Math.max(1, Math.min(50, Number(e.target.value) || 1))
+                        )
+                      }
+                      className="tabular-nums w-14 bg-transparent px-2 py-2 text-center text-sm font-bold text-[#141413] focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setQuantity((q) => Math.min(50, q + 1))}
+                      aria-label="افزایش تعداد"
+                      className="inline-flex items-center justify-center border-s border-[#E6E2D8] bg-[#FAF9F6] px-2.5 text-[#141413] hover:bg-[#F1EFEA]"
+                    >
+                      <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+                    </button>
+                  </div>
+                </div>
+
+                {activeRule.supportsMesh && (
+                  <label className="inline-flex cursor-pointer items-center gap-2.5 rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] px-3.5 py-2 text-xs font-semibold text-[#141413]">
+                    <input
+                      type="checkbox"
+                      checked={includeMesh}
+                      onChange={(e) => setIncludeMesh(e.target.checked)}
+                      className="h-4 w-4 rounded border-[#CEC8BA] accent-[#9A6B3F]"
+                    />
+                    <span>افزودن توری پلیسه همرنگ</span>
+                  </label>
+                )}
+              </div>
+            </section>
           </div>
         </div>
 
-        {/* Live SVG Preview + Engineering & Live Price Summary Card */}
-        <div className="lg:col-span-5">
-          <div className="sticky top-24 space-y-5 border border-border bg-surface p-5 sm:p-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-ink">
-                پیش‌نمایش مهندسی و برآورد زنده
-              </h2>
-              <span className="rounded-[2px] bg-bronze-soft px-2.5 py-1 text-xs font-bold text-bronze-hover">
-                {activeRule.shortLabel}
-              </span>
+        {/* Left/End: Sticky Architectural Studio Frame (5 cols) */}
+        <div className="lg:col-span-5 lg:sticky lg:top-20">
+          <div className="overflow-hidden rounded-[4px] border border-[#E6E2D8] bg-[#FFFFFF]">
+            {/* Studio Header Strip */}
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#E6E2D8] bg-[#FFFFFF] px-4 py-3">
+              <div>
+                <p className="font-display text-sm font-bold text-[#141413]">
+                  {activeRule.label}
+                </p>
+                <p className="tabular-nums text-[11px] text-[#5C5852]">
+                  ابعاد فعال: {toPersianDigits(widthCm)} ×{" "}
+                  {toPersianDigits(heightCm)} سانتی‌متر
+                </p>
+              </div>
+
+              {fxSummary ? (
+                <div className="flex items-center gap-2 rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] px-2.5 py-1 text-[11px]">
+                  <span
+                    className="h-2 w-2 shrink-0 rounded-full bg-[#2C5E4F]"
+                    aria-hidden="true"
+                  />
+                  <span className="tabular-nums font-medium text-[#141413]">
+                    مبنای ارز: {formatToman(fxSummary.activeUsdIrr)}
+                  </span>
+                  <span className="hidden text-[#5C5852] sm:inline">
+                    ({formatFxTimestamp(fxSummary.lastSyncedAt)})
+                  </span>
+                </div>
+              ) : (
+                <span className="rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] px-2.5 py-1 text-[11px] font-medium text-[#5C5852]">
+                  {activeRule.shortLabel}
+                </span>
+              )}
             </div>
 
-            <WindowSvgPreview
-              system={system}
-              widthCm={widthCm}
-              heightCm={heightCm}
-              panelCount={panelCount}
-              openings={openings}
-              finish={finish}
-            />
+            {/* Full-Bleed Architectural Drafting Canvas */}
+            <div
+              className="bg-[#F7F5F0] px-4 py-5"
+              style={{
+                backgroundImage:
+                  "radial-gradient(#D5CFC3 1px, transparent 1px)",
+                backgroundSize: "18px 18px",
+              }}
+            >
+              <WindowSvgPreview
+                system={system}
+                widthCm={widthCm}
+                heightCm={heightCm}
+                panelCount={panelCount}
+                openings={openings}
+                finish={finish}
+              />
+            </div>
 
-            {/* Live Engineering Metrics */}
-            <dl className="grid grid-cols-3 gap-2.5 text-center">
-              <div className="rounded-[2px] border border-border bg-surface-subtle p-3">
-                <dt className="text-[11px] text-ink-muted">مساحت واحد</dt>
-                <dd className="tabular-nums mt-1 text-sm font-extrabold text-ink">
-                  {toPersianDigits(validation.areaSqm)} م²
+            {/* Compact Metric Ribbon */}
+            <dl className="grid grid-cols-3 divide-x divide-x-reverse divide-[#E6E2D8] border-t border-[#E6E2D8] bg-[#FAF9F6] text-center">
+              <div className="px-2 py-3">
+                <dt className="text-[11px] text-[#5C5852]">مساحت واحد</dt>
+                <dd className="font-display tabular-nums mt-0.5 text-sm font-bold text-[#141413]">
+                  {toPersianDigits(validation.areaSqm)} مترمربع
                 </dd>
               </div>
-              <div className="rounded-[2px] border border-border bg-surface-subtle p-3">
-                <dt className="text-[11px] text-ink-muted">عرض هر لنگه</dt>
-                <dd className="tabular-nums mt-1 text-sm font-extrabold text-ink">
-                  {toPersianDigits(validation.panelWidthCm)} سم
+              <div className="px-2 py-3">
+                <dt className="text-[11px] text-[#5C5852]">عرض هر لنگه</dt>
+                <dd className="font-display tabular-nums mt-0.5 text-sm font-bold text-[#141413]">
+                  {toPersianDigits(validation.panelWidthCm)} سانتی‌متر
                 </dd>
               </div>
-              <div className="rounded-[2px] border border-border bg-surface-subtle p-3">
-                <dt className="text-[11px] text-ink-muted">محیط فریم</dt>
-                <dd className="tabular-nums mt-1 text-sm font-extrabold text-ink">
-                  {toPersianDigits(validation.perimeterMeters)} م
+              <div className="px-2 py-3">
+                <dt className="text-[11px] text-[#5C5852]">محیط فریم</dt>
+                <dd className="font-display tabular-nums mt-0.5 text-sm font-bold text-[#141413]">
+                  {toPersianDigits(validation.perimeterMeters)} متر
                 </dd>
               </div>
             </dl>
-
-            {/* Live Price Card */}
-            {pricingLoading ? (
-              <div className="rounded-[2px] border border-border bg-surface-subtle p-4 text-xs text-ink-muted">
-                در حال دریافت تعرفه روز کارخانه...
-              </div>
-            ) : activePriceBreakdown ? (
-              <div className="border border-border-dark bg-charcoal p-4 text-canvas">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs text-border-strong">
-                    برآورد تقریبی ({toPersianDigits(quantity)} عدد):
-                  </span>
-                  <span className="tabular-nums text-base font-extrabold text-bronze">
-                    {formatToman(activePriceBreakdown.totalIrr)}
-                  </span>
-                </div>
-                <p className="tabular-nums mt-1.5 text-[11px] text-ink-subtle">
-                  شامل پروفیل، شیشه، نصب و رگلاژ استاندارد • مساحت مبنای محاسبه:{" "}
-                  {toPersianDigits(activePriceBreakdown.billableAreaSqm)} مترمربع
-                  {fxSummary
-                    ? ` • نرخ مبنا: ${formatToman(fxSummary.activeUsdIrr)}`
-                    : ""}
-                </p>
-              </div>
-            ) : null}
 
             {/* Validation Errors */}
             {validation.errors.length > 0 && (
               <div
                 role="alert"
-                className="space-y-1.5 rounded-[3px] border border-red-200 bg-red-50 p-3.5 text-xs leading-6 text-[#991B1B]"
+                className="space-y-1 border-t border-[#F5C6C6] bg-[#FDF2F2] px-4 py-3 text-xs leading-6 text-[#991B1B]"
               >
                 {validation.errors.map((err) => (
                   <p key={err}>{err}</p>
@@ -994,12 +1388,16 @@ function WindowConfiguratorInner({
               </div>
             )}
 
-            {/* Engineering Warnings */}
+            {/* Engineering Warnings (Calm Warm-Bronze Architectural Advisory) */}
             {validation.warnings.length > 0 && (
-              <div className="space-y-2 rounded-[3px] border border-bronze/40 bg-bronze-soft/75 p-3.5 text-xs leading-6 text-bronze-hover">
+              <div className="space-y-1.5 border-t border-[#E2D3BC] bg-[#FBF8F3] px-4 py-3 text-xs leading-6 text-[#5C4428]">
                 <div className="flex items-center gap-1.5 font-bold">
-                  <AlertTriangle className="h-4 w-4 shrink-0" strokeWidth={1.6} aria-hidden="true" />
-                  <span>توصیه‌های فنی کارشناسی</span>
+                  <AlertTriangle
+                    className="h-4 w-4 shrink-0 text-[#9A6B3F]"
+                    strokeWidth={1.6}
+                    aria-hidden="true"
+                  />
+                  <span>توصیه فنی کارشناسی</span>
                 </div>
                 {validation.warnings.map((warn) => (
                   <p key={warn}>{warn}</p>
@@ -1007,33 +1405,77 @@ function WindowConfiguratorInner({
               </div>
             )}
 
-            <button
-              type="button"
-              onClick={handleAddItem}
-              disabled={!validation.isValid}
-              className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[3px] bg-charcoal px-5 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <Plus className="h-4 w-4" aria-hidden="true" />
-              <span>افزودن به لیست استعلام پروژه</span>
-            </button>
+            {/* WCAG-AAA High-Contrast Dark Financial Bar + Primary Action */}
+            <div className="bg-[#141413] p-5 text-[#FAF9F6]">
+              {pricingLoading ? (
+                <p className="text-xs text-[#B8B3AA]">
+                  در حال دریافت تعرفه روز کارخانه زنجان...
+                </p>
+              ) : activePriceBreakdown ? (
+                <div>
+                  <p className="text-xs font-medium text-[#D6C2A5]">
+                    برآورد تقریبی کارخانه ({toPersianDigits(quantity)} عدد)
+                  </p>
+                  <p className="font-display tabular-nums mt-1 text-2xl font-extrabold tracking-tight text-[#FAF9F6] sm:text-[28px]">
+                    {formatToman(activePriceBreakdown.totalIrr)}
+                  </p>
+                  <p className="tabular-nums mt-1.5 text-xs leading-relaxed text-[#B8B3AA]">
+                    شامل پروفیل، شیشه، نصب و رگلاژ استاندارد · مساحت مبنا:{" "}
+                    {toPersianDigits(activePriceBreakdown.billableAreaSqm)}{" "}
+                    مترمربع
+                    {fxSummary
+                      ? ` · ${getFxSourceLabel(fxSummary.sourceUsed)}`
+                      : ""}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-xs text-[#B8B3AA]">
+                  برای مشاهده برآورد قیمت، ابعاد معتبر در بازه مجاز انتخاب کنید.
+                </p>
+              )}
+
+              <button
+                type="button"
+                onClick={handleAddItem}
+                disabled={!validation.isValid}
+                className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[3px] bg-[#FAF9F6] px-5 py-2.5 text-sm font-bold text-[#141413] transition-colors hover:bg-[#E8E2D5] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {justAdded ? (
+                  <>
+                    <Check className="h-4 w-4 text-[#2C5E4F]" aria-hidden="true" />
+                    <span>به لیست پروژه اضافه شد</span>
+                  </>
+                ) : (
+                  <>
+                    <Plus className="h-4 w-4" aria-hidden="true" />
+                    <span>افزودن به لیست استعلام پروژه</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Multi-Item Project Inquiry List */}
+      {/* Section 04: Multi-Item Project Inquiry List + Official Submission */}
       <section
         aria-labelledby="inquiry-list-heading"
-        className="no-print border border-border bg-surface p-5 sm:p-8"
+        className="no-print overflow-hidden rounded-[4px] border border-[#E6E2D8] bg-[#FFFFFF]"
       >
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#E6E2D8] bg-[#FAF9F6] px-5 py-4 sm:px-6">
           <div>
-            <h2
-              id="inquiry-list-heading"
-              className="text-lg font-extrabold text-charcoal sm:text-xl"
-            >
-              لیست اقلام استعلام پروژه
-            </h2>
-            <p className="mt-1 text-xs text-ink-muted sm:text-sm">
+            <div className="flex items-center gap-2.5">
+              <span className="font-display inline-flex h-6 w-6 items-center justify-center rounded-[3px] bg-[#F1EFEA] text-xs font-bold text-[#9A6B3F]">
+                ۰۴
+              </span>
+              <h2
+                id="inquiry-list-heading"
+                className="font-display text-lg font-bold text-[#141413]"
+              >
+                لیست اقلام استعلام پروژه و خروجی نقشه
+              </h2>
+            </div>
+            <p className="mt-1 text-xs text-[#5C5852] sm:text-sm">
               {items.length > 0
                 ? `تعداد ${toPersianDigits(
                     items.length
@@ -1042,15 +1484,15 @@ function WindowConfiguratorInner({
                   )} دهانه) به مجموع مساحت ${toPersianDigits(
                     totalAreaSqm
                   )} مترمربع ثبت شده است.`
-                : "هنوز ردیفی به لیست اضافه نشده است؛ می‌توانید چند دهانه بسازید یا دهانه فعلی را مستقیماً ثبت و ارسال کنید."}
+                : "هنوز ردیفی اضافه نشده است؛ می‌توانید چند دهانه بسازید یا دهانه فعلی را مستقیماً ثبت و ارسال کنید."}
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
             {pricedSummary && (
-              <div className="rounded-[2px] border border-bronze/30 bg-bronze-soft px-4 py-2 text-xs sm:text-sm">
-                <span className="text-bronze-hover">جمع برآورد تقریبی: </span>
-                <strong className="tabular-nums text-charcoal">
+              <div className="rounded-[3px] border border-[#E2D3BC] bg-[#FBF8F3] px-4 py-2 text-xs sm:text-sm">
+                <span className="text-[#5C4428]">جمع برآورد تقریبی: </span>
+                <strong className="font-display tabular-nums text-[#141413]">
                   {formatToman(pricedSummary.totalIrr)}
                 </strong>
               </div>
@@ -1060,7 +1502,7 @@ function WindowConfiguratorInner({
               <button
                 type="button"
                 onClick={handleClearList}
-                className="inline-flex items-center gap-1.5 rounded-[2px] border border-border px-3.5 py-2 text-xs font-semibold text-ink-muted hover:border-red-300 hover:text-[#991B1B]"
+                className="inline-flex items-center gap-1.5 rounded-[3px] border border-[#E6E2D8] bg-[#FFFFFF] px-3.5 py-2 text-xs font-semibold text-[#5C5852] hover:border-red-300 hover:text-[#991B1B]"
               >
                 <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                 <span>پاک کردن لیست</span>
@@ -1069,136 +1511,141 @@ function WindowConfiguratorInner({
           </div>
         </div>
 
-        {items.length > 0 && (
-          <div className="mt-5 divide-y divide-border border border-border bg-surface-subtle">
-            {items.map((item, idx) => {
-              const gKey = resolveItemGlass(item);
-              const itemPriced = pricedSummary?.items[idx];
-              return (
-                <div
-                  key={item.id}
-                  className="flex flex-col justify-between gap-3 p-4 sm:flex-row sm:items-center"
-                >
-                  <div className="space-y-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="tabular-nums rounded-[2px] bg-charcoal px-2 py-0.5 text-[11px] font-bold text-bronze">
-                        {toPersianDigits(idx + 1)}
-                      </span>
-                      <span className="text-sm font-bold text-charcoal">
-                        {item.locationName}
-                      </span>
-                      <span className="rounded-[2px] bg-bronze-soft px-2 py-0.5 text-xs font-semibold text-bronze-hover">
-                        {SYSTEM_RULES[item.system].shortLabel}
-                      </span>
-                    </div>
-                    <p className="tabular-nums text-xs leading-6 text-ink-muted">
-                      ابعاد: {toPersianDigits(item.widthCm)} ×{" "}
-                      {toPersianDigits(item.heightCm)} سم •{" "}
-                      {toPersianDigits(item.panelCount)} لنگه (
-                      {item.openings.map((o) => OPENING_LABELS[o]).join(" + ")}) •{" "}
-                      {GLASS_OPTIONS[gKey].shortLabel} • رنگ{" "}
-                      {FRAME_FINISHES[item.finish].label}
-                      {item.includeMesh ? " • همراه با توری پلیسه" : ""}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center justify-between gap-4 sm:justify-end">
-                    <div className="tabular-nums text-end text-xs">
-                      <p className="font-bold text-ink">
-                        {toPersianDigits(item.quantity)} عدد (
-                        {toPersianDigits(
-                          Number((item.areaSqm * item.quantity).toFixed(2))
-                        )}{" "}
-                        م²)
+        <div className="p-5 sm:p-6">
+          {items.length > 0 && (
+            <div className="mb-6 divide-y divide-[#E6E2D8] rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6]">
+              {items.map((item, idx) => {
+                const gKey = resolveItemGlass(item);
+                const itemPriced = pricedSummary?.items[idx];
+                return (
+                  <div
+                    key={item.id}
+                    className="flex flex-col justify-between gap-3 p-4 sm:flex-row sm:items-center"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="tabular-nums rounded-[2px] border border-[#DFDBD0] bg-[#F1EFEA] px-2 py-0.5 text-[11px] font-bold text-[#141413]">
+                          {toPersianDigits(idx + 1)}
+                        </span>
+                        <span className="text-sm font-bold text-[#141413]">
+                          {item.locationName}
+                        </span>
+                        <span className="rounded-[2px] border border-[#E7D3B5] bg-[#FBF5EC] px-2 py-0.5 text-xs font-semibold text-[#8A5A2B]">
+                          {SYSTEM_RULES[item.system].shortLabel}
+                        </span>
+                      </div>
+                      <p className="tabular-nums text-xs leading-6 text-[#5C5852]">
+                        ابعاد: {toPersianDigits(item.widthCm)} ×{" "}
+                        {toPersianDigits(item.heightCm)} سانتی‌متر ·{" "}
+                        {toPersianDigits(item.panelCount)} لنگه (
+                        {item.openings.map((o) => OPENING_LABELS[o]).join(" + ")}
+                        ) · {GLASS_OPTIONS[gKey].shortLabel} · رنگ{" "}
+                        {FRAME_FINISHES[item.finish].label}
+                        {item.includeMesh ? " · همراه با توری پلیسه" : ""}
                       </p>
-                      {itemPriced && (
-                        <p className="mt-0.5 font-bold text-bronze-hover">
-                          {formatToman(itemPriced.breakdown.totalIrr)}
-                        </p>
-                      )}
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveItem(item.id)}
-                      aria-label={`حذف ${item.locationName}`}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-[2px] border border-border bg-surface text-ink-muted transition-colors hover:border-red-300 hover:text-[#991B1B]"
-                    >
-                      <Trash2 className="h-4 w-4" aria-hidden="true" />
-                    </button>
+                    <div className="flex items-center justify-between gap-4 sm:justify-end">
+                      <div className="tabular-nums text-end text-xs">
+                        <p className="font-bold text-[#141413]">
+                          {toPersianDigits(item.quantity)} عدد (
+                          {toPersianDigits(
+                            Number((item.areaSqm * item.quantity).toFixed(2))
+                          )}{" "}
+                          مترمربع)
+                        </p>
+                        {itemPriced && (
+                          <p className="mt-0.5 font-bold text-[#9A6B3F]">
+                            {formatToman(itemPriced.breakdown.totalIrr)}
+                          </p>
+                        )}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveItem(item.id)}
+                        aria-label={`حذف ${item.locationName}`}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-[3px] border border-[#E6E2D8] bg-[#FFFFFF] text-[#5C5852] transition-colors hover:border-red-300 hover:text-[#991B1B]"
+                      >
+                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
+          )}
+
+          {/* Export Actions */}
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="inline-flex items-center gap-2 rounded-[3px] bg-[#141413] px-5 py-2.5 text-sm font-semibold text-[#FAF9F6] transition-colors hover:bg-[#262523]"
+            >
+              <Printer className="h-4 w-4 text-[#D6C2A5]" aria-hidden="true" />
+              <span>چاپ / ذخیره PDF برگه مشخصات فنی (A4)</span>
+            </button>
+
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-[3px] border border-[#CEC8BA] bg-[#FFFFFF] px-5 py-2.5 text-sm font-semibold text-[#141413] transition-colors hover:border-[#141413]"
+            >
+              <ExternalLink
+                className="h-4 w-4 text-[#9A6B3F]"
+                aria-hidden="true"
+              />
+              <span>ارسال لیست به واتساپ کارخانه</span>
+            </a>
+
+            <button
+              type="button"
+              onClick={handleCopySummary}
+              className="inline-flex items-center gap-2 rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] px-4 py-2.5 text-sm font-semibold text-[#141413] transition-colors hover:border-[#CEC8BA] hover:bg-[#FFFFFF]"
+            >
+              {copied ? (
+                <>
+                  <Check className="h-4 w-4 text-[#2C5E4F]" aria-hidden="true" />
+                  <span>مشخصات فنی کپی شد</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4 text-[#5C5852]" aria-hidden="true" />
+                  <span>کپی متن مشخصات فنی</span>
+                </>
+              )}
+            </button>
           </div>
-        )}
-
-        {/* Export Actions */}
-        <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-border pt-6">
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="inline-flex items-center gap-2 rounded-[3px] bg-charcoal px-5 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft"
-          >
-            <Printer className="h-4 w-4 text-bronze" aria-hidden="true" />
-            <span>چاپ / ذخیره PDF برگه مشخصات فنی (A4)</span>
-          </button>
-
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-[3px] border border-border-strong bg-surface px-5 py-3 text-sm font-semibold text-charcoal transition-colors hover:border-charcoal"
-          >
-            <ExternalLink className="h-4 w-4 text-bronze" aria-hidden="true" />
-            <span>ارسال لیست به واتساپ کارخانه</span>
-          </a>
-
-          <button
-            type="button"
-            onClick={handleCopySummary}
-            className="inline-flex items-center gap-2 rounded-[3px] border border-border bg-surface-subtle px-4 py-3 text-sm font-semibold text-charcoal transition-colors hover:bg-surface"
-          >
-            {copied ? (
-              <>
-                <Check className="h-4 w-4 text-pine" aria-hidden="true" />
-                <span>مشخصات فنی کپی شد</span>
-              </>
-            ) : (
-              <>
-                <Copy className="h-4 w-4 text-ink-muted" aria-hidden="true" />
-                <span>کپی متن مشخصات فنی</span>
-              </>
-            )}
-          </button>
         </div>
       </section>
 
       {/* Official Server-Authoritative Inquiry Submission Panel */}
       <section
         aria-labelledby="official-submit-heading"
-        className="no-print border border-border bg-surface-subtle p-5 sm:p-8"
+        className="no-print overflow-hidden rounded-[4px] border border-[#E6E2D8] bg-[#FFFFFF] p-5 sm:p-8"
       >
         {submitSuccess ? (
-          <div className="border border-bronze/40 bg-surface p-6 sm:p-8">
-            <div className="inline-flex items-center gap-2 bg-bronze-soft px-3.5 py-1 text-xs font-bold text-bronze-hover">
+          <div className="rounded-[3px] border border-[#C5DDD3] bg-[#EDF5F1]/40 p-6 sm:p-8">
+            <div className="inline-flex items-center gap-2 rounded-[3px] border border-[#C5DDD3] bg-[#EDF5F1] px-3.5 py-1 text-xs font-bold text-[#234E40]">
               <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
               <span>درخواست شما با موفقیت در سامانه کارخانه ثبت شد</span>
             </div>
 
             <h2
               id="official-submit-heading"
-              className="mt-4 text-xl font-extrabold text-charcoal"
+              className="font-display mt-4 text-xl font-extrabold text-[#141413]"
             >
               کد رهگیری رسمی پروژه شما صادر شد
             </h2>
 
-            <div className="mt-5 flex flex-wrap items-center gap-4 rounded-[2px] border border-border bg-surface-subtle p-4">
+            <div className="mt-5 flex flex-wrap items-center gap-4 rounded-[3px] border border-[#E6E2D8] bg-[#FFFFFF] p-4">
               <div>
-                <p className="text-xs text-ink-muted">کد رهگیری اختصاصی</p>
+                <p className="text-xs text-[#5C5852]">کد رهگیری اختصاصی</p>
                 <p
                   dir="ltr"
-                  className="mt-1 font-mono text-xl font-extrabold tracking-wider text-charcoal"
+                  className="mt-1 font-mono text-xl font-extrabold tracking-wider text-[#141413]"
                 >
                   {submitSuccess.trackingCode}
                 </p>
@@ -1207,27 +1654,33 @@ function WindowConfiguratorInner({
               <button
                 type="button"
                 onClick={handleCopyTrackingCode}
-                className="inline-flex items-center gap-1.5 rounded-[2px] border border-border bg-surface px-3.5 py-2 text-xs font-semibold text-charcoal hover:border-charcoal"
+                className="inline-flex items-center gap-1.5 rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] px-3.5 py-2 text-xs font-semibold text-[#141413] hover:border-[#141413]"
               >
                 {codeCopied ? (
                   <>
-                    <Check className="h-3.5 w-3.5 text-pine" aria-hidden="true" />
+                    <Check
+                      className="h-3.5 w-3.5 text-[#2C5E4F]"
+                      aria-hidden="true"
+                    />
                     <span>کد کپی شد</span>
                   </>
                 ) : (
                   <>
-                    <Copy className="h-3.5 w-3.5 text-ink-muted" aria-hidden="true" />
+                    <Copy
+                      className="h-3.5 w-3.5 text-[#5C5852]"
+                      aria-hidden="true"
+                    />
                     <span>کپی کد رهگیری</span>
                   </>
                 )}
               </button>
 
               <div className="ms-auto text-start sm:text-end">
-                <p className="text-xs text-ink-muted">
+                <p className="text-xs text-[#5C5852]">
                   برآورد محاسبه‌شده سرور ({toPersianDigits(submitSuccess.itemCount)}{" "}
                   دهانه)
                 </p>
-                <p className="tabular-nums mt-1 text-base font-extrabold text-bronze-hover">
+                <p className="font-display tabular-nums mt-1 text-base font-extrabold text-[#141413]">
                   {formatToman(submitSuccess.estimatedTotalIrr)}
                 </p>
               </div>
@@ -1236,7 +1689,7 @@ function WindowConfiguratorInner({
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Link
                 href={`/track/?code=${submitSuccess.trackingCode}`}
-                className="inline-flex items-center gap-2 rounded-[3px] bg-charcoal px-5 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft"
+                className="inline-flex items-center gap-2 rounded-[3px] bg-[#141413] px-5 py-3 text-sm font-semibold text-[#FAF9F6] transition-colors hover:bg-[#262523]"
               >
                 <span>پیگیری وضعیت درخواست</span>
               </Link>
@@ -1244,7 +1697,7 @@ function WindowConfiguratorInner({
               <button
                 type="button"
                 onClick={() => setSubmitSuccess(null)}
-                className="inline-flex items-center gap-2 rounded-[3px] border border-border-strong bg-surface px-4 py-3 text-sm font-semibold text-charcoal hover:border-charcoal"
+                className="inline-flex items-center gap-2 rounded-[3px] border border-[#CEC8BA] bg-[#FFFFFF] px-4 py-3 text-sm font-semibold text-[#141413] hover:border-[#141413]"
               >
                 <span>ثبت استعلام جدید</span>
               </button>
@@ -1255,11 +1708,11 @@ function WindowConfiguratorInner({
             <div>
               <h2
                 id="official-submit-heading"
-                className="text-lg font-extrabold text-charcoal sm:text-xl"
+                className="font-display text-lg font-extrabold text-[#141413] sm:text-xl"
               >
                 ثبت رسمی استعلام و دریافت کد رهگیری
               </h2>
-              <p className="mt-1 text-xs leading-6 text-ink-muted sm:text-sm">
+              <p className="mt-1 text-xs leading-6 text-[#5C5852] sm:text-sm">
                 اطلاعات تماس خود را وارد کنید تا لیست اقلام بالا در سامانه
                 کارخانه ثبت شده و کد رهگیری <span dir="ltr">SPN-XXXXXX</span>{" "}
                 برای شما صادر شود.
@@ -1282,7 +1735,7 @@ function WindowConfiguratorInner({
               <div>
                 <label
                   htmlFor="submit-name"
-                  className="block text-xs font-semibold text-ink"
+                  className="block text-xs font-semibold text-[#141413]"
                 >
                   نام و نام خانوادگی *
                 </label>
@@ -1292,14 +1745,14 @@ function WindowConfiguratorInner({
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   placeholder="مثلاً: مهندس علی محمدی"
-                  className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none"
+                  className="mt-1.5 w-full rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] px-3.5 py-2.5 text-sm text-[#141413] focus:border-[#9A6B3F] focus:bg-[#FFFFFF] focus:outline-none"
                 />
               </div>
 
               <div>
                 <label
                   htmlFor="submit-phone"
-                  className="block text-xs font-semibold text-ink"
+                  className="block text-xs font-semibold text-[#141413]"
                 >
                   شماره تماس *
                 </label>
@@ -1310,14 +1763,14 @@ function WindowConfiguratorInner({
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="09120000000"
-                  className="tabular-nums mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-end text-sm text-ink focus:border-bronze focus:outline-none"
+                  className="tabular-nums mt-1.5 w-full rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] px-3.5 py-2.5 text-end text-sm text-[#141413] focus:border-[#9A6B3F] focus:bg-[#FFFFFF] focus:outline-none"
                 />
               </div>
 
               <div>
                 <label
                   htmlFor="submit-city"
-                  className="block text-xs font-semibold text-ink"
+                  className="block text-xs font-semibold text-[#141413]"
                 >
                   شهر پروژه *
                 </label>
@@ -1327,7 +1780,7 @@ function WindowConfiguratorInner({
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="مثلاً: زنجان / تهران"
-                  className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none"
+                  className="mt-1.5 w-full rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] px-3.5 py-2.5 text-sm text-[#141413] focus:border-[#9A6B3F] focus:bg-[#FFFFFF] focus:outline-none"
                 />
               </div>
             </div>
@@ -1335,7 +1788,7 @@ function WindowConfiguratorInner({
             <div>
               <label
                 htmlFor="submit-notes"
-                className="block text-xs font-semibold text-ink"
+                className="block text-xs font-semibold text-[#141413]"
               >
                 توضیحات اختیاری (طبقه نصب، وضعیت بازسازی یا زمان‌بندی)
               </label>
@@ -1345,7 +1798,7 @@ function WindowConfiguratorInner({
                 value={inquiryNotes}
                 onChange={(e) => setInquiryNotes(e.target.value)}
                 placeholder="مثلاً: تعویض بدون تخریب پنجره‌های طبقه سوم..."
-                className="mt-1.5 w-full rounded-[2px] border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-bronze focus:outline-none"
+                className="mt-1.5 w-full rounded-[3px] border border-[#E6E2D8] bg-[#FAF9F6] px-3.5 py-2.5 text-sm text-[#141413] focus:border-[#9A6B3F] focus:bg-[#FFFFFF] focus:outline-none"
               />
             </div>
 
@@ -1362,7 +1815,7 @@ function WindowConfiguratorInner({
             {submitError && (
               <div
                 role="alert"
-                className="rounded-[2px] border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-[#991B1B] sm:text-sm"
+                className="rounded-[3px] border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-[#991B1B] sm:text-sm"
               >
                 {submitError}
               </div>
@@ -1371,7 +1824,7 @@ function WindowConfiguratorInner({
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center justify-center gap-2 rounded-[3px] bg-charcoal px-6 py-3.5 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex items-center justify-center gap-2 rounded-[3px] bg-[#141413] px-6 py-3.5 text-sm font-semibold text-[#FAF9F6] transition-colors hover:bg-[#262523] disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Send className="h-4 w-4" aria-hidden="true" />
               <span>
@@ -1416,12 +1869,20 @@ function WindowConfiguratorInner({
               <th className="border border-black px-2 py-2 text-start">ردیف</th>
               <th className="border border-black px-2 py-2 text-start">موقعیت</th>
               <th className="border border-black px-2 py-2 text-start">سیستم</th>
-              <th className="border border-black px-2 py-2 text-start">ابعاد (سم)</th>
-              <th className="border border-black px-2 py-2 text-start">بازشو و لنگه</th>
-              <th className="border border-black px-2 py-2 text-start">شیشه و رنگ</th>
+              <th className="border border-black px-2 py-2 text-start">
+                ابعاد (سانتی‌متر)
+              </th>
+              <th className="border border-black px-2 py-2 text-start">
+                بازشو و لنگه
+              </th>
+              <th className="border border-black px-2 py-2 text-start">
+                شیشه و رنگ
+              </th>
               <th className="border border-black px-2 py-2 text-start">تعداد</th>
               <th className="border border-black px-2 py-2 text-start">مساحت</th>
-              <th className="border border-black px-2 py-2 text-start">برآورد (تومان)</th>
+              <th className="border border-black px-2 py-2 text-start">
+                برآورد (تومان)
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -1459,7 +1920,7 @@ function WindowConfiguratorInner({
                     {toPersianDigits(
                       Number((item.areaSqm * item.quantity).toFixed(2))
                     )}{" "}
-                    م²
+                    مترمربع
                   </td>
                   <td className="tabular-nums border border-black px-2 py-2 font-semibold">
                     {itemPriced

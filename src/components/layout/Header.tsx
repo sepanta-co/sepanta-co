@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ChevronDown,
+  ClipboardCheck,
   Menu,
   Phone,
   ShieldCheck,
@@ -28,6 +29,7 @@ function isRouteActive(pathname: string, href: string): boolean {
 
 export function Header() {
   const pathname = usePathname() || "/";
+  const isConfiguratorPage = isRouteActive(pathname, "/configurator/");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [productsMenuOpen, setProductsMenuOpen] = useState(false);
 
@@ -59,12 +61,14 @@ export function Header() {
             تولید CNC کارخانه زنجان و اجرای سراسری پروژه‌ها در ایران
           </p>
 
-          <div className="flex items-center gap-5">
-            {PORTAL_NAV_LINKS.map((portal) => (
+          <div className="flex items-center gap-4">
+            {PORTAL_NAV_LINKS.map((portal, index) => (
               <Link
                 key={portal.href}
                 href={portal.href}
-                className="inline-flex items-center gap-1.5 text-ink-muted transition-colors hover:text-charcoal"
+                className={`inline-flex items-center gap-1.5 text-ink-muted transition-colors hover:text-charcoal ${
+                  index > 0 ? "border-s border-border ps-4" : ""
+                }`}
               >
                 <ShieldCheck
                   className="h-3.5 w-3.5 text-ink-subtle"
@@ -228,17 +232,31 @@ export function Header() {
               </span>
             </a>
 
-            <Link
-              href="/configurator/"
-              className="inline-flex items-center gap-2 rounded-[3px] border border-charcoal px-4 py-2 text-[13px] font-medium text-charcoal transition-colors hover:bg-charcoal hover:text-canvas"
-            >
-              <SlidersHorizontal
-                className="h-3.5 w-3.5 shrink-0"
-                strokeWidth={1.5}
-                aria-hidden="true"
-              />
-              <span>پیکربندی و برآورد قیمت</span>
-            </Link>
+            {isConfiguratorPage ? (
+              <Link
+                href="/track/"
+                className="inline-flex items-center gap-2 rounded-[3px] border border-charcoal px-4 py-2 text-[13px] font-medium text-charcoal transition-colors hover:bg-charcoal hover:text-canvas"
+              >
+                <ClipboardCheck
+                  className="h-3.5 w-3.5 shrink-0"
+                  strokeWidth={1.5}
+                  aria-hidden="true"
+                />
+                <span>پیگیری سفارش</span>
+              </Link>
+            ) : (
+              <Link
+                href="/configurator/"
+                className="inline-flex items-center gap-2 rounded-[3px] border border-charcoal px-4 py-2 text-[13px] font-medium text-charcoal transition-colors hover:bg-charcoal hover:text-canvas"
+              >
+                <SlidersHorizontal
+                  className="h-3.5 w-3.5 shrink-0"
+                  strokeWidth={1.5}
+                  aria-hidden="true"
+                />
+                <span>پیکربندی و برآورد قیمت</span>
+              </Link>
+            )}
           </div>
         </div>
       </header>
@@ -354,18 +372,33 @@ export function Header() {
             </nav>
 
             <div className="border-t border-border bg-surface p-4">
-              <Link
-                href="/configurator/"
-                onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[3px] bg-charcoal px-4 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft"
-              >
-                <SlidersHorizontal
-                  className="h-4 w-4"
-                  strokeWidth={1.5}
-                  aria-hidden="true"
-                />
-                <span>پیکربندی و برآورد قیمت</span>
-              </Link>
+              {isConfiguratorPage ? (
+                <Link
+                  href="/track/"
+                  onClick={() => setDrawerOpen(false)}
+                  className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[3px] bg-charcoal px-4 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft"
+                >
+                  <ClipboardCheck
+                    className="h-4 w-4"
+                    strokeWidth={1.5}
+                    aria-hidden="true"
+                  />
+                  <span>پیگیری سفارش</span>
+                </Link>
+              ) : (
+                <Link
+                  href="/configurator/"
+                  onClick={() => setDrawerOpen(false)}
+                  className="flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[3px] bg-charcoal px-4 py-3 text-sm font-semibold text-canvas transition-colors hover:bg-charcoal-soft"
+                >
+                  <SlidersHorizontal
+                    className="h-4 w-4"
+                    strokeWidth={1.5}
+                    aria-hidden="true"
+                  />
+                  <span>پیکربندی و برآورد قیمت</span>
+                </Link>
+              )}
             </div>
           </aside>
         </div>

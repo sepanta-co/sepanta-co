@@ -52,7 +52,7 @@ export function HeroSection() {
               تولید مهندسی درب و پنجره دوجداره{" "}
               <span
                 dir="ltr"
-                className="inline-block font-semibold tracking-tight text-[0.9em]"
+                className="inline-block font-bold tracking-tight text-[0.9em]"
               >
                 uPVC
               </span>{" "}

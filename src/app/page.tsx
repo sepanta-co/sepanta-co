@@ -112,6 +112,7 @@ export default function HomePage() {
 
       {/* 4. Technical Decision Band (uPVC vs Thermal Break) */}
       <section
+        id="comparison"
         aria-labelledby="comparison-heading"
         className="border-b border-border bg-surface-subtle py-16 md:py-24"
       >

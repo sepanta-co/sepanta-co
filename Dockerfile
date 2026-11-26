@@ -1,23 +1,39 @@
-FROM node:22-alpine AS builder
-
+FROM node:22-alpine AS deps
+RUN apk add --no-cache python3 make g++
 WORKDIR /app
-
 COPY package.json package-lock.json ./
 RUN npm ci
 
+FROM node:22-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
-RUN find /app/out -type f \( -name "*.html" -o -name "*.js" -o -name "*.css" -o -name "*.svg" -o -name "*.json" -o -name "*.xml" -o -name "*.txt" \) -exec gzip -9 -k {} \;
 
-FROM nginx:1.27-alpine-slim AS runner
+FROM node:22-alpine AS runner
+WORKDIR /app
 
-RUN rm -f /etc/nginx/conf.d/default.conf
-COPY docker/nginx.conf /etc/nginx/nginx.conf
-COPY --from=builder /app/out /usr/share/nginx/html
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1 \
+    PORT=3000 \
+    HOSTNAME="0.0.0.0" \
+    DATABASE_PATH="/app/data/sepanta.db"
 
-EXPOSE 80
+RUN addgroup -S -g 1001 nodejs \
+    && adduser -S -u 1001 -G nodejs nextjs \
+    && mkdir -p /app/data /app/uploads \
+    && chown -R nextjs:nodejs /app/data /app/uploads
 
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget -qO- http://127.0.0.1/healthz || exit 1
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+USER nextjs
+
+EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD wget -qO- http://127.0.0.1:3000/api/health/ || exit 1
+
+CMD ["node", "server.js"]

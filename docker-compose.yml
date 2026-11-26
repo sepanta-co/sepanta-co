@@ -1,12 +1,38 @@
 services:
-  sepanta-web:
+  sepanta-app:
     build:
       context: .
       dockerfile: Dockerfile
-    image: sepanta-web:phase1
-    container_name: sepanta-web
+    image: sepanta-app:phase2
+    container_name: sepanta-app
+    restart: unless-stopped
+    mem_limit: 512m
+    cpus: 0.75
+    environment:
+      DATABASE_PATH: /app/data/sepanta.db
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-me-in-prod}
+      SESSION_SECRET: ${SESSION_SECRET:-dev-session-secret-change-in-production}
+      SMS_PROVIDER: ${SMS_PROVIDER:-mock}
+    volumes:
+      - sepanta_data:/app/data
+      - sepanta_uploads:/app/uploads
+
+  sepanta-proxy:
+    image: nginx:1.27-alpine-slim
+    container_name: sepanta-proxy
+    restart: unless-stopped
     ports:
       - "8080:80"
-    restart: unless-stopped
-    mem_limit: 128m
-    cpus: 0.5
+    mem_limit: 48m
+    cpus: 0.25
+    depends_on:
+      sepanta-app:
+        condition: service_healthy
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./public:/usr/share/nginx/html:ro
+
+volumes:
+  sepanta_data:
+  sepanta_uploads:

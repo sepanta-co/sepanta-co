@@ -1,25 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import Database from "better-sqlite3";
+import type { PricingRuleRow } from "./pricing-calculator";
+
+export type { PricingRuleRow };
 
 const DB_PATH =
   process.env.DATABASE_PATH || path.join(process.cwd(), "data", "sepanta.db");
-
-export interface PricingRuleRow {
-  id: number;
-  system_key: string;
-  label: string;
-  base_price_per_sqm: number;
-  min_billable_sqm: number;
-  glass_standard_per_sqm: number;
-  glass_acoustic_per_sqm: number;
-  glass_triple_per_sqm: number;
-  glass_tempered_per_sqm: number;
-  color_surcharge_percent: number;
-  pleated_mesh_per_sqm: number;
-  installation_percent: number;
-  updated_at: string;
-}
 
 const globalForDb = globalThis as unknown as {
   __sepantaDb?: Database.Database;

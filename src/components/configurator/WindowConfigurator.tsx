@@ -1,15 +1,18 @@
 "use client";
 
-import { useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
   AlertTriangle,
   Check,
+  CheckCircle2,
   Copy,
   ExternalLink,
   Info,
   Plus,
   Printer,
+  Send,
   Trash2,
 } from "lucide-react";
 import {
@@ -27,6 +30,13 @@ import {
   type OpeningType,
 } from "@/lib/configurator-rules";
 import { toLatinDigits, toPersianDigits } from "@/lib/persian-seo";
+import {
+  calculateInquiryTotals,
+  calculateItemPrice,
+  formatToman,
+  type PricableInquiryItem,
+  type PricingRuleRow,
+} from "@/lib/pricing-calculator";
 import { SITE_CONFIG } from "@/lib/site-config";
 import { WindowSvgPreview } from "./WindowSvgPreview";
 
@@ -41,11 +51,23 @@ interface InquiryItem {
   heightCm: number;
   panelCount: number;
   openings: OpeningType[];
-  glass: GlassOptionKey;
+  glass?: GlassOptionKey;
+  glassType?: GlassOptionKey;
   finish: FrameFinishKey;
   includeMesh: boolean;
   quantity: number;
   areaSqm: number;
+}
+
+interface SubmissionSuccess {
+  trackingCode: string;
+  estimatedTotalIrr: number;
+  estimatedTotalToman: number;
+  itemCount: number;
+}
+
+function resolveItemGlass(item: InquiryItem): GlassOptionKey {
+  return item.glassType ?? item.glass ?? SYSTEM_RULES[item.system].defaultGlass;
 }
 
 function buildDefaultOpenings(
@@ -143,7 +165,57 @@ function WindowConfiguratorInner({
   const [quantity, setQuantity] = useState<number>(1);
   const [copied, setCopied] = useState(false);
 
+  // Live SQLite pricing rules
+  const [rulesMap, setRulesMap] = useState<Record<string, PricingRuleRow> | null>(
+    null
+  );
+  const [pricingLoading, setPricingLoading] = useState(true);
+
+  // Official inquiry submission state
+  const [customerName, setCustomerName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [city, setCity] = useState("");
+  const [inquiryNotes, setInquiryNotes] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<SubmissionSuccess | null>(
+    null
+  );
+  const [codeCopied, setCodeCopied] = useState(false);
+
   const nextIdSeqRef = useRef(1);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/pricing-rules/", { cache: "no-store" })
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Failed to fetch pricing rules");
+        const data = (await res.json()) as {
+          ok?: boolean;
+          rules?: PricingRuleRow[];
+        };
+        if (!cancelled && data.ok && Array.isArray(data.rules)) {
+          const map = Object.fromEntries(
+            data.rules.map((r) => [r.system_key, r])
+          );
+          setRulesMap(map);
+        }
+      })
+      .catch(() => {
+        // Graceful fallback to dimension-only mode
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setPricingLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const rawItemsJson = useSyncExternalStore(
     subscribeInquiryStore,
@@ -203,6 +275,39 @@ function WindowConfiguratorInner({
     includeMesh,
   });
 
+  const activePriceBreakdown = useMemo(() => {
+    if (!rulesMap || !rulesMap[system] || !validation.isValid) return null;
+    return calculateItemPrice(
+      {
+        locationName: locationName.trim() || "پنجره انتخاب‌شده",
+        system,
+        widthCm,
+        heightCm,
+        panelCount,
+        openings: openings.slice(0, panelCount),
+        glassType: glass,
+        finish,
+        includeMesh: activeRule.supportsMesh && includeMesh,
+        quantity: Math.max(1, Math.min(50, quantity)),
+      },
+      rulesMap[system]
+    );
+  }, [
+    rulesMap,
+    system,
+    validation.isValid,
+    locationName,
+    widthCm,
+    heightCm,
+    panelCount,
+    openings,
+    glass,
+    finish,
+    activeRule.supportsMesh,
+    includeMesh,
+    quantity,
+  ]);
+
   const handleAddItem = () => {
     if (!validation.isValid) return;
 
@@ -217,7 +322,7 @@ function WindowConfiguratorInner({
       heightCm,
       panelCount,
       openings: openings.slice(0, panelCount),
-      glass,
+      glassType: glass,
       finish,
       includeMesh: activeRule.supportsMesh && includeMesh,
       quantity: Math.max(1, Math.min(50, quantity)),
@@ -235,26 +340,63 @@ function WindowConfiguratorInner({
     writeInquiryStore([]);
   };
 
-  // Fallback to current active configuration if list is empty for instant print/WhatsApp/copy
-  const effectiveItems: InquiryItem[] =
-    items.length > 0
-      ? items
-      : [
-          {
-            id: "active-preview",
-            locationName: locationName.trim() || "پنجره انتخاب‌شده",
-            system,
-            widthCm,
-            heightCm,
-            panelCount,
-            openings: openings.slice(0, panelCount),
-            glass,
-            finish,
-            includeMesh: activeRule.supportsMesh && includeMesh,
-            quantity: Math.max(1, Math.min(50, quantity)),
-            areaSqm: validation.areaSqm,
-          },
-        ];
+  const effectiveItems = useMemo<InquiryItem[]>(
+    () =>
+      items.length > 0
+        ? items
+        : [
+            {
+              id: "active-preview",
+              locationName: locationName.trim() || "پنجره انتخاب‌شده",
+              system,
+              widthCm,
+              heightCm,
+              panelCount,
+              openings: openings.slice(0, panelCount),
+              glassType: glass,
+              finish,
+              includeMesh: activeRule.supportsMesh && includeMesh,
+              quantity: Math.max(1, Math.min(50, quantity)),
+              areaSqm: validation.areaSqm,
+            },
+          ],
+    [
+      items,
+      locationName,
+      system,
+      widthCm,
+      heightCm,
+      panelCount,
+      openings,
+      glass,
+      finish,
+      activeRule.supportsMesh,
+      includeMesh,
+      quantity,
+      validation.areaSqm,
+    ]
+  );
+
+  const pricedSummary = useMemo(() => {
+    if (!rulesMap) return null;
+    try {
+      const pricable: PricableInquiryItem[] = effectiveItems.map((item) => ({
+        locationName: item.locationName,
+        system: item.system,
+        widthCm: item.widthCm,
+        heightCm: item.heightCm,
+        panelCount: item.panelCount,
+        openings: item.openings,
+        glassType: resolveItemGlass(item),
+        finish: item.finish,
+        includeMesh: item.includeMesh,
+        quantity: item.quantity,
+      }));
+      return calculateInquiryTotals(pricable, rulesMap);
+    } catch {
+      return null;
+    }
+  }, [effectiveItems, rulesMap]);
 
   const totalCount = effectiveItems.reduce((sum, item) => sum + item.quantity, 0);
   const totalAreaSqm = Number(
@@ -264,13 +406,19 @@ function WindowConfiguratorInner({
   );
 
   const buildPlainTextSummary = () => {
-    const header = `برگه مشخصات فنی پروژه — ${SITE_CONFIG.name}`;
+    const header = submitSuccess
+      ? `برگه مشخصات فنی پروژه — ${SITE_CONFIG.name} (کد رهگیری: ${submitSuccess.trackingCode})`
+      : `برگه مشخصات فنی پروژه — ${SITE_CONFIG.name}`;
     const rows = effectiveItems.map((item, idx) => {
       const sysLabel = SYSTEM_RULES[item.system].label;
-      const glassLabel = GLASS_OPTIONS[item.glass].shortLabel;
+      const gKey = resolveItemGlass(item);
+      const glassLabel = GLASS_OPTIONS[gKey].shortLabel;
       const finishLabel = FRAME_FINISHES[item.finish].label;
       const opsLabel = item.openings.map((o) => OPENING_LABELS[o]).join(" + ");
       const meshNote = item.includeMesh ? " | همراه با توری پلیسه" : "";
+      const itemPriceNote = pricedSummary?.items[idx]
+        ? ` | برآورد: ${formatToman(pricedSummary.items[idx].breakdown.totalIrr)}`
+        : "";
       return `${toPersianDigits(idx + 1)}. ${item.locationName} (${toPersianDigits(
         item.quantity
       )} عدد): ${sysLabel} | ابعاد ${toPersianDigits(
@@ -279,8 +427,14 @@ function WindowConfiguratorInner({
         item.panelCount
       )} لنگه (${opsLabel}) | شیشه: ${glassLabel} | رنگ: ${finishLabel}${meshNote} | مساحت کل: ${toPersianDigits(
         Number((item.areaSqm * item.quantity).toFixed(2))
-      )} مترمربع`;
+      )} مترمربع${itemPriceNote}`;
     });
+
+    const totalLine = submitSuccess
+      ? `برآورد رسمی ثبت‌شده: ${formatToman(submitSuccess.estimatedTotalIrr)}`
+      : pricedSummary
+        ? `مجموع برآورد تقریبی: ${formatToman(pricedSummary.totalIrr)}`
+        : null;
 
     return [
       header,
@@ -289,7 +443,10 @@ function WindowConfiguratorInner({
       "-----------------------------------",
       `جمع کل دهانه‌ها: ${toPersianDigits(totalCount)} عدد`,
       `مجموع مساحت: ${toPersianDigits(totalAreaSqm)} مترمربع`,
-    ].join("\n");
+      totalLine,
+    ]
+      .filter(Boolean)
+      .join("\n");
   };
 
   const handleCopySummary = async () => {
@@ -302,21 +459,121 @@ function WindowConfiguratorInner({
     }
   };
 
+  const handleOfficialSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+    setSubmitError(null);
+
+    if (items.length === 0 && !validation.isValid) {
+      setSubmitError(
+        validation.errors[0] || "لطفاً ابتدا ابعاد معتبر برای دهانه وارد کنید."
+      );
+      return;
+    }
+
+    const normalizedPhone = toLatinDigits(phone).replace(/[\s\-()]/g, "");
+    if (customerName.trim().length < 2) {
+      setSubmitError("لطفاً نام و نام خانوادگی خود را وارد کنید.");
+      return;
+    }
+    if (!/^0[0-9]{10}$/.test(normalizedPhone)) {
+      setSubmitError(
+        "شماره تماس معتبر با پیش‌شماره (۱۱ رقم، مثلاً ۰۹۱۲ یا ۰۲۴) وارد کنید."
+      );
+      return;
+    }
+    if (city.trim().length < 2) {
+      setSubmitError("لطفاً نام شهر محل پروژه را وارد کنید.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const payloadItems = effectiveItems.map((item) => ({
+        locationName: item.locationName,
+        system: item.system,
+        widthCm: item.widthCm,
+        heightCm: item.heightCm,
+        panelCount: item.panelCount,
+        openings: item.openings,
+        glassType: resolveItemGlass(item),
+        finish: item.finish,
+        includeMesh: item.includeMesh,
+        quantity: item.quantity,
+      }));
+
+      const res = await fetch("/api/inquiries/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerName: customerName.trim(),
+          phone: normalizedPhone,
+          city: city.trim(),
+          projectType:
+            effectiveItems.length > 1
+              ? "پکیج چندقلمی کانفیگوریتور"
+              : SYSTEM_RULES[effectiveItems[0].system].label,
+          notes: inquiryNotes.trim(),
+          items: payloadItems,
+          website: honeypot,
+        }),
+      });
+
+      const data = (await res.json()) as {
+        ok?: boolean;
+        error?: string;
+        trackingCode?: string;
+        estimatedTotalIrr?: number;
+        estimatedTotalToman?: number;
+        itemCount?: number;
+      };
+
+      if (!res.ok || !data.ok || !data.trackingCode) {
+        setSubmitError(
+          data.error || "خطا در ثبت استعلام؛ لطفاً ورودی‌ها را بررسی کنید."
+        );
+        return;
+      }
+
+      setSubmitSuccess({
+        trackingCode: data.trackingCode,
+        estimatedTotalIrr: data.estimatedTotalIrr ?? 0,
+        estimatedTotalToman: data.estimatedTotalToman ?? 0,
+        itemCount: data.itemCount ?? totalCount,
+      });
+    } catch {
+      setSubmitError("ارتباط با سرور برقرار نشد؛ لطفاً دوباره تلاش کنید.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleCopyTrackingCode = async () => {
+    if (!submitSuccess) return;
+    try {
+      await navigator.clipboard.writeText(submitSuccess.trackingCode);
+      setCodeCopied(true);
+      window.setTimeout(() => setCodeCopied(false), 3000);
+    } catch {
+      setCodeCopied(false);
+    }
+  };
+
   const whatsappUrl = `${SITE_CONFIG.contact.whatsappHref}?text=${encodeURIComponent(
     buildPlainTextSummary()
   )}`;
 
   return (
     <div className="space-y-10">
-      {/* Honest Phase-1 Positioning Banner */}
+      {/* Honest Pricing Transparency Banner */}
       <div className="no-print flex items-start gap-3 rounded-2xl border border-amber-200 bg-accent-soft p-4 text-xs leading-6 text-accent-hover sm:p-5 sm:text-sm">
         <Info className="mt-1 h-5 w-5 shrink-0" aria-hidden="true" />
         <p>
-          <strong>شفافیت قیمت‌گذاری کارخانه‌ای:</strong> به دلیل نوسان روزانه نرخ
-          پروفیل، شیشه و یراق‌آلات در بازار ایران، این ابزار بدون درج قیمت‌های
-          حدسی و غیرواقعی، ابعاد دقیق مهندسی، مساحت کل (مترمربع) و هشدارهای فنی
-          شما را محاسبه کرده و خروجی استاندارد A4 برای استعلام فوری از کارخانه
-          زنجان تولید می‌کند.
+          <strong>برآورد قیمت هوشمند بر اساس تعرفه روز کارخانه سپنتا محاسبه
+          می‌شود؛</strong>{" "}
+          مبلغ قطعی پس از اندازه‌گیری دقیق لیزری در محل پروژه و تایید نهایی نوع
+          یراق‌آلات اعلام می‌گردد.
         </p>
       </div>
 
@@ -464,9 +721,7 @@ function WindowConfiguratorInner({
 
             {/* Panel Count */}
             <div>
-              <p className="text-xs font-semibold text-ink">
-                تعداد لنگه / پنل
-              </p>
+              <p className="text-xs font-semibold text-ink">تعداد لنگه / پنل</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {Array.from(
                   { length: activeRule.maxPanels - activeRule.minPanels + 1 },
@@ -551,9 +806,7 @@ function WindowConfiguratorInner({
 
             {/* Profile Frame Finishes */}
             <div>
-              <p className="text-xs font-semibold text-ink">
-                رنگ و پوشش پروفیل
-              </p>
+              <p className="text-xs font-semibold text-ink">رنگ و پوشش پروفیل</p>
               <div className="mt-2 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                 {(Object.keys(FRAME_FINISHES) as FrameFinishKey[]).map((fKey) => {
                   const swatch = FRAME_FINISHES[fKey];
@@ -622,12 +875,12 @@ function WindowConfiguratorInner({
           </div>
         </div>
 
-        {/* Live SVG Preview + Engineering Summary Card */}
+        {/* Live SVG Preview + Engineering & Live Price Summary Card */}
         <div className="lg:col-span-5">
           <div className="sticky top-24 space-y-5 rounded-2xl border border-border bg-surface p-5 shadow-xs sm:p-6">
             <div className="flex items-center justify-between">
               <h2 className="text-base font-bold text-ink">
-                پیش‌نمایش مهندسی زنده
+                پیش‌نمایش مهندسی و برآورد زنده
               </h2>
               <span className="rounded-md bg-accent-soft px-2.5 py-1 text-xs font-bold text-accent-hover">
                 {activeRule.shortLabel}
@@ -664,6 +917,28 @@ function WindowConfiguratorInner({
                 </dd>
               </div>
             </dl>
+
+            {/* Live Price Card */}
+            {pricingLoading ? (
+              <div className="rounded-xl border border-border bg-surface-subtle p-4 text-xs text-ink-muted">
+                در حال دریافت تعرفه روز کارخانه...
+              </div>
+            ) : activePriceBreakdown ? (
+              <div className="rounded-xl border border-amber-200 bg-surface-dark p-4 text-ink-inverse">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs text-slate-300">
+                    برآورد تقریبی ({toPersianDigits(quantity)} عدد):
+                  </span>
+                  <span className="tabular-nums text-base font-extrabold text-amber-400">
+                    {formatToman(activePriceBreakdown.totalIrr)}
+                  </span>
+                </div>
+                <p className="tabular-nums mt-1.5 text-[11px] text-slate-400">
+                  شامل پروفیل، شیشه، نصب و رگلاژ استاندارد • مساحت مبنای محاسبه:{" "}
+                  {toPersianDigits(activePriceBreakdown.billableAreaSqm)} مترمربع
+                </p>
+              </div>
+            ) : null}
 
             {/* Validation Errors */}
             {validation.errors.length > 0 && (
@@ -725,76 +1000,94 @@ function WindowConfiguratorInner({
                   )} دهانه) به مجموع مساحت ${toPersianDigits(
                     totalAreaSqm
                   )} مترمربع ثبت شده است.`
-                : "هنوز ردیفی به لیست اضافه نشده است؛ می‌توانید با دکمه «افزودن به لیست» چند دهانه بسازید یا مشخصات فعلی را مستقیماً چاپ و ارسال کنید."}
+                : "هنوز ردیفی به لیست اضافه نشده است؛ می‌توانید چند دهانه بسازید یا دهانه فعلی را مستقیماً ثبت و ارسال کنید."}
             </p>
           </div>
 
-          {items.length > 0 && (
-            <button
-              type="button"
-              onClick={handleClearList}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-border px-3.5 py-2 text-xs font-semibold text-ink-muted hover:border-red-300 hover:text-red-600"
-            >
-              <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
-              <span>پاک کردن لیست</span>
-            </button>
-          )}
+          <div className="flex flex-wrap items-center gap-3">
+            {pricedSummary && (
+              <div className="rounded-xl border border-amber-200 bg-accent-soft px-4 py-2 text-xs sm:text-sm">
+                <span className="text-accent-hover">جمع برآورد تقریبی: </span>
+                <strong className="tabular-nums text-ink">
+                  {formatToman(pricedSummary.totalIrr)}
+                </strong>
+              </div>
+            )}
+
+            {items.length > 0 && (
+              <button
+                type="button"
+                onClick={handleClearList}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-border px-3.5 py-2 text-xs font-semibold text-ink-muted hover:border-red-300 hover:text-red-600"
+              >
+                <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                <span>پاک کردن لیست</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {items.length > 0 && (
           <div className="mt-5 divide-y divide-border rounded-2xl border border-border bg-surface-subtle">
-            {items.map((item, idx) => (
-              <div
-                key={item.id}
-                className="flex flex-col justify-between gap-3 p-4 sm:flex-row sm:items-center"
-              >
-                <div className="space-y-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="tabular-nums rounded-md bg-surface-dark px-2 py-0.5 text-[11px] font-bold text-amber-400">
-                      {toPersianDigits(idx + 1)}
-                    </span>
-                    <span className="text-sm font-bold text-ink">
-                      {item.locationName}
-                    </span>
-                    <span className="rounded-md bg-accent-soft px-2 py-0.5 text-xs font-semibold text-accent-hover">
-                      {SYSTEM_RULES[item.system].shortLabel}
-                    </span>
-                  </div>
-                  <p className="tabular-nums text-xs leading-6 text-ink-muted">
-                    ابعاد: {toPersianDigits(item.widthCm)} ×{" "}
-                    {toPersianDigits(item.heightCm)} سم •{" "}
-                    {toPersianDigits(item.panelCount)} لنگه (
-                    {item.openings.map((o) => OPENING_LABELS[o]).join(" + ")}) •{" "}
-                    {GLASS_OPTIONS[item.glass].shortLabel} • رنگ{" "}
-                    {FRAME_FINISHES[item.finish].label}
-                    {item.includeMesh ? " • همراه با توری پلیسه" : ""}
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-between gap-4 sm:justify-end">
-                  <div className="tabular-nums text-end text-xs">
-                    <p className="font-bold text-ink">
-                      {toPersianDigits(item.quantity)} عدد
-                    </p>
-                    <p className="text-ink-muted">
-                      {toPersianDigits(
-                        Number((item.areaSqm * item.quantity).toFixed(2))
-                      )}{" "}
-                      مترمربع
+            {items.map((item, idx) => {
+              const gKey = resolveItemGlass(item);
+              const itemPriced = pricedSummary?.items[idx];
+              return (
+                <div
+                  key={item.id}
+                  className="flex flex-col justify-between gap-3 p-4 sm:flex-row sm:items-center"
+                >
+                  <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="tabular-nums rounded-md bg-surface-dark px-2 py-0.5 text-[11px] font-bold text-amber-400">
+                        {toPersianDigits(idx + 1)}
+                      </span>
+                      <span className="text-sm font-bold text-ink">
+                        {item.locationName}
+                      </span>
+                      <span className="rounded-md bg-accent-soft px-2 py-0.5 text-xs font-semibold text-accent-hover">
+                        {SYSTEM_RULES[item.system].shortLabel}
+                      </span>
+                    </div>
+                    <p className="tabular-nums text-xs leading-6 text-ink-muted">
+                      ابعاد: {toPersianDigits(item.widthCm)} ×{" "}
+                      {toPersianDigits(item.heightCm)} سم •{" "}
+                      {toPersianDigits(item.panelCount)} لنگه (
+                      {item.openings.map((o) => OPENING_LABELS[o]).join(" + ")}) •{" "}
+                      {GLASS_OPTIONS[gKey].shortLabel} • رنگ{" "}
+                      {FRAME_FINISHES[item.finish].label}
+                      {item.includeMesh ? " • همراه با توری پلیسه" : ""}
                     </p>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveItem(item.id)}
-                    aria-label={`حذف ${item.locationName}`}
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-surface text-ink-muted transition-colors hover:border-red-300 hover:text-red-600"
-                  >
-                    <Trash2 className="h-4 w-4" aria-hidden="true" />
-                  </button>
+                  <div className="flex items-center justify-between gap-4 sm:justify-end">
+                    <div className="tabular-nums text-end text-xs">
+                      <p className="font-bold text-ink">
+                        {toPersianDigits(item.quantity)} عدد (
+                        {toPersianDigits(
+                          Number((item.areaSqm * item.quantity).toFixed(2))
+                        )}{" "}
+                        م²)
+                      </p>
+                      {itemPriced && (
+                        <p className="mt-0.5 font-bold text-accent-hover">
+                          {formatToman(itemPriced.breakdown.totalIrr)}
+                        </p>
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveItem(item.id)}
+                      aria-label={`حذف ${item.locationName}`}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-surface text-ink-muted transition-colors hover:border-red-300 hover:text-red-600"
+                    >
+                      <Trash2 className="h-4 w-4" aria-hidden="true" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
@@ -813,10 +1106,10 @@ function WindowConfiguratorInner({
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
+            className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-surface-subtle"
           >
-            <ExternalLink className="h-4 w-4" aria-hidden="true" />
-            <span>ارسال لیست کامل به واتساپ کارخانه</span>
+            <ExternalLink className="h-4 w-4 text-accent" aria-hidden="true" />
+            <span>ارسال لیست به واتساپ کارخانه</span>
           </a>
 
           <button
@@ -839,20 +1132,227 @@ function WindowConfiguratorInner({
         </div>
       </section>
 
+      {/* Official Server-Authoritative Inquiry Submission Panel */}
+      <section
+        aria-labelledby="official-submit-heading"
+        className="no-print rounded-2xl border border-border bg-surface-subtle p-5 sm:p-8"
+      >
+        {submitSuccess ? (
+          <div className="rounded-2xl border border-amber-300 bg-surface p-6 shadow-xs sm:p-8">
+            <div className="inline-flex items-center gap-2 rounded-full bg-accent-soft px-3.5 py-1 text-xs font-bold text-accent-hover">
+              <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
+              <span>درخواست شما با موفقیت در سامانه کارخانه ثبت شد</span>
+            </div>
+
+            <h2
+              id="official-submit-heading"
+              className="mt-4 text-xl font-extrabold text-ink"
+            >
+              کد رهگیری رسمی پروژه شما صادر شد
+            </h2>
+
+            <div className="mt-5 flex flex-wrap items-center gap-4 rounded-xl border border-border bg-surface-subtle p-4">
+              <div>
+                <p className="text-xs text-ink-muted">کد رهگیری اختصاصی</p>
+                <p
+                  dir="ltr"
+                  className="mt-1 font-mono text-xl font-extrabold tracking-wider text-ink"
+                >
+                  {submitSuccess.trackingCode}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleCopyTrackingCode}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-3.5 py-2 text-xs font-semibold text-ink hover:border-accent"
+              >
+                {codeCopied ? (
+                  <>
+                    <Check className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+                    <span>کد کپی شد</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-3.5 w-3.5 text-ink-muted" aria-hidden="true" />
+                    <span>کپی کد رهگیری</span>
+                  </>
+                )}
+              </button>
+
+              <div className="ms-auto text-start sm:text-end">
+                <p className="text-xs text-ink-muted">
+                  برآورد محاسبه‌شده سرور ({toPersianDigits(submitSuccess.itemCount)}{" "}
+                  دهانه)
+                </p>
+                <p className="tabular-nums mt-1 text-base font-extrabold text-accent-hover">
+                  {formatToman(submitSuccess.estimatedTotalIrr)}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <Link
+                href={`/track/?code=${submitSuccess.trackingCode}`}
+                className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-accent-hover"
+              >
+                <span>پیگیری وضعیت درخواست</span>
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => setSubmitSuccess(null)}
+                className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface px-4 py-3 text-sm font-semibold text-ink hover:bg-surface-subtle"
+              >
+                <span>ثبت استعلام جدید</span>
+              </button>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleOfficialSubmit} noValidate className="space-y-5">
+            <div>
+              <h2
+                id="official-submit-heading"
+                className="text-lg font-extrabold text-ink sm:text-xl"
+              >
+                ثبت رسمی استعلام و دریافت کد رهگیری
+              </h2>
+              <p className="mt-1 text-xs leading-6 text-ink-muted sm:text-sm">
+                اطلاعات تماس خود را وارد کنید تا لیست اقلام بالا در سامانه
+                کارخانه ثبت شده و کد رهگیری <span dir="ltr">SPN-XXXXXX</span>{" "}
+                برای شما صادر شود.
+              </p>
+            </div>
+
+            {/* Honeypot anti-spam field */}
+            <input
+              type="text"
+              name="website"
+              value={honeypot}
+              onChange={(e) => setHoneypot(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              className="hidden"
+              aria-hidden="true"
+            />
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div>
+                <label
+                  htmlFor="submit-name"
+                  className="block text-xs font-semibold text-ink"
+                >
+                  نام و نام خانوادگی *
+                </label>
+                <input
+                  id="submit-name"
+                  type="text"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  placeholder="مثلاً: مهندس علی محمدی"
+                  className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="submit-phone"
+                  className="block text-xs font-semibold text-ink"
+                >
+                  شماره تماس *
+                </label>
+                <input
+                  id="submit-phone"
+                  type="tel"
+                  dir="ltr"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="09120000000"
+                  className="tabular-nums mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-end text-sm text-ink focus:border-accent focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="submit-city"
+                  className="block text-xs font-semibold text-ink"
+                >
+                  شهر پروژه *
+                </label>
+                <input
+                  id="submit-city"
+                  type="text"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  placeholder="مثلاً: زنجان / تهران"
+                  className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="submit-notes"
+                className="block text-xs font-semibold text-ink"
+              >
+                توضیحات اختیاری (طبقه نصب، وضعیت بازسازی یا زمان‌بندی)
+              </label>
+              <textarea
+                id="submit-notes"
+                rows={2}
+                value={inquiryNotes}
+                onChange={(e) => setInquiryNotes(e.target.value)}
+                placeholder="مثلاً: تعویض بدون تخریب پنجره‌های طبقه سوم..."
+                className="mt-1.5 w-full rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm text-ink focus:border-accent focus:outline-none"
+              />
+            </div>
+
+            {submitError && (
+              <div
+                role="alert"
+                className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-xs font-medium text-red-700 sm:text-sm"
+              >
+                {submitError}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <Send className="h-4 w-4" aria-hidden="true" />
+              <span>
+                {submitting
+                  ? "در حال ثبت درخواست..."
+                  : "ثبت رسمی استعلام و دریافت کد رهگیری"}
+              </span>
+            </button>
+          </form>
+        )}
+      </section>
+
       {/* Official A4 Print-Only Specification Sheet */}
       <div className="hidden print:block print:text-black">
         <div className="border-b-2 border-black pb-4">
           <div className="flex items-start justify-between gap-4">
             <div>
               <h2 className="text-xl font-extrabold text-black">
-                {SITE_CONFIG.name} — برگه مشخصات فنی و استعلام پروژه
+                {SITE_CONFIG.name} — برگه مشخصات فنی و برآورد قیمت پروژه
               </h2>
               <p className="mt-1 text-xs text-slate-700">
                 {SITE_CONFIG.coverageNote}
               </p>
+              {submitSuccess && (
+                <p className="mt-1 text-xs font-bold text-black">
+                  کد رهگیری سامانه: {submitSuccess.trackingCode}
+                </p>
+              )}
             </div>
             <div className="text-end text-xs">
-              <p className="font-bold">تلفن کارخانه: {SITE_CONFIG.contact.phoneDisplay}</p>
+              <p className="font-bold">
+                تلفن کارخانه: {SITE_CONFIG.contact.phoneDisplay}
+              </p>
               <p className="mt-1">وب‌سایت: sepanta-co.ir</p>
             </div>
           </div>
@@ -861,67 +1361,88 @@ function WindowConfiguratorInner({
         <table className="mt-6 w-full border-collapse border border-black text-start text-xs">
           <thead>
             <tr className="bg-slate-100 font-bold">
-              <th className="border border-black px-2.5 py-2 text-start">ردیف</th>
-              <th className="border border-black px-2.5 py-2 text-start">موقعیت</th>
-              <th className="border border-black px-2.5 py-2 text-start">سیستم</th>
-              <th className="border border-black px-2.5 py-2 text-start">ابعاد (سم)</th>
-              <th className="border border-black px-2.5 py-2 text-start">بازشو و لنگه</th>
-              <th className="border border-black px-2.5 py-2 text-start">شیشه و رنگ</th>
-              <th className="border border-black px-2.5 py-2 text-start">تعداد</th>
-              <th className="border border-black px-2.5 py-2 text-start">مساحت کل</th>
+              <th className="border border-black px-2 py-2 text-start">ردیف</th>
+              <th className="border border-black px-2 py-2 text-start">موقعیت</th>
+              <th className="border border-black px-2 py-2 text-start">سیستم</th>
+              <th className="border border-black px-2 py-2 text-start">ابعاد (سم)</th>
+              <th className="border border-black px-2 py-2 text-start">بازشو و لنگه</th>
+              <th className="border border-black px-2 py-2 text-start">شیشه و رنگ</th>
+              <th className="border border-black px-2 py-2 text-start">تعداد</th>
+              <th className="border border-black px-2 py-2 text-start">مساحت</th>
+              <th className="border border-black px-2 py-2 text-start">برآورد (تومان)</th>
             </tr>
           </thead>
           <tbody>
-            {effectiveItems.map((item, idx) => (
-              <tr key={item.id}>
-                <td className="tabular-nums border border-black px-2.5 py-2">
-                  {toPersianDigits(idx + 1)}
-                </td>
-                <td className="border border-black px-2.5 py-2 font-semibold">
-                  {item.locationName}
-                </td>
-                <td className="border border-black px-2.5 py-2">
-                  {SYSTEM_RULES[item.system].shortLabel}
-                </td>
-                <td className="tabular-nums border border-black px-2.5 py-2">
-                  {toPersianDigits(item.widthCm)} × {toPersianDigits(item.heightCm)}
-                </td>
-                <td className="tabular-nums border border-black px-2.5 py-2">
-                  {toPersianDigits(item.panelCount)} لنگه (
-                  {item.openings.map((o) => OPENING_LABELS[o]).join(" + ")})
-                </td>
-                <td className="border border-black px-2.5 py-2">
-                  {GLASS_OPTIONS[item.glass].shortLabel} /{" "}
-                  {FRAME_FINISHES[item.finish].label}
-                  {item.includeMesh ? " + توری" : ""}
-                </td>
-                <td className="tabular-nums border border-black px-2.5 py-2">
-                  {toPersianDigits(item.quantity)}
-                </td>
-                <td className="tabular-nums border border-black px-2.5 py-2">
-                  {toPersianDigits(
-                    Number((item.areaSqm * item.quantity).toFixed(2))
-                  )}{" "}
-                  م²
-                </td>
-              </tr>
-            ))}
+            {effectiveItems.map((item, idx) => {
+              const gKey = resolveItemGlass(item);
+              const itemPriced = pricedSummary?.items[idx];
+              return (
+                <tr key={item.id}>
+                  <td className="tabular-nums border border-black px-2 py-2">
+                    {toPersianDigits(idx + 1)}
+                  </td>
+                  <td className="border border-black px-2 py-2 font-semibold">
+                    {item.locationName}
+                  </td>
+                  <td className="border border-black px-2 py-2">
+                    {SYSTEM_RULES[item.system].shortLabel}
+                  </td>
+                  <td className="tabular-nums border border-black px-2 py-2">
+                    {toPersianDigits(item.widthCm)} ×{" "}
+                    {toPersianDigits(item.heightCm)}
+                  </td>
+                  <td className="tabular-nums border border-black px-2 py-2">
+                    {toPersianDigits(item.panelCount)} لنگه (
+                    {item.openings.map((o) => OPENING_LABELS[o]).join(" + ")})
+                  </td>
+                  <td className="border border-black px-2 py-2">
+                    {GLASS_OPTIONS[gKey].shortLabel} /{" "}
+                    {FRAME_FINISHES[item.finish].label}
+                    {item.includeMesh ? " + توری" : ""}
+                  </td>
+                  <td className="tabular-nums border border-black px-2 py-2">
+                    {toPersianDigits(item.quantity)}
+                  </td>
+                  <td className="tabular-nums border border-black px-2 py-2">
+                    {toPersianDigits(
+                      Number((item.areaSqm * item.quantity).toFixed(2))
+                    )}{" "}
+                    م²
+                  </td>
+                  <td className="tabular-nums border border-black px-2 py-2 font-semibold">
+                    {itemPriced
+                      ? formatToman(itemPriced.breakdown.totalIrr)
+                      : "—"}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
 
-        <div className="mt-5 flex items-center justify-between border border-black bg-slate-50 px-4 py-3 text-sm font-bold">
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-4 border border-black bg-slate-50 px-4 py-3 text-sm font-bold">
           <span className="tabular-nums">
-            مجموع تعداد دهانه‌ها: {toPersianDigits(totalCount)} عدد
+            مجموع دهانه‌ها: {toPersianDigits(totalCount)} عدد
           </span>
           <span className="tabular-nums">
-            مجموع مساحت کل پروژه: {toPersianDigits(totalAreaSqm)} مترمربع
+            مجموع مساحت: {toPersianDigits(totalAreaSqm)} مترمربع
           </span>
+          {pricedSummary && (
+            <span className="tabular-nums">
+              برآورد کل:{" "}
+              {formatToman(
+                submitSuccess
+                  ? submitSuccess.estimatedTotalIrr
+                  : pricedSummary.totalIrr
+              )}
+            </span>
+          )}
         </div>
 
         <p className="mt-4 text-[11px] leading-6 text-slate-700">
-          توضیح فنی: این برگه بر اساس ابعاد اولیه اعلامی جهت برآورد قیمت روز
-          کارخانه صادر شده است. اندازه‌گیری نهایی پیش از تولید توسط کارشناس فنی
-          گروه صنعتی سپنتا با ابزار لیزری در محل انجام خواهد شد.
+          توضیح فنی: برآورد قیمت بر اساس تعرفه روز کارخانه محاسبه شده است.
+          اندازه‌گیری نهایی پیش از تولید توسط کارشناس فنی گروه صنعتی سپنتا با
+          ابزار لیزری در محل انجام و پیش‌فاکتور قطعی صادر خواهد شد.
         </p>
       </div>
     </div>

@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "optimize:images": "node scripts/optimize-images.mjs",
-    "audit:phase1": "node scripts/audit-phase1.mjs"
+    "audit:phase1": "node scripts/audit-phase1.mjs",
+    "audit:phase2": "node scripts/audit-phase2.mjs"
   },
   "dependencies": {
     "better-sqlite3": "^13.2.0",

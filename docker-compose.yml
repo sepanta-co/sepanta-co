@@ -8,13 +8,14 @@ services:
     restart: unless-stopped
     mem_limit: 512m
     cpus: 0.75
+    env_file:
+      - path: .env.local
+        required: false
+      - path: .env
+        required: false
     environment:
       DATABASE_PATH: /app/data/sepanta.db
       UPLOADS_DIR: /app/uploads
-      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-me-in-prod}
-      SESSION_SECRET: ${SESSION_SECRET:-dev-session-secret-change-in-production}
-      SMS_PROVIDER: ${SMS_PROVIDER:-mock}
     volumes:
       - sepanta_data:/app/data
       - sepanta_uploads:/app/uploads

@@ -1,0 +1,12 @@
+services:
+  sepanta-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sepanta-web:phase1
+    container_name: sepanta-web
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    mem_limit: 128m
+    cpus: 0.5
